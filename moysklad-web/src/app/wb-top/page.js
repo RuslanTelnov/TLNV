@@ -450,6 +450,32 @@ export default function WbTopPage() {
                     <a href="/api/reports/generate" target="_blank" className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
                         📄 Отчет
                     </a>
+
+                    {/* BIG STANDALONE PARSER TOGGLE */}
+                    <button
+                        onClick={toggleConveyor}
+                        disabled={toggleLoading}
+                        style={{
+                            height: '56px',
+                            minWidth: '220px',
+                            padding: '0 2rem',
+                            borderRadius: '16px',
+                            background: isConveyorRunning ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '1.1rem',
+                            fontWeight: 'bold',
+                            boxShadow: isConveyorRunning ? '0 10px 20px rgba(245, 158, 11, 0.3)' : '0 10px 20px rgba(16, 185, 129, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.8rem',
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        {isConveyorRunning ? '🛑 СТОП ПАРСЕР' : '🚀 СТАРТ ПАРСЕР'}
+                    </button>
                 </div>
 
                 {/* Filters */}
@@ -603,7 +629,26 @@ export default function WbTopPage() {
                             >
                                 <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between' }}>
                                     <span style={{ fontWeight: '600' }}>AI Помощник</span>
-                                    <button onClick={() => setIsChatOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>✕</button>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        {/* QUICK TOGGLE BUTTONS */}
+                                        <button
+                                            onClick={toggleConveyor}
+                                            disabled={toggleLoading}
+                                            style={{
+                                                padding: '2px 10px',
+                                                borderRadius: '6px',
+                                                background: isConveyorRunning ? '#f59e0b' : '#10b981',
+                                                border: 'none',
+                                                color: 'white',
+                                                fontSize: '0.7rem',
+                                                fontWeight: 'bold',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            {isConveyorRunning ? 'ОСТАНОВИТЬ ПАРСЕР' : 'ЗАПУСТИТЬ ПАРСЕР'}
+                                        </button>
+                                        <button onClick={() => setIsChatOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>✕</button>
+                                    </div>
                                 </div>
                                 <div style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                     {chatHistory.map((msg, i) => (
@@ -644,26 +689,28 @@ export default function WbTopPage() {
                 {/* MODALS (Simplified for brevity but functional) */}
                 {toast && <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', padding: '1rem 2rem', background: '#333', color: 'white', borderRadius: '8px', zIndex: 9999 }}>{toast.message}</div>}
 
-                {showOprihodovanieModal && (
-                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9000 }}>
-                        <div style={{ background: '#1a1a1a', padding: '2rem', borderRadius: '16px', minWidth: '300px' }}>
-                            <h3>Оприходование: {selectedProductForOprihodovanie?.brand}</h3>
-                            <input type="number" value={oprihodovanieQuantity} onChange={e => setOprihodovanieQuantity(e.target.value)} style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }} />
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <button onClick={confirmOprihodovanie} className="velveto-button">Подтвердить</button>
-                                <button onClick={() => setShowOprihodovanieModal(false)} className="velveto-button-outline">Отмена</button>
+                {
+                    showOprihodovanieModal && (
+                        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9000 }}>
+                            <div style={{ background: '#1a1a1a', padding: '2rem', borderRadius: '16px', minWidth: '300px' }}>
+                                <h3>Оприходование: {selectedProductForOprihodovanie?.brand}</h3>
+                                <input type="number" value={oprihodovanieQuantity} onChange={e => setOprihodovanieQuantity(e.target.value)} style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }} />
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <button onClick={confirmOprihodovanie} className="velveto-button">Подтвердить</button>
+                                    <button onClick={() => setShowOprihodovanieModal(false)} className="velveto-button-outline">Отмена</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
-            </main>
+            </main >
 
             <style jsx>{`
                 .mini-btn { padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #ddd; cursor: pointer; font-size: 0.75rem; }
                 .mini-btn:hover { background: rgba(255,255,255,0.1); }
             `}</style>
-        </div>
+        </div >
     );
 }
 

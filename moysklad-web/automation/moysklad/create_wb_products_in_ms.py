@@ -62,6 +62,57 @@ def get_price_type(name="Цена продажи"):
         print(f"❌ Error getting price type: {e}")
     return None
 
+def upload_image_to_ms(ms_id, image_url, name):
+    """Download image from URL and upload to MoySklad product"""
+    if not image_url:
+        return
+    
+    try:
+        from PIL import Image
+        import io
+        
+        # Download image
+        print(f"   📸 Downloading image for MS: {image_url}")
+        img_resp = requests.get(image_url, timeout=10)
+        if img_resp.status_code == 200:
+            image_content = img_resp.content
+            
+            # Convert to JPEG (since MS might not like WebP)
+            try:
+                img = Image.open(io.BytesIO(image_content))
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    rgb_img = Image.new('RGB', img.size, (255, 255, 255))
+                    if img.mode == 'P':
+                        img = img.convert('RGBA')
+                    rgb_img.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+                    img = rgb_img
+                
+                img_byte_arr = io.BytesIO()
+                img.save(img_byte_arr, format='JPEG', quality=90)
+                image_content = img_byte_arr.getvalue()
+                print("   🎨 Converted WebP to JPEG")
+            except Exception as conv_err:
+                print(f"   ⚠️ Image conversion failed, trying raw: {conv_err}")
+
+            content = base64.b64encode(image_content).decode('utf-8')
+            filename = f"{name.replace('/', '_')}.jpg"
+            
+            # Upload to MS
+            url = f"{BASE_URL}/entity/product/{ms_id}/images"
+            payload = {
+                "filename": filename,
+                "content": content
+            }
+            resp = requests.post(url, json=payload, headers=HEADERS)
+            if resp.status_code == 200:
+                print(f"   ✅ Image uploaded to MoySklad")
+            else:
+                print(f"   ❌ Failed to upload image to MS: {resp.text}")
+        else:
+            print(f"   ❌ Failed to download image: {img_resp.status_code}")
+    except Exception as e:
+        print(f"   ❌ Error in image upload process: {e}")
+
 def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes=None):
     """Create product in MoySklad and sync to Supabase"""
     name = product['name']
@@ -84,10 +135,20 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
         print(f"⚠️ Error checking existence: {e}")
 
     # Pricing Calculation
-    # Min Price = WB Price + 30%
-    # Retail Price = WB Price + 45%
-    min_price_val = int(price * 1.30 * 100) # Cents
-    retail_price_val = int(price * 1.45 * 100) # Cents
+    # Formula: Price * 100 / divisor
+    # Retail (salePrices): WB_Price * 100 / 30
+    # Minimum (minPrice): WB_Price * 100 / 45
+    # MS requires values in cents (* 100)
+    
+    retail_price_val = int((price * 100 / 30) * 100)
+    min_price_val = int((price * 100 / 45) * 100)
+
+    # Use default currency for minPrice
+    currency_meta = {
+        "href": f"{BASE_URL}/entity/currency/de9494d6-23f4-11ef-0a80-0eb00010b181",
+        "type": "currency",
+        "mediaType": "application/json"
+    }
 
     if not ms_product_id:
         # Create new product
@@ -100,30 +161,27 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             "salePrices": [
                 {
                     "value": retail_price_val, 
-                    "priceType": {"meta": price_type_meta} # Assuming this is 'Цена продажи'
-                },
-                # We need to find/add 'Минимальная цена' if we want it.
-                # For now let's just ensure Retail is +45% as 'Цена продажи'
-            ]
+                    "priceType": {"meta": price_type_meta}
+                }
+            ],
+            "minPrice": {
+                "value": min_price_val,
+                "currency": {"meta": currency_meta}
+            }
         }
         
-        # If we have a second price type for Min, we should use it.
-        # But 'price_type_meta' passed in is just one.
-        # Ideally we should fetch both types in main() and pass them.
-        # For simplicity now, we update 'Цена продажи' to be the Retail (+45%).
-        # To add Min Price, we need to fetch that type too.
-
         if extra_attributes:
             payload["attributes"] = extra_attributes
-        
-        # DEBUG: Log payload to see what's wrong with 'value'
-        print(f"DEBUG Payload: {payload}")
         
         try:
             resp = requests.post(f"{BASE_URL}/entity/product", json=payload, headers=HEADERS)
             if resp.status_code == 200:
-                print(f"✅ Created '{name}' (Price: {price})")
+                print(f"✅ Created '{name}' (Price: {price} -> Retail: {retail_price_val//100})")
                 ms_product_id = resp.json()['id']
+                
+                # UPLOAD IMAGE IMMEDIATELY
+                upload_image_to_ms(ms_product_id, image_url, name)
+                
             else:
                 print(f"❌ Error creating '{name}': {resp.text}")
                 return False, f"API Error: {resp.text}"
@@ -131,21 +189,23 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             print(f"❌ Error creating product request: {e}")
             return False, f"Request Error: {str(e)}"
     else:
-        # Product exists, check/update price
-        # We need to fetch the product to get its current price (or just update it blindly)
-        # Updating blindly is safer/easier for sync
+        # Product exists, update price
         payload = {
             "salePrices": [
                 {
-                    "value": price * 100, # Convert to cents
+                    "value": retail_price_val, 
                     "priceType": {"meta": price_type_meta}
                 }
-            ]
+            ],
+            "minPrice": {
+                "value": min_price_val,
+                "currency": {"meta": currency_meta}
+            }
         }
         try:
             resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS)
             if resp.status_code == 200:
-                print(f"🔄 Updated price for '{name}' to {price}")
+                print(f"🔄 Updated price for '{name}' to {retail_price_val//100}")
             else:
                 print(f"❌ Error updating price for '{name}': {resp.text}")
         except Exception as e:

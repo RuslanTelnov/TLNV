@@ -123,9 +123,9 @@ def run_conveyor():
                     stock_added = product.get('stock_added', False)
                     kaspi_created = product.get('kaspi_created', False)
                     
-                    # If fully done, skip
-                    if ms_created and stock_added and kaspi_created:
-                        if conveyor_status != 'done':
+                    # If fully done or closed, skip
+                    if (ms_created and stock_added and kaspi_created) or product.get('is_closed', False):
+                        if conveyor_status != 'done' and not product.get('is_closed', False):
                              update_status(wb_id, {"conveyor_status": "done"})
                         continue
                     
