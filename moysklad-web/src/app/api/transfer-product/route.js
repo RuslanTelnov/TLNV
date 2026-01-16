@@ -1,5 +1,5 @@
+import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
-import { supabase } from '../../../../lib/supabaseClient';
 import { execFile } from 'child_process';
 import path from 'path';
 

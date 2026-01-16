@@ -17,13 +17,28 @@ from selenium.webdriver.common.by import By
 
 load_dotenv()
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# Initialize Supabase
+def init_supabase() -> Client:
+    # Try different .env locations
+    env_paths = [
+        os.path.join(os.getcwd(), "moysklad-web", ".env.local"),
+        os.path.join(os.getcwd(), ".env"),
+    ]
+    
+    for path in env_paths:
+        if os.path.exists(path):
+            load_dotenv(path)
+            break
+            
+    url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or os.environ.get("SUPABASE_URL")
+    key = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") or os.environ.get("SUPABASE_KEY")
+    
+    if not url or not key:
+        return None
+        
+    return create_client(url, key)
 
-try:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-except:
-    supabase = None
+supabase = init_supabase()
 
 def get_basket_number(nm_id):
     vol = nm_id // 100000

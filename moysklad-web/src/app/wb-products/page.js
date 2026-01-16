@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { supabase } from '../../../lib/supabaseClient'
+import { supabase } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 
 export default function WbProducts() {

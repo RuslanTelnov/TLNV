@@ -50,6 +50,9 @@ def prepare_card_payload(scraped_data, sku):
     attributes_list = []
     scraped_attributes = scraped_data.get("attributes", {})
     
+    # Generate an internal EAN-13 barcode based on SKU
+    barcode = generate_internal_ean13(sku)
+    
     for code, value in scraped_attributes.items():
         attributes_list.append({
             "code": code,
@@ -63,7 +66,9 @@ def prepare_card_payload(scraped_data, sku):
         "brand": scraped_data.get("brand", "Generic"),
         "category": scraped_data.get("category_name"), # This should be "Master - ..."
         "attributes": attributes_list,
-        "images": [{"url": img} if isinstance(img, str) else img for img in scraped_data.get("images", [])]
+        "images": [{"url": img} if isinstance(img, str) else img for img in scraped_data.get("images", [])],
+        "barcode": barcode,
+        "model": scraped_data.get("title")[:50] # Use truncated title as model if not provided
     }
     return payload
 

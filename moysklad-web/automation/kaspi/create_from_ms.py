@@ -42,26 +42,44 @@ def map_ms_to_kaspi(product):
     from modules.category_mapper import KaspiCategoryMapper
     
     product_name = product.get("name", "")
-    # MS description might be missing, try to use name or empty string
-    product_description = product.get("description", "") or ""
+    
+    # Try to get description from specs or direct field
+    specs = product.get("specs", {})
+    if isinstance(specs, str):
+        try:
+            specs = json.loads(specs)
+        except:
+            specs = {}
+            
+    product_description = product.get("description", "")
+    if not product_description and specs:
+        product_description = specs.get("description", "")
+    
+    if not product_description:
+        product_description = ""
     
     # Detect category
-    category_name, category_type = KaspiCategoryMapper.detect_category(
+    category_code, category_type = KaspiCategoryMapper.detect_category(
         product_name, 
         product_description
     )
     
-    if not category_name:
+    if category_type == "restricted":
+        print(f"⚠️  Category for '{product_name}' is RESTRICTED on Kaspi. Skipping.", file=sys.stderr)
+        return "RESTRICTED"
+        
+    if not category_code:
         print(f"❌ Unknown category for product: {product_name}", file=sys.stderr)
         return None
 
-    print(f"📋 Detected category: {category_name} ({category_type})", file=sys.stderr)
+    print(f"📋 Detected category: {category_code} ({category_type})", file=sys.stderr)
     
     # Generate attributes based on category
     kaspi_attributes = KaspiCategoryMapper.generate_attributes(
         product_name,
         product_description,
-        category_type
+        category_type,
+        category_code
     )
     
     # Validate attributes
@@ -77,13 +95,29 @@ def map_ms_to_kaspi(product):
     if len(description) < 100:
         description = f"{description}. Качественный товар от проверенного бренда. Идеально подходит для ежедневного использования."
     
+    # Get all images
+    images = []
+    if product.get("image_url"):
+        images.append(product.get("image_url"))
+    
+    if specs and "image_urls" in specs:
+        for img in specs["image_urls"]:
+            if img not in images:
+                images.append(img)
+                
+    # Get brand
+    brand = product.get("brand", "Generic")
+    if not brand or brand == "Generic":
+        if specs and "brand" in specs:
+            brand = specs["brand"]
+    
     scraped_data = {
         "title": product_name,
         "description": description,
-        "images": [product.get("image_url")] if product.get("image_url") else [],
+        "images": images,
         "attributes": kaspi_attributes,
-        "category_name": category_name,
-        "brand": "Generic"
+        "category_name": category_code,
+        "brand": brand or "Generic"
     }
     
     return scraped_data
@@ -114,8 +148,10 @@ def create_from_ms(article):
                 print(f"❌ Product with article {article} not found in Supabase 'wb_search_results' table either.")
                 return False
         
-        # Map data
         kaspi_data = map_ms_to_kaspi(product)
+        if kaspi_data == "RESTRICTED":
+            return False
+            
         if not kaspi_data:
             print(f"❌ Failed to map product data (likely unknown category).")
             return False
@@ -134,6 +170,12 @@ def create_from_ms(article):
         
         if success:
             print(f"✅ Successfully created Kaspi card for {sku}")
+            # Update status in Supabase so it shows in dashboard
+            try:
+                supabase.table("wb_search_results").update({"kaspi_created": True}).eq("id", int(article)).execute()
+                print(f"🔄 Updated kaspi_created status in wb_search_results")
+            except Exception as e:
+                print(f"⚠️  Failed to update status in Supabase: {e}")
         else:
             print(f"❌ Failed to create Kaspi card for {sku}")
             
