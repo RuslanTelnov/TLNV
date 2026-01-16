@@ -19,7 +19,7 @@ export default function WbProducts() {
         try {
             setLoading(true)
             const { data, error } = await supabase
-                .from('wb_top_products')
+                .from('wb_search_results')
                 .select('*')
                 .order('rating', { ascending: false })
                 .limit(100)
