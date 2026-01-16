@@ -14,8 +14,7 @@ class KaspiCategoryMapper:
         "оружие", "нож", "пистолет", "бад", "витамины", "химия", "ядохимикаты",
         "интим", "sex", "эротика", "порно", "реплика", "копия", "1:1", "replica",
         "золото", "серебро", "бриллиант", "брильянт", "колецо", "серьги", 
-        "медицинский", "шприц", "игла", "ветеринар", "корм для", "пиротехника", "фейерверк",
-        "духи", "парфюм", "туалетная вода", "одеколон", "parfum", "eau de", "fragrance"
+        "медицинский", "шприц", "игла", "ветеринар", "корм для", "пиротехника", "фейерверк"
     ]
 
     # Category mappings based on keywords
@@ -48,12 +47,28 @@ class KaspiCategoryMapper:
         
         # Socks
         'носки': ('Master - Men socks', 'socks'),
+        'socks': ('Master - Men socks', 'socks'),
+        'набор носков': ('Master - Men socks', 'socks'),
         
         # Keychains
         'брелок': ('Master - Key wallets', 'keychains'),
         
         # Ab rollers
         'ролик для пресса': ('Master - Ab rollers', 'ab_rollers'),
+
+        # Perfumes
+        'духи': ('Master - Perfumes', 'perfumes'),
+        'парфюм': ('Master - Perfumes', 'perfumes'),
+        'туалетная вода': ('Master - Perfumes', 'perfumes'),
+        'одеколон': ('Master - Perfumes', 'perfumes'),
+        'parfum': ('Master - Perfumes', 'perfumes'),
+        'fragrance': ('Master - Perfumes', 'perfumes'),
+        'eau': ('Master - Perfumes', 'perfumes'),
+        'edt': ('Master - Perfumes', 'perfumes'),
+        'edp': ('Master - Perfumes', 'perfumes'),
+        'аромат': ('Master - Perfumes', 'perfumes'),
+        'пробник': ('Master - Perfumes', 'perfumes'),
+        'распив': ('Master - Perfumes', 'perfumes'),
     }
     
     @classmethod
@@ -70,8 +85,10 @@ class KaspiCategoryMapper:
                 return None, "restricted"
 
         # 1. Manual keyword mapping (fast pass)
+        print(f"DEBUG: Checking '{text}' against map...", file=sys.stderr)
         for keyword, (cat_name, cat_type) in cls.CATEGORY_MAP.items():
             if keyword in text:
+                print(f"DEBUG: Found match '{keyword}' -> {cat_name}", file=sys.stderr)
                 return cat_name, cat_type
         
         # 2. Universal Search in kaspi_categories.json
@@ -342,6 +359,8 @@ class KaspiCategoryMapper:
             return cls.generate_attributes_for_ab_rollers(product_name, product_description)
         elif category_type == 'games':
             return cls.generate_attributes_for_games(product_name, product_description)
+        elif category_type == 'perfumes':
+            return cls.generate_attributes_for_perfumes(product_name, product_description)
         
         # Universal AI filling for other categories
         if category_code:
@@ -373,6 +392,50 @@ class KaspiCategoryMapper:
 
         return {}
     
+    @staticmethod
+    def generate_attributes_for_perfumes(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """
+        Generate Kaspi attributes for perfumes.
+        """
+        attributes = {
+            "Perfumes*Tip": "парфюмерная вода",
+            "Perfumes*Perfume scent names": "Chanel", # Placeholder, ideally detect
+            "Perfumes*Family": ["цветочные"],
+            "Perfumes*Gender": "женский", # Default
+            "Perfumes*Notes": "жасмин", 
+            "Perfumes*Middle notes": "роза",
+            "Perfumes*Base notes": "мускус",
+            "Perfumes*Size": "50 мл",
+            "Perfumes*Size1": 50,
+            "Perfumes*Country": "Франция",
+            "Perfumes*Kind": "люкс"
+        }
+        
+        text = (product_name + " " + product_description).lower()
+        
+        # Detect Gender
+        if any(w in text for w in ['мужской', 'для мужчин', 'homme', 'men']):
+            attributes["Perfumes*Gender"] = "мужской"
+        elif any(w in text for w in ['унисекс', 'unisex']):
+            attributes["Perfumes*Gender"] = "унисекс"
+            
+        # Detect Tip (Type)
+        if 'туалетная вода' in text or 'toilette' in text:
+             attributes["Perfumes*Tip"] = "туалетная вода"
+        elif 'духи' in text or 'parfum' in text:
+             attributes["Perfumes*Tip"] = "духи"
+        elif 'одеколон' in text or 'cologne' in text:
+             attributes["Perfumes*Tip"] = "одеколон"
+
+        # Detect Volume
+        vol_match = re.search(r'(\d+)\s*(мл|ml)', text)
+        if vol_match:
+            vol = int(vol_match.group(1))
+            attributes["Perfumes*Size"] = f"{vol} мл"
+            attributes["Perfumes*Size1"] = vol
+            
+        return attributes
+
     @staticmethod
     def validate_attributes(attributes: Dict[str, str], category_type: str) -> Tuple[bool, List[str]]:
         """

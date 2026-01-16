@@ -1,33 +1,54 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        const logPath = path.resolve(process.cwd(), '../moysklad-automation/conveyor.log');
-        let logs = 'No logs yet.';
-
-        if (fs.existsSync(logPath)) {
-            const content = fs.readFileSync(logPath, 'utf-8');
-            // Return last 50 lines
-            logs = content.split('\n').slice(-50).join('\n');
+        if (!supabase) {
+            return NextResponse.json({ running: false, logs: 'Supabase not configured.' });
         }
 
-        // Check if python process is running
-        // This is a naive check. Ideally we track the PID we started.
-        // Or we check `ps aux | grep process_conveyor.py`
-        return new Promise((resolve) => {
-            exec('pgrep -f "process_conveyor.py"', (err, stdout) => {
-                const isRunning = !!stdout && stdout.trim().length > 0;
-                resolve(NextResponse.json({
-                    running: isRunning,
-                    logs: logs
-                }));
-            });
+        // Get the most recent job
+        const { data, error } = await supabase
+            .from('parser_queue')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (error) {
+            console.error('Supabase error:', error);
+            return NextResponse.json({ running: false, logs: 'Error fetching status.' });
+        }
+
+        if (!data || data.length === 0) {
+            return NextResponse.json({ running: false, logs: 'No active jobs found.' });
+        }
+
+        const job = data[0];
+        // Consider it "running" if it's pending or processing
+        const isRunning = job.status === 'pending' || job.status === 'processing';
+
+        // Format a log message to display in the UI
+        let logMessage = `[${new Date(job.created_at).toLocaleTimeString()}] Job #${job.id}\n`;
+        logMessage += `Target: ${job.mode === 'top' ? 'TOP 100' : job.query}\n`;
+        logMessage += `Status: ${job.status.toUpperCase()}\n`;
+
+        if (job.log) {
+            logMessage += `Details: ${job.log}`;
+        } else if (job.status === 'pending') {
+            logMessage += `Waiting for worker...`;
+        } else if (job.status === 'processing') {
+            logMessage += `Worker is processing...`;
+        }
+
+        return NextResponse.json({
+            running: isRunning,
+            logs: logMessage
         });
 
     } catch (error) {
+        console.error('Status fetch error:', error);
         return NextResponse.json({ error: 'Failed to read status' }, { status: 500 });
     }
 }

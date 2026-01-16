@@ -353,7 +353,7 @@ export default function WbTopPage() {
         // Strict separation: Restricted items go ONLY to 'closed' or 'all' (visually marked)
         if (filterMode === 'new') return isNew && !p.is_closed;
         if (filterMode === 'available') return !isNew && !p.is_closed;
-        if (filterMode === 'closed') return p.is_closed;
+        if (filterMode === 'closed') return (p.specs && p.specs.is_closed) === true;
         if (filterMode === 'all') return true;
         return true;
     });

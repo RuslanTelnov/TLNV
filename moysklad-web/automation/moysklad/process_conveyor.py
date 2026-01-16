@@ -69,8 +69,8 @@ def update_status(wb_id, status_dict):
     except Exception as e:
         logger.error(f"Failed to update DB status for {wb_id}: {e}")
 
-def run_conveyor():
-    logger.info("🚀 Starting Integrated Conveyor...")
+def run_conveyor(single_pass=False, skip_parser=False):
+    logger.info(f"🚀 Starting Integrated Conveyor (Single Pass: {single_pass}, Skip Parser: {skip_parser})...")
     
     # 1. Setup MS Context
     folder_meta = ms_creator.get_or_create_group("Parser WB")
@@ -91,6 +91,9 @@ def run_conveyor():
         from parse_wb_top import parse_and_save
     except ImportError:
         logger.error("Could not import parse_and_save from parse_wb_top")
+        parse_and_save = None
+
+    if skip_parser:
         parse_and_save = None
 
     current_page = 1
@@ -124,8 +127,13 @@ def run_conveyor():
                     kaspi_created = product.get('kaspi_created', False)
                     
                     # If fully done or closed, skip
-                    if (ms_created and stock_added and kaspi_created) or product.get('is_closed', False):
-                        if conveyor_status != 'done' and not product.get('is_closed', False):
+                    # is_closed might be in 'specs' jsonB column now if checking new parser logic
+                    is_closed_val = product.get('is_closed', False)
+                    if not is_closed_val and 'specs' in product and isinstance(product['specs'], dict):
+                        is_closed_val = product['specs'].get('is_closed', False)
+
+                    if (ms_created and stock_added and kaspi_created) or is_closed_val:
+                        if conveyor_status != 'done' and not is_closed_val:
                              update_status(wb_id, {"conveyor_status": "done"})
                         continue
                     
@@ -220,6 +228,10 @@ def run_conveyor():
                 # logger.info("No active work in latest batch. Sleeping...")
                 pass
             
+            if single_pass:
+                logger.info("Single pass complete.")
+                break
+
             time.sleep(5)
             
         except Exception as e:
@@ -228,4 +240,10 @@ def run_conveyor():
             time.sleep(10)
 
 if __name__ == "__main__":
-    run_conveyor()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--once", action="store_true", help="Run only one pass")
+    parser.add_argument("--skip-parser", action="store_true", help="Skip parsing step")
+    args = parser.parse_args()
+    
+    run_conveyor(single_pass=args.once, skip_parser=args.skip_parser)

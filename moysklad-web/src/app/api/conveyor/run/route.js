@@ -1,45 +1,66 @@
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
-let conveyorProcess = null;
+export const dynamic = 'force-dynamic';
 
 export async function POST() {
-    if (conveyorProcess) {
-        return NextResponse.json({ message: 'Conveyor is already running', status: 'running' });
-    }
-
     try {
-        const scriptPath = path.join(process.cwd(), 'automation', 'moysklad', 'process_conveyor.py');
-        const pythonCommand = 'python3';
+        if (!supabase) {
+            return NextResponse.json({ error: 'Supabase not configured.' }, { status: 500 });
+        }
 
-        console.log(`Starting conveyor: ${pythonCommand} ${scriptPath}`);
+        // Insert a new job for "Top Hits"
+        // This effectively "Starts the Parser"
+        const job = {
+            mode: 'top',
+            query: 'Хиты',
+            status: 'pending',
+            log: 'Queued via Dashboard'
+        };
 
-        conveyorProcess = spawn(pythonCommand, [scriptPath], {
-            cwd: path.dirname(scriptPath),
-            detached: true,
-            stdio: 'ignore' // or 'pipe' if we want to capture logs here, but script writes to file
+        const { data, error } = await supabase
+            .from('parser_queue')
+            .insert(job)
+            .select();
+
+        if (error) {
+            console.error('Supabase error:', error);
+            return NextResponse.json({ error: 'Failed to queue job: ' + error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({
+            message: 'Parser started! (Job Queued)',
+            status: 'running',
+            job: data[0]
         });
 
-        conveyorProcess.unref();
-
-        // Reset variable on exit (though detached process might outlive this variable if node restarts)
-        conveyorProcess.on('exit', () => {
-            conveyorProcess = null;
-        });
-
-        return NextResponse.json({ message: 'Conveyor started', status: 'running' });
     } catch (error) {
-        console.error('Failed to start conveyor:', error);
-        return NextResponse.json({ error: 'Failed to start conveyor' }, { status: 500 });
+        console.error('Run error:', error);
+        return NextResponse.json({ error: 'Failed to start parser' }, { status: 500 });
     }
 }
 
 export async function DELETE() {
-    if (conveyorProcess) {
-        conveyorProcess.kill();
-        conveyorProcess = null;
-        return NextResponse.json({ message: 'Conveyor stopped' });
+    // Logic to "Stop" - we can't easily kill the remote worker process for the CURRENT job,
+    // but we can clear any PENDING jobs so they don't start.
+    try {
+        if (!supabase) {
+            return NextResponse.json({ error: 'Supabase not configured.' }, { status: 500 });
+        }
+
+        // Update all 'pending' jobs to 'stopped'
+        const { error } = await supabase
+            .from('parser_queue')
+            .update({ status: 'stopped', log: 'Cancelled by user' })
+            .eq('status', 'pending');
+
+        if (error) {
+            return NextResponse.json({ error: 'Failed to stop queue' }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: 'Queue cleared. Active job will finish soon.' });
+
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to stop' }, { status: 500 });
     }
-    return NextResponse.json({ message: 'Conveyor was not running' });
 }

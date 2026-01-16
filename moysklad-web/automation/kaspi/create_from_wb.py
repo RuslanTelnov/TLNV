@@ -73,13 +73,22 @@ def map_wb_to_kaspi(wb_product):
     if len(description) < 100:
         description = f"{description}. Качественный товар от проверенного бренда. Идеально подходит для ежедневного использования. Прочный материал обеспечивает долгий срок службы и комфорт при эксплуатации."
     
+    brand_raw = wb_product.get("brand")
+    brand = "Generic"
+    
+    # Sanitize brand
+    if brand_raw and isinstance(brand_raw, str):
+        clean = brand_raw.strip()
+        if clean and clean.lower() not in ["хит продаж", "promo", "new", "sale"]:
+            brand = clean
+            
     scraped_data = {
         "title": product_name,
         "description": description,
         "images": [wb_product.get("image_url")] if wb_product.get("image_url") else [],
         "attributes": kaspi_attributes,
         "category_name": category_name,
-        "brand": wb_product.get("brand", "Generic")
+        "brand": brand
     }
     
     return scraped_data
@@ -96,19 +105,12 @@ def create_from_wb(article_id):
         
         wb_product = None
         
-        # 1. Try 'products' (MoySklad synced)
-        resp1 = supabase.table("products").select("*").eq("article", str(article_id)).execute()
-        if resp1.data:
-            wb_product = resp1.data[0]
-            print(f"📦 Found in 'products': {wb_product.get('name')}")
-        
-        # 2. Try 'wb_top_products' (Raw Parse) if not found
-        if not wb_product:
-            # Note: wb_search_results uses 'id' as integer (NM ID)
-            resp2 = supabase.table("wb_search_results").select("*").eq("id", int(article_id)).execute()
-            if resp2.data:
-                wb_product = resp2.data[0]
-                print(f"📦 Found in 'wb_search_results': {wb_product.get('name')}")
+        # 1. Try 'wb_search_results' (Primary Source)
+        # Note: wb_search_results uses 'id' as integer (NM ID)
+        resp2 = supabase.table("wb_search_results").select("*").eq("id", int(article_id)).execute()
+        if resp2.data:
+            wb_product = resp2.data[0]
+            print(f"📦 Found in 'wb_search_results': {wb_product.get('name')}")
                 
         if not wb_product:
             print(f"❌ Product with article {article_id} not found in 'products' or 'wb_search_results'.")

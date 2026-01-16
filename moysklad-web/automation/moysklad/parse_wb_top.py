@@ -219,11 +219,20 @@ CLOSED_CATEGORIES_KEYWORDS = [
 ]
 
 def is_product_closed(name, brand, specs):
-    text = (name + " " + brand + " " + str(specs)).lower()
+    is_closed = False
+    name_lower = f"{name} {brand}".lower()
+    
+    # Check keywords
     for kw in CLOSED_CATEGORIES_KEYWORDS:
-        if kw in text:
-            return True
-    return False
+        if kw in name_lower:
+            is_closed = True
+            break
+            
+    # Also check existing specs if passed
+    if isinstance(specs, dict):
+        specs['is_closed'] = is_closed
+        
+    return is_closed
 
 def parse_and_save(query, limit=50, page=1):
     products = search_wb_selenium(query, limit, page)
@@ -362,8 +371,8 @@ def parse_and_save(query, limit=50, page=1):
             "product_url": f"https://www.wildberries.ru/catalog/{nm_id}/detail.aspx",
             "specs": specs,
             "delivery_days": delivery_days, # Numeric
-            "delivery_date": delivery_text if delivery_text else "Уточняется", # Text representation
-            "is_closed": is_closed,
+            #"delivery_date": delivery_text if delivery_text else "Уточняется", # Removed to fix DB error
+            #"is_closed": is_closed, # Removed to fix DB error
             "query": query,
             "rating": p.get('rating', 0),
             "feedbacks": p.get('feedbacks', 0),
@@ -429,7 +438,6 @@ def reparse_existing():
                 "name": name,
                 "brand": brand,
                 "specs": specs,
-                "is_closed": is_closed,
                 "in_stock": stock > 0,
                 "updated_at": "now()" 
             }
