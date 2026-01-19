@@ -27,22 +27,22 @@ def calculate_ean13_checksum(digits):
     checksum = (10 - (total % 10)) % 10
     return str(checksum)
 
-def generate_internal_ean13(seed):
-    """Generates a pseudo EAN-13 starting with 200 (internal use) based on a seed (e.g. SKU)."""
+def generate_internal_ean13(seed, prefix="200"):
+    """Generates a pseudo EAN-13 starting with prefix (default 200) based on a seed."""
     # Extract digits from seed
     seed_digits = ''.join(filter(str.isdigit, str(seed)))
     if not seed_digits:
         seed_digits = "0"
         
     # Take up to 9 digits from the end, pad with zeros
-    # Format: 200 (3) + digits (9) + checksum (1) = 13
+    # Format: Prefix (3) + digits (9) + checksum (1) = 13
     payload_digits = seed_digits[-9:].zfill(9)
     
-    base = "200" + payload_digits
+    base = prefix + payload_digits
     checksum = calculate_ean13_checksum(base)
     return base + checksum
 
-def prepare_card_payload(scraped_data, sku):
+def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
     """
     Prepares the payload for creating a product card using Kaspi Content API.
     """
@@ -51,7 +51,8 @@ def prepare_card_payload(scraped_data, sku):
     scraped_attributes = scraped_data.get("attributes", {})
     
     # Generate an internal EAN-13 barcode based on SKU
-    barcode = generate_internal_ean13(sku)
+    # Using custom prefix allows forcing new cards (e.g. 201 instead of 200)
+    barcode = generate_internal_ean13(sku, prefix=custom_barcode_prefix)
     
     for code, value in scraped_attributes.items():
         attributes_list.append({
@@ -104,19 +105,25 @@ def create_card(payload):
         
         if response.status_code in [200, 201, 202, 204]:
             print("✅ API Call Success!")
+            upload_id = None
             if response.text:
                 print(f"Response: {response.text}")
+                try:
+                    resp_json = response.json()
+                    upload_id = resp_json.get("code")
+                except:
+                    pass
             else:
                 print("Response: <Empty> (Success)")
-            return True
+            return True, upload_id
         else:
             print(f"❌ API Call Failed: {response.status_code}")
             print(f"Response: {response.text}")
-            return False
+            return False, None
             
     except Exception as e:
         print(f"Error creating card: {e}")
-        return False
+        return False, None
 
 if __name__ == "__main__":
     # Test with dummy data

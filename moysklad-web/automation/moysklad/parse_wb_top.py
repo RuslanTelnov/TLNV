@@ -376,6 +376,7 @@ def parse_and_save(query, limit=50, page=1):
             "query": query,
             "rating": p.get('rating', 0),
             "feedbacks": p.get('feedbacks', 0),
+            "kaspi_created": True,
             "updated_at": "now()"
         }
         
@@ -439,6 +440,7 @@ def reparse_existing():
                 "brand": brand,
                 "specs": specs,
                 "in_stock": stock > 0,
+                "kaspi_created": True,
                 "updated_at": "now()" 
             }
             if price_kzt > 0: update_data["price_kzt"] = price_kzt

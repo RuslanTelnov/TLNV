@@ -17,8 +17,13 @@ export default function MsProducts() {
     const [error, setError] = useState(null)
     const itemsPerPage = 25
 
+    const [warehouses, setWarehouses] = useState([])
+    const [selectedWarehouse, setSelectedWarehouse] = useState('all')
+    const [warehouseStocks, setWarehouseStocks] = useState({}) // product_id -> stock
+
     useEffect(() => {
         fetchProducts()
+        fetchWarehouses()
 
         const channel = supabase
             .channel('products_changes')
@@ -126,6 +131,64 @@ export default function MsProducts() {
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber)
         window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    async function fetchWarehouses() {
+        try {
+            const { data, error } = await supabase
+                .from('warehouses')
+                .select('*')
+                .order('name')
+
+            if (error) {
+                // Ignore error if table doesn't exist yet (graceful degrade)
+                console.warn('Could not fetch warehouses (table might be missing)')
+                return
+            }
+            setWarehouses(data || [])
+        } catch (e) {
+            console.error('Error loading warehouses:', e)
+        }
+    }
+
+    async function fetchWarehouseStocks(warehouseId) {
+        if (warehouseId === 'all') {
+            setWarehouseStocks({})
+            return
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('product_stocks')
+                .select('product_id, stock')
+                .eq('warehouse_id', warehouseId)
+
+            if (error) throw error
+
+            const stockMap = {}
+            data.forEach(item => {
+                stockMap[item.product_id] = item.stock
+            })
+            setWarehouseStocks(stockMap)
+        } catch (e) {
+            console.error('Error fetching warehouse stocks:', e)
+        }
+    }
+
+    useEffect(() => {
+        if (selectedWarehouse !== 'all') {
+            fetchWarehouseStocks(selectedWarehouse)
+        } else {
+            setWarehouseStocks({})
+        }
+    }, [selectedWarehouse])
+
+    const getDisplayStock = (product) => {
+        if (selectedWarehouse === 'all') {
+            return product.stock || 0
+        }
+        // Return specific warehouse stock, or 0 if not found
+        return warehouseStocks[product.id] || 0
     }
 
     if (loading) return <div className="container"><h1 className="title-gradient">Загрузка...</h1></div>
@@ -298,14 +361,6 @@ export default function MsProducts() {
                         </Link>
                     </nav>
                 </div>
-                <div style={{
-                    color: 'var(--velveto-text-secondary)',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    letterSpacing: '0.05em'
-                }}>
-                    ADMIN PANEL
-                </div>
             </header>
 
             <main className="container" style={{ padding: '4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
@@ -325,53 +380,96 @@ export default function MsProducts() {
                     </p>
                 </div>
 
-                {/* Search Bar */}
-                <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'center', position: 'relative', maxWidth: '600px', margin: '0 auto 3rem' }}>
-                    <input
-                        type="text"
-                        placeholder="Поиск по названию или артикулу..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{
-                            width: '100%',
-                            maxWidth: '600px',
-                            padding: '1rem 1.5rem',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            background: 'rgba(255, 255, 255, 0.03)',
-                            color: 'var(--velveto-text-primary)',
-                            fontSize: '1rem',
-                            outline: 'none',
-                            transition: 'all 0.3s',
-                            fontFamily: 'var(--velveto-font-ui)'
-                        }}
-                        onFocus={(e) => {
-                            e.target.style.borderColor = 'var(--velveto-accent-primary)';
-                            e.target.style.boxShadow = '0 0 15px rgba(255, 179, 90, 0.1)';
-                        }}
-                        onBlur={(e) => {
-                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                            e.target.style.boxShadow = 'none';
-                        }}
-                    />
-                    {searchQuery && (
-                        <button
-                            onClick={() => setSearchQuery('')}
+                {/* Controls Container */}
+                <div style={{
+                    marginBottom: '3rem',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    flexWrap: 'wrap',
+                    maxWidth: '900px',
+                    margin: '0 auto 3rem'
+                }}>
+                    {/* Search Bar */}
+                    <div style={{ position: 'relative', flex: '1', minWidth: '300px' }}>
+                        <input
+                            type="text"
+                            placeholder="Поиск по названию или артикулу..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             style={{
-                                position: 'absolute',
-                                right: '1rem',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                background: 'none',
-                                border: 'none',
-                                color: 'var(--velveto-text-muted)',
+                                width: '100%',
+                                padding: '1rem 1.5rem',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                background: 'rgba(255, 255, 255, 0.03)',
+                                color: 'var(--velveto-text-primary)',
+                                fontSize: '1rem',
+                                outline: 'none',
+                                transition: 'all 0.3s',
+                                fontFamily: 'var(--velveto-font-ui)'
+                            }}
+                            onFocus={(e) => {
+                                e.target.style.borderColor = 'var(--velveto-accent-primary)';
+                                e.target.style.boxShadow = '0 0 15px rgba(255, 179, 90, 0.1)';
+                            }}
+                            onBlur={(e) => {
+                                e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                                e.target.style.boxShadow = 'none';
+                            }}
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                style={{
+                                    position: 'absolute',
+                                    right: '1rem',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'var(--velveto-text-muted)',
+                                    cursor: 'pointer',
+                                    fontSize: '1.2rem'
+                                }}
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Warehouse Selector */}
+                    <div style={{ minWidth: '250px' }}>
+                        <select
+                            value={selectedWarehouse}
+                            onChange={(e) => setSelectedWarehouse(e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '1rem 1.5rem',
+                                borderRadius: '12px',
+                                border: '1px solid var(--velveto-accent-primary)',
+                                background: 'rgba(0, 0, 0, 0.3)',
+                                color: 'var(--velveto-text-primary)',
+                                fontSize: '1rem',
                                 cursor: 'pointer',
-                                fontSize: '1.2rem'
+                                outline: 'none',
+                                height: '54px', // Match input height
+                                appearance: 'none', // Remove default arrow
+                                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffb35a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'right 1rem center',
+                                backgroundSize: '1em'
                             }}
                         >
-                            ✕
-                        </button>
-                    )}
+                            <option value="all" style={{ background: '#1a1a1a' }}>📦 Все склады</option>
+                            {warehouses.map(w => (
+                                <option key={w.id} value={w.moysklad_id} style={{ background: '#1a1a1a' }}>
+                                    🏭 {w.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {error && (
@@ -444,9 +542,15 @@ export default function MsProducts() {
                                     <td>
                                         <span style={{
                                             fontWeight: 'bold',
-                                            color: product.stock > 0 ? 'var(--velveto-status-success)' : 'var(--velveto-status-error)'
+                                            color: getDisplayStock(product) > 0 ? 'var(--velveto-status-success)' : 'var(--velveto-status-error)',
+                                            transition: 'color 0.3s'
                                         }}>
-                                            {product.stock || 0}
+                                            {getDisplayStock(product)}
+                                            {selectedWarehouse !== 'all' && (
+                                                <span style={{ fontSize: '0.7em', paddingLeft: '4px', opacity: 0.7 }}>
+                                                    (на складе)
+                                                </span>
+                                            )}
                                         </span>
                                     </td>
                                     <td>
@@ -572,6 +676,6 @@ export default function MsProducts() {
             }}>
                 Debug: Products={products.length} | Filtered={filteredProducts.length} | Page={currentPage}/{totalPages} | Search="{searchQuery}" | Loading={String(loading)} | Error={String(error)}
             </div>
-        </div>
+        </div >
     )
 }

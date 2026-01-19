@@ -341,6 +341,53 @@ class KaspiCategoryMapper:
             "Ab rollers*Vendor code": "AB-ROLLER-01"
         }
         return attributes
+
+    @staticmethod
+    def generate_attributes_for_toys(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """
+        Generate Kaspi attributes for Stuffed Toys.
+        """
+        text = (product_name + " " + product_description).lower()
+        
+        attributes = {
+            "Stuffed toys*Type": "Мягкая игрушка",
+            "Stuffed toys*Height": 35, # Default int
+            "Stuffed toys*Filler": "Синтепон",
+            "Stuffed toys*Character": "Стич", 
+            "Stuffed toys*View": "Животные",
+            "Toys*Age": "От 3 лет",
+            "Toys*Gender": "Унисекс",
+            "Toys*Color": "Синий",
+            "Toys*Material": "Текстиль"
+        }
+        
+        # Detect height
+        height_match = re.search(r'(\d+)\s*(см|cm)', text)
+        if height_match:
+            try:
+                attributes["Stuffed toys*Height"] = int(height_match.group(1))
+            except:
+                pass
+            
+        # Detect character
+        if "стич" in text:
+            attributes["Stuffed toys*Character"] = "Стич"
+        elif "медведь" in text or "мишка" in text:
+            attributes["Stuffed toys*Character"] = "Медведь"
+        elif "пикачу" in text:
+             attributes["Stuffed toys*Character"] = "Покемоны"
+            
+        # Detect color
+        colors = {
+            'синий': 'Синий', 'голубой': 'Голубой',
+            'розовый': 'Розовый', 'белый': 'Белый', 'серый': 'Серый'
+        }
+        for k, v in colors.items():
+            if k in text:
+                attributes["Toys*Color"] = v
+                break
+                
+        return attributes
     @classmethod
     def generate_attributes_for_games(cls, name: str, description: str = "") -> Dict[str, str]:
         """Generates required attributes for Board Games."""
@@ -369,6 +416,8 @@ class KaspiCategoryMapper:
         # Hardcoded logic for common categories
         if category_type == 'mugs':
             return cls.generate_attributes_for_mugs(product_name, product_description)
+        elif category_type == 'toys':
+             return cls.generate_attributes_for_toys(product_name, product_description)
         elif category_type == 'socks':
             return cls.generate_attributes_for_socks(product_name, product_description)
         elif category_type == 'powerbanks':

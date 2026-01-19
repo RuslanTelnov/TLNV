@@ -157,8 +157,9 @@ def create_from_ms(article):
             return False
         
         # Prepare payload
-        sku = str(article)
-        payload = prepare_card_payload(kaspi_data, sku)
+        # Prepare payload
+        sku = f"{article}-K"
+        payload = prepare_card_payload(kaspi_data, sku, custom_barcode_prefix="201")
         if kaspi_data.get("images"):
              payload["images"] = [{"url": img} for img in kaspi_data["images"]]
 
@@ -166,14 +167,32 @@ def create_from_ms(article):
         print(f"📝 Prepared payload for SKU: {sku}")
         
         # Create card
-        success = create_card(payload)
+        success, upload_id = create_card(payload)
         
         if success:
             print(f"✅ Successfully created Kaspi card for {sku}")
             # Update status in Supabase so it shows in dashboard
             try:
-                supabase.table("wb_search_results").update({"kaspi_created": True}).eq("id", int(article)).execute()
-                print(f"🔄 Updated kaspi_created status in wb_search_results")
+                # 1. Fetch current specs
+                current_data = supabase.table("wb_search_results").select("specs").eq("id", int(article)).execute()
+                specs = {}
+                if current_data.data and current_data.data[0].get("specs"):
+                    specs = current_data.data[0]["specs"]
+                    
+                # 2. Update specs with Kaspi info
+                specs["kaspi_created"] = True
+                specs["kaspi_upload_status"] = "uploaded"
+                specs["kaspi_upload_id"] = upload_id or "unknown"
+                specs["kaspi_sku"] = sku
+                
+                # 3. Save back
+                update_data = {
+                    "kaspi_created": True,
+                    "specs": specs
+                }
+                
+                supabase.table("wb_search_results").update(update_data).eq("id", int(article)).execute()
+                print(f"🔄 Updated kaspi_created and specs in wb_search_results: ID={upload_id}")
             except Exception as e:
                 print(f"⚠️  Failed to update status in Supabase: {e}")
         else:

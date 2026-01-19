@@ -123,8 +123,8 @@ def create_from_wb(article_id):
             return False
         
         # Prepare payload
-        # Use WB article as SKU (digits only as requested)
-        sku = str(article_id)
+        # Use WB article as SKU with suffix to ensure new card creation
+        sku = f"{article_id}-K"
         
         # Ensure we have images (Kaspi requires at least one, and at least 500x500)
         images = []
@@ -164,7 +164,9 @@ def create_from_wb(article_id):
             except Exception as e:
                 print(f"⚠️ Failed to fetch MS image: {e}")
 
-        payload = prepare_card_payload(kaspi_data, sku)
+        # Use custom prefix "201" to generate a unique internal barcode
+        # and avoid binding to existing cards (Global Catalog)
+        payload = prepare_card_payload(kaspi_data, sku, custom_barcode_prefix="201")
         if images:
             payload["images"] = [{"url": img} for img in images]
         
@@ -172,10 +174,36 @@ def create_from_wb(article_id):
         # print(json.dumps(payload, indent=2, ensure_ascii=False))
         
         # Create card
-        success = create_card(payload)
+        success, upload_id = create_card(payload)
         
         if success:
             print(f"✅ Successfully created Kaspi card for {sku}")
+            # Update status in Supabase so it shows in dashboard
+            try:
+                # Since we cannot modify schema to add columns, we store metadata in 'specs' jsonb
+                
+                # 1. Fetch current specs
+                current_data = supabase.table("wb_search_results").select("specs").eq("id", int(article_id)).execute()
+                specs = {}
+                if current_data.data and current_data.data[0].get("specs"):
+                    specs = current_data.data[0]["specs"]
+                    
+                # 2. Update specs with Kaspi info
+                specs["kaspi_created"] = True
+                specs["kaspi_upload_status"] = "uploaded"
+                specs["kaspi_upload_id"] = upload_id or "unknown"
+                specs["kaspi_sku"] = sku
+                
+                # 3. Save back
+                update_data = {
+                    "kaspi_created": True, # Keep this boolean as it exists in table (checked earlier) or is useful
+                    "specs": specs
+                }
+                
+                supabase.table("wb_search_results").update(update_data).eq("id", int(article_id)).execute()
+                print(f"🔄 Updated DB status in wb_search_results (specs): ID={upload_id}")
+            except Exception as e:
+                print(f"⚠️  Failed to update status in Supabase: {e}")
         else:
             print(f"❌ Failed to create Kaspi card for {sku}")
             
