@@ -111,19 +111,27 @@ def detect_category_ai(product_name, product_description, categories_list):
 
     return None, None
 
-def fill_attributes_ai(name: str, description: str, attributes: List[Dict]) -> Dict[str, any]:
+def fill_attributes_ai(name: str, description: str, attributes: List[Dict], raw_attributes: Dict = None) -> Dict[str, any]:
     """
     Uses AI to fill attribute values based on product data.
     """
+    if raw_attributes is None:
+        raw_attributes = {}
+        
+    raw_attrs_text = json.dumps(raw_attributes, ensure_ascii=False, indent=2)
+    
     prompt = f"""
-I have a product:
+I have a product from Wildberries:
 Name: {name}
 Description: {description}
 
+Full specifications from Wildberries:
+{raw_attrs_text}
+
 I need to fill the following attributes for Kaspi.kz. 
 For each attribute, provide a value.
-- If it's 'enum', choose ONE value from the options. Respond ONLY with the value from 'options'.
-- If it's 'string' or 'number', provide a suitable value.
+- If it's 'enum', choose ONE value from the options. Respond ONLY with the value from 'options'. Match the case and spelling exactly.
+- If it's 'string' or 'number', provide a suitable value based on the specifications above.
 - If it's 'boolean', return true or false.
 - Respond ONLY with a JSON dictionary where keys are attribute codes and values are the chosen values.
 

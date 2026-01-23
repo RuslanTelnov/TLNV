@@ -113,6 +113,7 @@ def run_conveyor(single_pass=False, skip_parser=False):
             # Fetch last 50 items to check status
             response = supabase.table("wb_search_results") \
                 .select("*") \
+                .neq("conveyor_status", "done") \
                 .order("updated_at", desc=True) \
                 .limit(50) \
                 .execute()
@@ -150,11 +151,19 @@ def run_conveyor(single_pass=False, skip_parser=False):
                     ms_id_created = None
                     if not ms_created:
                         logger.info(f"Creating in MS...")
+                        # Extract all images
+                        image_urls = []
+                        if 'specs' in product and isinstance(product['specs'], dict):
+                            image_urls = product['specs'].get('image_urls', [])
+                        
+                        if not image_urls and product.get('image_url'):
+                            image_urls = [product.get('image_url')]
+
                         prod_data = {
                             "id": product['id'],
                             "name": product['name'],
                             "price": int(product.get('price_kzt', 0) or 0),
-                            "image_url": product.get('image_url')
+                            "image_urls": image_urls
                         }
                         
                         # Ensure create_product_in_ms returns the ID now
@@ -237,22 +246,33 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             supabase.table("parser_queue").update({"status": "error", "log": str(e)}).eq("id", job['id']).execute()
                             
                     else:
-                        # Default Background Loop (Hits)
-                        # Only run if no active job and we want background crawling
-                        logger.info("No active jobs. Running background 'Хиты' parser...")
-                        count = parse_and_save("Хиты", limit=100, page=current_page)
+                        # --- AUTOPILOT MODE (Expanded Keyword Rotation) ---
+                        try:
+                            from discovery_keywords import KEYWORDS
+                        except ImportError:
+                            KEYWORDS = ["Хиты", "Игрушки", "Новинки"]
                         
-                        if count == 0:
-                            logger.info("No items found on page, resetting to 1.")
+                        # Use a persistent index if possible, otherwise just cycle
+                        if not hasattr(run_conveyor, 'kw_index'):
+                            run_conveyor.kw_index = 0
+                        
+                        target_kw = KEYWORDS[run_conveyor.kw_index % len(KEYWORDS)]
+                        logger.info(f"Autopilot: Scanning category '{target_kw}' (Page {current_page})...")
+                        
+                        # Note: parse_and_save now uses sort=popular internally
+                        count = parse_and_save(target_kw, limit=100, page=current_page)
+                        
+                        # Rotate categories after some depth
+                        if count == 0 or current_page >= 3: # 3 pages per category is enough for variety
+                            logger.info(f"Finished category '{target_kw}'. Moving to next.")
                             current_page = 1
+                            run_conveyor.kw_index += 1
                         else:
                             current_page += 1
-                            if current_page > max_page:
-                                current_page = 1
                             
                 except Exception as e:
                     logger.error(f"Parser failed: {e}")
-                    time.sleep(5)
+                    time.sleep(20) # Back off on error
 
             if not active_work:
                 # logger.info("No active work in latest batch. Sleeping...")

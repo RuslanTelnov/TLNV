@@ -62,7 +62,8 @@ def search_wb_selenium(query, limit=100, page=1):
     
     try:
         encoded_query = urllib.parse.quote(query)
-        url = f"https://www.wildberries.ru/catalog/0/search.aspx?search={encoded_query}&page={page}"
+        # Add sort=popular to target best sellers
+        url = f"https://www.wildberries.ru/catalog/0/search.aspx?search={encoded_query}&page={page}&sort=popular"
         driver.get(url)
         
         # Try to set location to Astana (Nur-Sultan)

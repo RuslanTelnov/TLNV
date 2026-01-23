@@ -187,8 +187,38 @@ export default function ProductPage() {
                             </div>
                         </div>
                     </div>
+
+                    <div className="flex gap-4 mt-8" style={{ marginTop: '2rem' }}>
+                        <button
+                            onClick={async () => {
+                                if (!confirm('Добавить в XML фид для авто-создания?')) return;
+                                try {
+                                    const res = await fetch('/api/kaspi/mark-in-feed', {
+                                        method: 'POST',
+                                        body: JSON.stringify({ id: product.id, is_in_feed: true })
+                                    });
+                                    if (res.ok) alert('Добавлено в фид! Kaspi скоро увидит товар.');
+                                    else alert('Ошибка');
+                                } catch (e) { alert(e.message); }
+                            }}
+                            style={{
+                                background: 'var(--velveto-accent-primary)',
+                                color: 'white',
+                                padding: '1rem 2rem',
+                                borderRadius: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                fontSize: '1.1rem'
+                            }}
+                        >
+                            В XML Фид
+                        </button>
+                    </div>
+
                 </div>
             </main>
         </div>
     )
 }
+

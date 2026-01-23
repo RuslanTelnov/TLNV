@@ -2,12 +2,11 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour
 
 export async function GET() {
     try {
         // 1. Fetch base XML from user's external link (Proxy mode)
-        // If config is missing, default to the one we know or throw error
         const BASE_XML_URL = process.env.KASPI_BASE_XML_URL || 'https://mskaspi.fixhub.kz/xml/35fde8f355cd299f7a3e26cbe0e4f917.xml';
 
         const baseXmlResponse = await fetch(BASE_XML_URL, { cache: 'no-store' });
@@ -22,10 +21,15 @@ export async function GET() {
             attributeNamePrefix: "@_",
             parseAttributeValue: true
         });
-        const jsonObj = parser.parse(baseXmlText);
+        const rawObj = parser.parse(baseXmlText);
 
-        // Ensure structure exists
-        if (!jsonObj.kaspi_catalog) jsonObj.kaspi_catalog = {};
+        // STRICT: Only extract the required root node.
+        const jsonObj = {
+            kaspi_catalog: rawObj.kaspi_catalog || {
+                offers: { offer: [] }
+            }
+        };
+
         if (!jsonObj.kaspi_catalog.offers) jsonObj.kaspi_catalog.offers = { offer: [] };
 
         // Normalize offers to array
@@ -43,13 +47,10 @@ export async function GET() {
         if (dbError) throw dbError;
 
         // 4. Merge new products into offers
-        // Keep track of existing SKUs to avoid duplicates
         const existingSkus = new Set(existingOffers.map(o => String(o['@_sku'])));
 
         for (const product of newProducts) {
-            const sku = `${product.id}-K`;
-
-            // Skip if already in the base XML (to avoid double entries if user manually added them there)
+            const sku = String(product.id);
             if (existingSkus.has(sku)) continue;
 
             const stock = product.specs?.stock || 0;
@@ -67,43 +68,23 @@ export async function GET() {
                         "@_stockCount": stock
                     }
                 },
-                "price": price
+                "price": price,
+                "description": specs.description || product.description
             };
 
-            // Add Description
-            const description = specs.description || product.description;
-            if (description) {
-                newOffer.description = description;
-            }
-
-            // Add Images (YML allows multiple picture tags)
-            // Use specs.image_urls if available (array), else simple image_url
+            // Images
             let images = specs.image_urls;
             if (!images || !Array.isArray(images) || images.length === 0) {
-                if (product.image_url) {
-                    images = [product.image_url];
-                } else {
-                    images = [];
-                }
+                images = product.image_url ? [product.image_url] : [];
             }
-            if (images.length > 0) {
-                newOffer.picture = images;
-            }
+            if (images.length > 0) newOffer.picture = images;
 
-            // Add Params (Attributes)
+            // Params
             const params = [];
-            // NEW: Prefer strictly mapped Kaspi attributes if available
-            if (specs.kaspi_attributes && typeof specs.kaspi_attributes === 'object') {
-                // Handle dictionary format: { "Code": "Value" } or { "Code": ["Val1", "Val2"] }
-                // (which is what Python saves)
+            if (specs.kaspi_attributes) {
                 const attrs = Array.isArray(specs.kaspi_attributes) ? specs.kaspi_attributes : Object.entries(specs.kaspi_attributes).map(([code, value]) => ({ code, value }));
-
                 for (const attr of attrs) {
-                    // If it was already array of objects {code, value} (legacy/future proof), use it.
-                    // If it came from Object.entries, attr is {code, value}
-
                     const values = Array.isArray(attr.value) ? attr.value : [attr.value];
-
                     for (const v of values) {
                         params.push({
                             "@_code": attr.code,
@@ -112,46 +93,13 @@ export async function GET() {
                         });
                     }
                 }
-            } else {
-                // FALLBACK: Old logic using raw specs keys
-                const ignoredKeys = new Set([
-                    'stock', 'is_closed', 'image_urls', 'is_in_feed', 'description',
-                    'enriched', 'kaspi_created', 'kaspi_upload_status', 'kaspi_upload_id',
-                    'kaspi_sku', 'wb_full_data', 'conveyor_log', 'ms_created', 'kaspi_attributes'
-                ]);
-
-                for (const [key, value] of Object.entries(specs)) {
-                    if (ignoredKeys.has(key)) continue;
-                    if (typeof value === 'object') continue; // Skip stored objects/arrays
-
-                    // Sanitize key/value if needed, but XMLBuilder handles escaping usually
-                    params.push({
-                        "@_name": key,
-                        "#text": String(value)
-                    });
-                }
             }
-
-            if (params.length > 0) {
-                newOffer.param = params;
-            }
+            if (params.length > 0) newOffer.param = params;
 
             existingOffers.push(newOffer);
         }
 
-        // Update the JSON object with the merged list
-        jsonObj.kaspi_catalog.offers.offer = existingOffers;
-
-        // Update date to current
-        jsonObj.kaspi_catalog['@_date'] = new Date().toLocaleString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).replace(',', '');
-
-        // 5. Re-bill XML
+        // 5. Build Final XML using a SAFE TEMPLATE
         const builder = new XMLBuilder({
             ignoreAttributes: false,
             attributeNamePrefix: "@_",
@@ -161,12 +109,29 @@ export async function GET() {
             processEntities: true
         });
 
-        const finalXml = `<?xml version="1.0" encoding="utf-8"?>\n${builder.build(jsonObj)}`;
+        // Update date to current (UTC for Vercel compatibility, but labeled RU)
+        const dateStr = new Date().toLocaleString('ru-RU', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).replace(',', '');
 
-        return new Response(finalXml, {
+        // Build ONLY the offers part to prevent double headers
+        const offersXml = builder.build({ offers: { offer: existingOffers } });
+
+        const liveTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // HARDCODED TEMPLATE: 100% guarantee of exactly ONE header and NO declaration on line 2.
+        const finalXml = `<?xml version="1.0" encoding="utf-8"?>
+<kaspi_catalog xmlns="kaspiShopping" date="${dateStr}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://kaspi.kz/kaspishopping.xsd">
+  <company>VELVETO (Live ${liveTime})</company>
+  <merchantid>30322748</merchantid>
+  ${offersXml}
+</kaspi_catalog>`.trim();
+
+        return new NextResponse(finalXml, {
             headers: {
                 'Content-Type': 'application/xml; charset=utf-8',
-                'Cache-Control': 'no-store, max-age=0'
+                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=59'
             }
         });
 

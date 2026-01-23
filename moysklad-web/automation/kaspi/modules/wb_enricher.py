@@ -35,26 +35,35 @@ class WBEnricher:
                 browser = p.chromium.launch(
                     headless=True,
                     args=[
-                        "--disable-blink-features=AutomationControlled",
-                        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                        "--disable-blink-features=AutomationControlled"
                     ]
                 )
                 context = browser.new_context(
-                    viewport={'width': 1920, 'height': 1080},
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 )
                 page = context.new_page()
                 
                 print(f"🌐 Navigating to {url}...", file=sys.stderr)
-                page.goto(url, wait_until="domcontentloaded", timeout=30000)
-                time.sleep(2)  # Wait for dynamic content
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                
+                # Scroll down as in debug script
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(5)  # Wait longer for dynamic content
                 
                 # Extract data from page
                 data = {}
                 
                 # Get product name
                 try:
-                    data['imt_name'] = page.locator('h1.product-page__title').inner_text().strip()
+                    # Strategy 1: exact match
+                    name_elem = page.locator('h1.product-page__title')
+                    if name_elem.count() > 0:
+                        data['imt_name'] = name_elem.inner_text().strip()
+                    else:
+                        # Strategy 2: new selector
+                        name_elem = page.locator('.productImtName--gQ7gz')
+                        if name_elem.count() > 0:
+                             data['imt_name'] = name_elem.inner_text().strip()
                 except:
                     print("⚠️  Could not extract product name", file=sys.stderr)
                     data['imt_name'] = ""
@@ -67,15 +76,36 @@ class WBEnricher:
                 except:
                     data['description'] = ""
                 
+                # DEBUG: Save HTML to check what we see
+                with open("wb_enricher_debug.html", "w", encoding="utf-8") as f:
+                    f.write(page.content())
+                print("📋 Saved wb_enricher_debug.html for inspection", file=sys.stderr)
+
                 # Get attributes from specifications table
                 options = []
                 try:
-                    # Try to find specifications table
+                    # Strategy 1: old table
                     spec_rows = page.locator('.product-params__table tr').all()
-                    for row in spec_rows:
+                    print(f"DEBUG: Strategy 1 found {len(spec_rows)} rows", file=sys.stderr)
+                    
+                    if not spec_rows:
+                        # Strategy 2: specific new table class
+                        spec_rows = page.locator('.table--CGApj tr').all()
+                        print(f"DEBUG: Strategy 2 found {len(spec_rows)} rows", file=sys.stderr)
+
+                    if not spec_rows:
+                        # Strategy 3: generic table
+                        spec_rows = page.locator('table tr').all()
+                        print(f"DEBUG: Strategy 3 found {len(spec_rows)} rows", file=sys.stderr)
+                        
+                    for i, row in enumerate(spec_rows):
                         try:
+                            # Try standard th/td structure
                             name_elem = row.locator('th').first
                             value_elem = row.locator('td').first
+                            
+                            # Debug row content
+                            # print(f"DEBUG: Row {i} text: {row.inner_text()}", file=sys.stderr)
                             
                             if name_elem.count() > 0 and value_elem.count() > 0:
                                 name = name_elem.inner_text().strip()
@@ -86,7 +116,8 @@ class WBEnricher:
                                         'name': name,
                                         'value': value
                                     })
-                        except:
+                        except Exception as e:
+                            print(f"DEBUG: Error in row {i}: {e}", file=sys.stderr)
                             continue
                 except Exception as e:
                     print(f"⚠️  Could not extract specifications: {e}", file=sys.stderr)

@@ -174,20 +174,24 @@ def create_from_wb(article_input):
             return False
         
         # Prepare payload
-        # Use WB article as SKU with suffix to ensure new card creation
-        sku = f"{article_id}-K"
+        # Use WB article as SKU (Exact Match with MoySklad)
+        sku = str(article_id)
         
         # Ensure we have images (Kaspi requires at least one, and at least 500x500)
+        # 1. Try from Specs (Best Quality from WB)
         images = []
         if wb_product.get("image_url"):
-            images = [wb_product.get("image_url")]
-            
-        # Fallback for the specific test case if needed or use high-res MS image
-        if not images and article_id == "123873313":
-             # Use the high-res one found on Kaspi CDN
-             images = ["https://resources.cdn-kaspi.kz/img/m/p/h39/ha3/87196569927710.jpg?format=gallery-large"]
-        elif not images and wb_product.get("moysklad_id"):
-            print(f"🖼️  Image missing, fetching from MoySklad for ID: {wb_product['moysklad_id']}...")
+             images.append(wb_product.get("image_url"))
+             
+        # Check specs for more
+        if "specs" in wb_product and isinstance(wb_product["specs"], dict):
+             spec_images = wb_product["specs"].get("image_urls", [])
+             if spec_images:
+                  images = spec_images # Prefer the full list from specs
+        
+        # 2. Fallback to MoySklad (if specs missing)
+        if not images and wb_product.get("moysklad_id"):
+            print(f"🖼️  Fetching images from MoySklad for ID: {wb_product['moysklad_id']}...")
             try:
                 # Basic Auth for MoySklad
                 load_dotenv('moysklad-web/.env.local')
@@ -200,18 +204,13 @@ def create_from_wb(article_input):
                         ms_data = resp.json()
                         rows = ms_data.get('rows', [])
                         if rows:
-                            # Try to find a non-thumbnail image
-                            # MoySklad 'rows' have miniature/tiny, but also the main download link
-                            # actually miniature=true is a param in the href.
+                            images = [] # Reset to fill from MS
                             for row in rows:
-                                # Look for a better URL or remove miniature param
-                                # The 'miniature' field is a sub-object with href
+                                # Look for a better URL
                                 img_url = row.get('miniature', {}).get('href')
                                 if img_url:
-                                    # Remove miniature=true to get full size
                                     img_url = img_url.replace('miniature=true', 'miniature=false')
                                     images.append(img_url)
-                                    break
             except Exception as e:
                 print(f"⚠️ Failed to fetch MS image: {e}")
 

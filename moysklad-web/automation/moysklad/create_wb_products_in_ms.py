@@ -118,7 +118,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
     name = product['name']
     price = product['price'] # Integer from DB
     wb_id = str(product['id']) # Use as externalCode or article
-    image_url = product.get('image_url')
+    # image_url = product.get('image_url') # Handled later as list
     
     ms_product_id = None
     
@@ -179,8 +179,14 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
                 print(f"✅ Created '{name}' (Price: {price} -> Retail: {retail_price_val//100})")
                 ms_product_id = resp.json()['id']
                 
-                # UPLOAD IMAGE IMMEDIATELY
-                upload_image_to_ms(ms_product_id, image_url, name)
+                # UPLOAD IMAGES IMMEDIATELY
+                image_urls = product.get('image_urls', [])
+                if not image_urls and product.get('image_url'):
+                    image_urls = [product.get('image_url')]
+                
+                for idx, img_url in enumerate(image_urls):
+                    print(f"   🖼️ Uploading image {idx+1}/{len(image_urls)}...")
+                    upload_image_to_ms(ms_product_id, img_url, f"{name}_{idx+1}")
                 
             else:
                 print(f"❌ Error creating '{name}': {resp.text}")
