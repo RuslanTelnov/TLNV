@@ -17,40 +17,51 @@ class KaspiCategoryMapper:
         "медицинский", "шприц", "игла", "ветеринар", "корм для", "пиротехника", "фейерверк"
     ]
 
-    # Category mappings based on keywords
+    # Category mappings based on keywords (use stems/roots for better matching)
     CATEGORY_MAP = {
-        # Board games (Priority)
-        'настольная игра': ('Master - Board games', 'games'),
-        'настольные игры': ('Master - Board games', 'games'),
-        'игра для компании': ('Master - Board games', 'games'),
+        # Board games
+        'настольн': ('Master - Board games', 'games'),
+        'игра для комп': ('Master - Board games', 'games'),
+        
+        # Puzzles
+        'пазл': ('Master - Board games', 'games'),
 
         # Mugs and cups
-        'кружка': ('Master - Cups and saucers sets', 'mugs'),
-        'кружки': ('Master - Cups and saucers sets', 'mugs'),
-        'чашка': ('Master - Cups and saucers sets', 'mugs'),
-        'чашки': ('Master - Cups and saucers sets', 'mugs'),
+        'кружк': ('Master - Cups and saucers sets', 'mugs'),
+        'чашк': ('Master - Cups and saucers sets', 'mugs'),
+        'чаш': ('Master - Cups and saucers sets', 'mugs'),
         'стакан': ('Master - Cups and saucers sets', 'mugs'),
-        'набор чашек': ('Master - Cups and saucers sets', 'mugs'),
+        'saucer': ('Master - Cups and saucers sets', 'mugs'),
         
         # Toys
-        'игрушка': ('Master - Stuffed toys', 'toys'),
-        'плюшевая': ('Master - Stuffed toys', 'toys'),
-        'мягкая игрушка': ('Master - Stuffed toys', 'toys'),
-        'кукла': ('Master - Stuffed toys', 'toys'),
+        'игруш': ('Master - Stuffed toys', 'toys'),
+        'плюш': ('Master - Stuffed toys', 'toys'),
+        'кукл': ('Master - Stuffed toys', 'toys'),
         'пупс': ('Master - Stuffed toys', 'toys'),
+        'светофор': ('Master - Stuffed toys', 'toys'),
+        'трактор': ('Master - Stuffed toys', 'toys'),
+        'машинк': ('Master - Stuffed toys', 'toys'),
+        'машина': ('Master - Stuffed toys', 'toys'),
+        'волчок': ('Master - Stuffed toys', 'toys'),
+        'медведь': ('Master - Stuffed toys', 'toys'),
+        'мишка': ('Master - Stuffed toys', 'toys'),
+        
+        # Educational / hobby
+        'набор для опыт': ('Master - Board games', 'games'), # or another relevant category
+        'развивающ': ('Master - Stuffed toys', 'toys'), # Common for toys/games
         
         # Backpacks
         'рюкзак': ('Master - Backpacks', 'backpacks'),
+        'сумка': ('Master - Backpacks', 'backpacks'),
         
         # Power banks
         'повербанк': ('Master - Power banks', 'powerbanks'),
         'power bank': ('Master - Power banks', 'powerbanks'),
-        'внешний аккумулятор': ('Master - Power banks', 'powerbanks'),
+        'аккумулятор': ('Master - Power banks', 'powerbanks'),
         
         # Socks
-        'носки': ('Master - Men socks', 'socks'),
-        'socks': ('Master - Men socks', 'socks'),
-        'набор носков': ('Master - Men socks', 'socks'),
+        'носк': ('Master - Men socks', 'socks'),
+        'гольф': ('Master - Men socks', 'socks'),
         
         # Keychains
         'брелок': ('Master - Key wallets', 'keychains'),
@@ -63,32 +74,19 @@ class KaspiCategoryMapper:
         'парфюм': ('Master - Perfumes', 'perfumes'),
         'туалетная вода': ('Master - Perfumes', 'perfumes'),
         'одеколон': ('Master - Perfumes', 'perfumes'),
-        'parfum': ('Master - Perfumes', 'perfumes'),
-        'fragrance': ('Master - Perfumes', 'perfumes'),
-        'eau': ('Master - Perfumes', 'perfumes'),
-        'edt': ('Master - Perfumes', 'perfumes'),
-        'edp': ('Master - Perfumes', 'perfumes'),
         'аромат': ('Master - Perfumes', 'perfumes'),
         'пробник': ('Master - Perfumes', 'perfumes'),
         'распив': ('Master - Perfumes', 'perfumes'),
         'cologne': ('Master - Perfumes', 'perfumes'),
-        'guerlain': ('Master - Perfumes', 'perfumes'),
-        'baccarat': ('Master - Perfumes', 'perfumes'),
-        'paco rabanne': ('Master - Perfumes', 'perfumes'),
-        'lanvin': ('Master - Perfumes', 'perfumes'),
-        'dior': ('Master - Perfumes', 'perfumes'),
-        'chanel': ('Master - Perfumes', 'perfumes'),
-        'versace': ('Master - Perfumes', 'perfumes'),
-        'eisenberg': ('Master - Perfumes', 'perfumes'),
-        'antonio banderas': ('Master - Perfumes', 'perfumes'),
-        'dolce': ('Master - Perfumes', 'perfumes'),
-        'gabbana': ('Master - Perfumes', 'perfumes'),
-        'kenzo': ('Master - Perfumes', 'perfumes'),
-        'lacoste': ('Master - Perfumes', 'perfumes'),
-        'hugo boss': ('Master - Perfumes', 'perfumes'),
-        'calvin klein': ('Master - Perfumes', 'perfumes'),
         'hermes': ('Master - Perfumes', 'perfumes'),
-        'armani': ('Master - Perfumes', 'perfumes'),
+        'chanel': ('Master - Perfumes', 'perfumes'),
+        'dior': ('Master - Perfumes', 'perfumes'),
+        'versace': ('Master - Perfumes', 'perfumes'),
+        'hugo': ('Master - Perfumes', 'perfumes'),
+        'gucci': ('Master - Perfumes', 'perfumes'),
+        'lanvin': ('Master - Perfumes', 'perfumes'),
+        'paco': ('Master - Perfumes', 'perfumes'),
+        'baccarat': ('Master - Perfumes', 'perfumes'),
     }
     
     @classmethod

@@ -12,6 +12,15 @@ SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL"
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+import sys
+# Add parent directory to path to import shared_config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    from shared_config import RETAIL_DIVISOR, MIN_PRICE_DIVISOR
+except ImportError:
+    RETAIL_DIVISOR = 0.3
+    MIN_PRICE_DIVISOR = 0.45
+
 # MoySklad settings
 LOGIN = os.getenv("MOYSKLAD_LOGIN")
 PASSWORD = os.getenv("MOYSKLAD_PASSWORD")
@@ -140,8 +149,8 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
     # Minimum (minPrice): WB_Price * 100 / 45
     # MS requires values in cents (* 100)
     
-    retail_price_val = int((price * 100 / 30) * 100)
-    min_price_val = int((price * 100 / 45) * 100)
+    retail_price_val = int((price / RETAIL_DIVISOR) * 100)
+    min_price_val = int((price / MIN_PRICE_DIVISOR) * 100)
 
     # Use default currency for minPrice
     currency_meta = {

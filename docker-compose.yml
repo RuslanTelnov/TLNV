@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  wb-kaspi-worker:
+    build: .
+    container_name: wb-kaspi-worker
+    restart: always
+    environment:
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - MOYSKLAD_LOGIN=${MOYSKLAD_LOGIN}
+      - MOYSKLAD_PASSWORD=${MOYSKLAD_PASSWORD}
+      - KASPI_TOKEN=${KASPI_TOKEN}
+    volumes:
+      - ./conveyor.log:/app/moysklad-web/automation/moysklad/conveyor.log

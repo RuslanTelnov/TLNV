@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kaspi_catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" date="2026-01-19 16:05" xmlns="kaspiShopping">
+  <company>MoySklad Integration</company>
+  <merchantid>GrandO</merchantid>
+  <offers>
+    <offer sku="472069784-K">
+      <model>Мягкая игрушка Стич 35см</model>
+      <brand>Generic</brand>
+      <availabilities/>
+      <price>3999</price>
+      <category code="Master - Stuffed toys">Master - Stuffed toys</category>
+      <param name="Type" code="Stuffed toys*Type">Мягкая игрушка</param>
+      <param name="Height" code="Stuffed toys*Height">35</param>
+      <param name="Filler" code="Stuffed toys*Filler">Синтепон</param>
+      <param name="Character" code="Stuffed toys*Character">Стич</param>
+      <param name="View" code="Stuffed toys*View">Животные</param>
+      <param name="Age" code="Toys*Age">От 3 лет</param>
+      <param name="Gender" code="Toys*Gender">Унисекс</param>
+      <param name="Color" code="Toys*Color">Синий</param>
+      <param name="Material" code="Toys*Material">Текстиль</param>
+      <images>
+        <image>https://ir.ozone.ru/s3/multimedia-q/wc1000/608707482.jpg</image>
+      </images>
+      <title>Мягкая игрушка Стич 35см</title>
+      <description>Качественная мягкая игрушка Стич, высота 35 см. Гипоаллергенный наполнитель.</description>
+    </offer>
+  </offers>
+</kaspi_catalog>

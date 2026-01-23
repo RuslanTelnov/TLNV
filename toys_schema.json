@@ -1,0 +1,74 @@
+[
+  {
+    "code": "Stuffed toys*Type",
+    "type": "enum",
+    "multiValued": false,
+    "mandatory": true
+  },
+  {
+    "code": "Stuffed toys*Height",
+    "type": "number",
+    "multiValued": false,
+    "mandatory": true
+  },
+  {
+    "code": "Stuffed toys*Filler",
+    "type": "enum",
+    "multiValued": false,
+    "mandatory": true
+  },
+  {
+    "code": "Stuffed toys*Character",
+    "type": "string",
+    "multiValued": false,
+    "mandatory": true
+  },
+  {
+    "code": "Stuffed toys*Features",
+    "type": "enum",
+    "multiValued": true,
+    "mandatory": false
+  },
+  {
+    "code": "Stuffed toys*Additional",
+    "type": "string",
+    "multiValued": false,
+    "mandatory": false
+  },
+  {
+    "code": "Stuffed toys*View",
+    "type": "enum",
+    "multiValued": true,
+    "mandatory": true
+  },
+  {
+    "code": "Stuffed toys*Model",
+    "type": "string",
+    "multiValued": false,
+    "mandatory": false
+  },
+  {
+    "code": "Toys*Age",
+    "type": "enum",
+    "multiValued": true,
+    "mandatory": true
+  },
+  {
+    "code": "Toys*Gender",
+    "type": "enum",
+    "multiValued": false,
+    "mandatory": true
+  },
+  {
+    "code": "Toys*Color",
+    "type": "enum",
+    "multiValued": true,
+    "mandatory": true
+  },
+  {
+    "code": "Toys*Material",
+    "type": "enum",
+    "multiValued": true,
+    "mandatory": true
+  }
+]

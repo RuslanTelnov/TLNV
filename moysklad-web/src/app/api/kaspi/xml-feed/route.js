@@ -38,11 +38,17 @@ export async function GET() {
             existingOffers = existingOffers ? [existingOffers] : [];
         }
 
-        // 3. Fetch new products from Supabase
+        // 3. Fetch products from Supabase
+        // CRITICAL: Only items with price > 500 (Kaspi limit) and marked as created.
+        // Also: items need ~24h to be indexed by Kaspi after creation to avoid "Unrecognized" errors.
+        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
         const { data: newProducts, error: dbError } = await supabase
             .from('wb_search_results')
             .select('*')
-            .or('kaspi_created.eq.true,specs->>is_in_feed.eq.true');
+            .filter('price_kzt', 'gt', 500)
+            .eq('kaspi_created', true)
+            .lt('updated_at', oneDayAgo); // Only items created/updated > 24h ago
 
         if (dbError) throw dbError;
 
@@ -53,9 +59,9 @@ export async function GET() {
             const sku = String(product.id);
             if (existingSkus.has(sku)) continue;
 
+            const retailDivisor = parseFloat(process.env.RETAIL_DIVISOR || '0.3');
             const stock = product.specs?.stock || 0;
-            const price = product.price_kzt || 0;
-            const specs = product.specs || {};
+            const price = Math.round(product.price_kzt / retailDivisor);
 
             const newOffer = {
                 "@_sku": sku,
@@ -68,35 +74,28 @@ export async function GET() {
                         "@_stockCount": stock
                     }
                 },
-                "price": price,
-                "description": specs.description || product.description
+                "price": price
             };
 
-            // Images
-            let images = specs.image_urls;
-            if (!images || !Array.isArray(images) || images.length === 0) {
-                images = product.image_url ? [product.image_url] : [];
-            }
-            if (images.length > 0) newOffer.picture = images;
-
-            // Params
-            const params = [];
-            if (specs.kaspi_attributes) {
-                const attrs = Array.isArray(specs.kaspi_attributes) ? specs.kaspi_attributes : Object.entries(specs.kaspi_attributes).map(([code, value]) => ({ code, value }));
-                for (const attr of attrs) {
-                    const values = Array.isArray(attr.value) ? attr.value : [attr.value];
-                    for (const v of values) {
-                        params.push({
-                            "@_code": attr.code,
-                            "@_name": attr.name || (attr.code ? attr.code.split('*').pop() : "Attribute"),
-                            "#text": String(v)
-                        });
-                    }
-                }
-            }
-            if (params.length > 0) newOffer.param = params;
-
             existingOffers.push(newOffer);
+            existingSkus.add(sku);
+        }
+
+        // Final Filter: Ensure ALL offers (including base XML) have price > 500
+        const finalOffers = existingOffers.filter(o => {
+            const price = parseInt(o.price);
+            return !isNaN(price) && price >= 500;
+        });
+
+        // Final Deduplication
+        const uniqueOffers = [];
+        const finalSeenSkus = new Set();
+        for (const offer of finalOffers) {
+            const sku = String(offer['@_sku']);
+            if (!finalSeenSkus.has(sku)) {
+                uniqueOffers.push(offer);
+                finalSeenSkus.add(sku);
+            }
         }
 
         // 5. Build Final XML using a SAFE TEMPLATE
@@ -109,23 +108,24 @@ export async function GET() {
             processEntities: true
         });
 
-        // Update date to current (UTC for Vercel compatibility, but labeled RU)
-        const dateStr = new Date().toLocaleString('ru-RU', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        }).replace(',', '');
+        // Robust date: dd.mm.yyyy hh:mm
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const dateStr = `${d}.${m}.${y} ${hh}:${mm}`;
 
-        // Build ONLY the offers part to prevent double headers
-        const offersXml = builder.build({ offers: { offer: existingOffers } });
+        // Build ONLY the offers part
+        const offersXml = builder.build({ offers: { offer: uniqueOffers } });
 
-        const liveTime = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        // HARDCODED TEMPLATE: 100% guarantee of exactly ONE header and NO declaration on line 2.
+        // HARDCODED TEMPLATE: Clean tags, No markers, Exactly one header.
         const finalXml = `<?xml version="1.0" encoding="utf-8"?>
 <kaspi_catalog xmlns="kaspiShopping" date="${dateStr}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://kaspi.kz/kaspishopping.xsd">
-  <company>VELVETO (Live ${liveTime})</company>
+  <company>VELVETO</company>
   <merchantid>30322748</merchantid>
-  ${offersXml}
+${offersXml}
 </kaspi_catalog>`.trim();
 
         return new NextResponse(finalXml, {
