@@ -13,7 +13,12 @@ sys.path.append(os.path.join(os.getcwd(), 'kaspi-automation'))
 
 import create_wb_products_in_ms as ms_creator
 import oprihodovanie as ms_stock
-sys.path.append(os.path.dirname(os.path.abspath(__file__))) 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Fix import for create_from_wb (it is in ../kaspi)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+kaspi_dir = os.path.join(os.path.dirname(current_dir), 'kaspi')
+sys.path.append(kaspi_dir)
+
 from create_from_wb import create_from_wb
 
 # Setup Logging
@@ -209,16 +214,41 @@ def run_conveyor(single_pass=False, skip_parser=False):
             # -------------------------------------------------------------
             if parse_and_save:
                 try:
-                    # Parse current page
-                    count = parse_and_save("Хиты", limit=100, page=current_page)
+                    # Check for queued jobs first
+                    job_response = supabase.table("parser_queue") \
+                        .select("*") \
+                        .eq("status", "pending") \
+                        .order("created_at", desc=False) \
+                        .limit(1) \
+                        .execute()
                     
-                    if count == 0:
-                        logger.info("No items found on page, resetting to 1.")
-                        current_page = 1
+                    job = job_response.data[0] if job_response.data else None
+                    
+                    if job:
+                        logger.info(f"🚀 Processing Queue Job: {job['query']} (Mode: {job['mode']}, Page: {job['page']})")
+                        supabase.table("parser_queue").update({"status": "processing"}).eq("id", job['id']).execute()
+                        
+                        try:
+                            # Run the parser for this job
+                            parse_and_save(job['query'], limit=100, page=job['page'])
+                            supabase.table("parser_queue").update({"status": "done"}).eq("id", job['id']).execute()
+                        except Exception as e:
+                            logger.error(f"Job failed: {e}")
+                            supabase.table("parser_queue").update({"status": "error", "log": str(e)}).eq("id", job['id']).execute()
+                            
                     else:
-                        current_page += 1
-                        if current_page > max_page:
+                        # Default Background Loop (Hits)
+                        # Only run if no active job and we want background crawling
+                        logger.info("No active jobs. Running background 'Хиты' parser...")
+                        count = parse_and_save("Хиты", limit=100, page=current_page)
+                        
+                        if count == 0:
+                            logger.info("No items found on page, resetting to 1.")
                             current_page = 1
+                        else:
+                            current_page += 1
+                            if current_page > max_page:
+                                current_page = 1
                             
                 except Exception as e:
                     logger.error(f"Parser failed: {e}")

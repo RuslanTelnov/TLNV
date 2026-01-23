@@ -1,40 +1,39 @@
+
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(request) {
     try {
-        const body = await request.json();
-        const { productId } = body;
+        const { id, is_in_feed } = await request.json();
 
-        if (!productId) {
-            return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
         }
 
-        // Update specs to include in_feed flag
-        const { data: current, error: getError } = await supabase
+        // 1. Get current specs
+        const { data: currentData } = await supabase
             .from('wb_search_results')
             .select('specs')
-            .eq('id', productId)
+            .eq('id', id)
             .single();
 
-        if (getError) throw getError;
+        const specs = currentData?.specs || {};
+        specs.is_in_feed = is_in_feed;
 
-        const specs = current.specs || {};
-        specs.is_in_feed = true;
-
+        // 2. Update specs
         const { error } = await supabase
             .from('wb_search_results')
             .update({
-                specs,
-                conveyor_status: 'in_feed'
+                specs: specs,
+                kaspi_created: is_in_feed // Also update legacy flag if true
             })
-            .eq('id', productId);
+            .eq('id', id);
 
         if (error) throw error;
 
-        return NextResponse.json({ success: true, message: 'Added to XML feed bridge' });
+        return NextResponse.json({ success: true, is_in_feed });
+
     } catch (error) {
-        console.error('Mark In Feed Error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
