@@ -1,41 +1,42 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
-    console.log("--- Settings API Debug Start ---");
+    const VERSION = "1.2.0";
+    console.log(`--- Settings API v${VERSION} Start ---`);
+
     try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        console.log("Supabase URL in Env:", supabaseUrl);
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
+
+        console.log("Supabase URL Status:", supabaseUrl ? "Present" : "Missing");
 
         let dbKeys = {};
-        try {
-            console.log("Checking Supabase client...");
-            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
 
-            if (!supabaseUrl || !supabaseKey) {
-                console.error("Supabase URL or Key missing in env!");
-            } else {
-                // Ensure we have a valid client. Initialize locally if the import is problematic.
-                const { createClient } = require('@supabase/supabase-js');
+        if (supabaseUrl && supabaseKey) {
+            try {
+                // Initialize client locally every time to avoid stale or null global client
                 const client = createClient(supabaseUrl, supabaseKey);
-
-                console.log("Attempting to fetch from client_configs table...");
+                console.log("Fetching from client_configs...");
                 const { data, error } = await client.table('client_configs').select('*').limit(1).single();
 
                 if (error) {
                     console.error("Supabase Error:", error.message);
                 } else if (data) {
-                    console.log("Data found in DB. Record ID:", data.id);
+                    console.log("DB Data Loaded:", data.id);
                     dbKeys = data;
-                } else {
-                    console.warn("No data returned from client_configs.");
                 }
+            } catch (e) {
+                console.error("DB Fetch Exception:", e.message);
             }
-        } catch (e) {
-            console.error("Database access exception:", e.message);
         }
 
         const keys = {
+            VERSION,
+            BUILD_TIME: "26.01.2026 18:55",
             REST_API_KEY: dbKeys.rest_api_key || process.env.REST_API_KEY || 'Not Set',
             SUPABASE_URL: supabaseUrl || 'Not Set',
             KASPI_BASE_XML_URL: dbKeys.kaspi_xml_url || process.env.KASPI_BASE_XML_URL || 'Not Set',
@@ -43,14 +44,18 @@ export async function GET() {
             MIN_PRICE_DIVISOR: dbKeys.min_price_divisor || process.env.MIN_PRICE_DIVISOR || '0.45',
             OPENAI_API_KEY: (dbKeys.openai_key || process.env.OPENAI_API_KEY) ? `${(dbKeys.openai_key || process.env.OPENAI_API_KEY).substring(0, 8)}...` : 'Not Set',
             MOYSKLAD_LOGIN: dbKeys.moysklad_login || process.env.MOYSKLAD_LOGIN || 'Not Set',
-            KASPI_API_TOKEN: (dbKeys.kaspi_token || process.env.KASPI_API_TOKEN) ? 'Connected ✅' : 'Not Set',
+            KASPI_API_TOKEN: (dbKeys.kaspi_token || process.env.kaspi_token || process.env.KASPI_API_TOKEN) ? 'Connected ✅' : 'Not Set',
         };
 
-        console.log("Final keys result mapping complete.");
-        console.log("--- Settings API Debug End ---");
-        return NextResponse.json(keys);
+        return NextResponse.json(keys, {
+            headers: {
+                'Cache-Control': 'no-store, max-age=0, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
     } catch (error) {
-        console.error("Critical Settings API Error:", error);
-        return NextResponse.json({ error: 'Failed' }, { status: 500 });
+        console.error("Fatal Settings Error:", error);
+        return NextResponse.json({ error: 'Server Error', version: VERSION }, { status: 500 });
     }
 }
