@@ -93,14 +93,25 @@ export async function GET() {
                 modelName = modelName.substring(0, 97) + "...";
             }
 
+            // ENRICHMENT for Card Creation
+            const description = product.description || modelName;
+            const images = specs.image_urls || (product.image_url ? [product.image_url] : []);
+            const category = specs.kaspi_category || "Master - Model cars and other vehicles";
+
             const newOffer = {
                 "@_sku": sku,
                 "model": modelName,
                 "brand": (product.brand && product.brand !== "Unknown") ? product.brand : "Generic",
+                "description": description,
+                "category": category,
+                "images": {
+                    "image": images.slice(0, 5).map(url => ({ "@_url": url }))
+                },
                 "availabilities": {
                     "availability": {
-                        "@_available": stock > 0 ? "yes" : "no",
-                        "@_storeId": "PP1"
+                        "@_available": "yes",
+                        "@_storeId": "PP1",
+                        "@_stockCount": stock || 10
                     }
                 },
                 "price": price
