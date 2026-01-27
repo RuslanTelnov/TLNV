@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { validateApiKey } from '@/lib/api-auth';
 
+export const revalidate = 60;
+
 export async function GET(request) {
     // 1. Authenticate
     const authError = await validateApiKey(request);
@@ -34,6 +36,10 @@ export async function GET(request) {
                 total: count,
                 limit,
                 offset
+            }
+        }, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30',
             }
         });
     } catch (error) {

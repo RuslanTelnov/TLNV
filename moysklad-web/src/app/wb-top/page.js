@@ -14,6 +14,8 @@ export default function WbTopPage() {
     const [lastUpdated, setLastUpdated] = useState(null);
     const [parsingMode, setParsingMode] = useState(null);
     const [page, setPage] = useState(1);
+    const [activeJobId, setActiveJobId] = useState(null);
+    const [jobStatus, setJobStatus] = useState(null); // 'pending', 'processing', 'completed', 'error'
 
     // Conveyor States
     const [isConveyorRunning, setIsConveyorRunning] = useState(false);
@@ -70,6 +72,39 @@ export default function WbTopPage() {
             chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [chatHistory, isChatOpen]);
+
+    // Poll for active parser job status
+    useEffect(() => {
+        let interval;
+        if (activeJobId) {
+            interval = setInterval(async () => {
+                try {
+                    const { data, error } = await supabase
+                        .from('parser_queue')
+                        .select('status, log')
+                        .eq('id', activeJobId)
+                        .single();
+
+                    if (error) throw error;
+
+                    setJobStatus(data.status);
+
+                    if (data.status === 'completed' || data.status === 'error') {
+                        setActiveJobId(null);
+                        if (data.status === 'completed') {
+                            showToast('Парсинг завершен!', 'success');
+                            fetchProducts(query);
+                        } else {
+                            showToast('Ошибка парсинга: ' + (data.log || 'Unknown'), 'error');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Job polling error:', e);
+                }
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [activeJobId, query]);
 
     // --- Data Fetching ---
 
@@ -170,6 +205,27 @@ export default function WbTopPage() {
         if (e) e.preventDefault();
         if (mode === 'search' && !query) return;
 
+        // Check for already running job for this query to prevent duplicates
+        try {
+            const currentQuery = mode === 'top' ? 'Хиты' : query;
+            const { data: existingJobs, error: checkError } = await supabase
+                .from('parser_queue')
+                .select('id, status')
+                .eq('query', currentQuery)
+                .in('status', ['pending', 'processing'])
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            if (!checkError && existingJobs && existingJobs.length > 0) {
+                setActiveJobId(existingJobs[0].id);
+                setJobStatus(existingJobs[0].status);
+                showToast('Задание уже в очереди или обрабатывается', 'info');
+                return;
+            }
+        } catch (e) {
+            console.error('Check existing job error:', e);
+        }
+
         setParsing(true);
         setParsingMode(mode);
         showToast(mode === 'top' ? 'Загрузка Топ Продаж...' : 'Парсинг запущен...', 'info');
@@ -188,10 +244,16 @@ export default function WbTopPage() {
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || 'Parsing failed');
 
+            if (data.job) {
+                setActiveJobId(data.job.id);
+                setJobStatus(data.job.status);
+            }
+
             setPage(prev => prev + 1);
             if (mode === 'top') setQuery('Хиты');
 
-            await fetchProducts(mode === 'top' ? 'Хиты' : query);
+            // Wait a bit and refresh products
+            setTimeout(() => fetchProducts(mode === 'top' ? 'Хиты' : query), 2000);
         } catch (err) {
             alert('Error parsing: ' + err.message);
         } finally {
@@ -457,8 +519,10 @@ export default function WbTopPage() {
                                 transition: 'border-color 0.3s ease'
                             }}
                         />
-                        <button type="submit" disabled={parsing || !query} className="velveto-button" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem' }}>
-                            {parsing ? '...' : 'Найти'}
+                        <button type="submit" disabled={parsing || !!activeJobId || !query} className="velveto-button" style={{ height: '56px', minWidth: '120px', fontSize: '1.1rem', padding: '0 2rem' }}>
+                            {parsing ? '...' :
+                                jobStatus === 'pending' && activeJobId ? 'В очереди' :
+                                    jobStatus === 'processing' && activeJobId ? 'Парсинг...' : 'Найти'}
                         </button>
                     </form>
                     <button onClick={() => fetchProducts(query)} className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem' }}>Обновить</button>

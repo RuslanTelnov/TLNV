@@ -20,6 +20,7 @@ kaspi_dir = os.path.join(os.path.dirname(current_dir), 'kaspi')
 sys.path.append(kaspi_dir)
 
 from create_from_wb import create_from_wb
+import generate_fixed_price # Import the XML generator
 
 # Setup Logging
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'conveyor.log')
@@ -114,8 +115,9 @@ def run_conveyor(single_pass=False, skip_parser=False):
             response = supabase.table("wb_search_results") \
                 .select("*") \
                 .neq("conveyor_status", "done") \
+                .order("ms_created", desc=False) \
                 .order("updated_at", desc=True) \
-                .limit(50) \
+                .limit(100) \
                 .execute()
             
             candidates = response.data
@@ -215,6 +217,15 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             update_status(wb_id, {"kaspi_created": True, "conveyor_status": "done"})
                         else:
                             update_status(wb_id, {"conveyor_log": "Kaspi Creation Failed (check attributes)"})
+                    
+                            if k_success:
+                                # If at least one Kaspi card was created, regenerate the XML feed immediately
+                                try:
+                                    logger.info("Regenerating XML Feed...")
+                                    generate_fixed_price.generate_xml()
+                                except Exception as e:
+                                    logger.error(f"Failed to regenerate XML: {e}")
+
                     
                     time.sleep(0.05)
 

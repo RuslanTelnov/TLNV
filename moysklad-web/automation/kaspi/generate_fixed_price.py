@@ -56,15 +56,19 @@ def generate_xml():
     local_res = supabase.table('wb_search_results').select('*').eq('kaspi_created', True).execute()
     local_products = local_res.data
     print(f"📦 Found {len(local_products)} local products marked as created on Kaspi.")
+    if local_products:
+        print(f"DEBUG: First 5 local IDs: {[p['id'] for p in local_products[:5]]}")
 
     # 4. Prepare for Merge
     # Extract existing SKUs from Fixcom to avoid duplicates
+    # Note: Using namespace for findall
+    ns = {'k': 'kaspiShopping'}
     existing_skus = set()
-    offers_node = fixcom_root.find('offers')
+    offers_node = fixcom_root.find('k:offers', ns)
     if offers_node is None:
-        offers_node = ET.SubElement(fixcom_root, 'offers')
+        offers_node = ET.SubElement(fixcom_root, '{kaspiShopping}offers')
     else:
-        for offer in offers_node.findall('offer'):
+        for offer in offers_node.findall('k:offer', ns):
             sku = offer.get('sku')
             if sku:
                 existing_skus.add(str(sku))
@@ -72,6 +76,11 @@ def generate_xml():
     print(f"🔗 Fixcom already has {len(existing_skus)} offers.")
 
     # 5. Add local products to XML
+    added_count = 0
+    # 5. Add local products to XML
+    NS_URI = "kaspiShopping"
+    NS = f"{{{NS_URI}}}" # e.g. {kaspiShopping}
+    
     added_count = 0
     for p in local_products:
         specs = p.get('specs', {})
@@ -84,6 +93,7 @@ def generate_xml():
             sku = f"{p['id']}"
             
         sku = str(sku)
+        
         if sku in existing_skus:
             continue
             
@@ -95,20 +105,20 @@ def generate_xml():
             
         stock = 'yes' if specs.get('stock', 0) > 0 else 'no'
         
-        # Create Offer element
-        offer = ET.SubElement(offers_node, 'offer', sku=sku)
+        # Create Offer element WITH NAMESPACE
+        offer = ET.SubElement(offers_node, f'{NS}offer', sku=sku)
         
         model_name = p['name']
         if len(model_name) > 100:
             model_name = model_name[:97] + "..."
             
-        ET.SubElement(offer, 'model').text = model_name
-        ET.SubElement(offer, 'brand').text = p.get('brand') or 'Generic'
+        ET.SubElement(offer, f'{NS}model').text = model_name
+        ET.SubElement(offer, f'{NS}brand').text = p.get('brand') or 'Generic'
         
-        availabilities = ET.SubElement(offer, 'availabilities')
-        ET.SubElement(availabilities, 'availability', available=stock, storeId='PP1')
+        availabilities = ET.SubElement(offer, f'{NS}availabilities')
+        ET.SubElement(availabilities, f'{NS}availability', available=stock, storeId='PP1')
         
-        ET.SubElement(offer, 'price').text = str(price)
+        ET.SubElement(offer, f'{NS}price').text = str(price)
         
         existing_skus.add(sku)
         added_count += 1
@@ -118,16 +128,22 @@ def generate_xml():
     
     # 7. Write to File
     # Register namespace to avoid ns0: prefixes
-    ET.register_namespace('', "kaspiShopping")
+    ET.register_namespace('', NS_URI)
     
     print(f"💾 Saving consolidated XML with {len(existing_skus)} total offers...")
     tree = ET.ElementTree(fixcom_root)
     
-    with open('price.xml', 'wb') as f:
-        f.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
-        tree.write(f, encoding='utf-8', xml_declaration=False)
-        
-    print(f"✅ Success! Generated price.xml (Added {added_count} new products).")
+    # Save to both root and public (to be sure)
+    output_paths = ['price.xml', 'moysklad-web/public/price.xml']
+    
+    for out_path in output_paths:
+        try:
+            with open(out_path, 'wb') as f:
+                f.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+                tree.write(f, encoding='utf-8', xml_declaration=False)
+            print(f"✅ Success! Generated {out_path} (Added {added_count} new products).")
+        except Exception as e:
+            print(f"⚠️ Failed to write to {out_path}: {e}")
 
 if __name__ == "__main__":
     generate_xml()

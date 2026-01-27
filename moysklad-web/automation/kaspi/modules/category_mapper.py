@@ -122,6 +122,20 @@ class KaspiCategoryMapper:
         'чехол': ('Master - Cases for mobile phones', 'cases'),
         'стекло для': ('Master - Screen protectors for mobile phones', 'cases'),
         'пленка для': ('Master - Screen protectors for mobile phones', 'cases'),
+        
+        # Diapers and pads (Crucial for the user)
+        'пеленк': ('Master - Pet underpads', 'pads'),
+        'подкладк': ('Master - Pet underpads', 'pads'),
+        'disposable pads': ('Master - Pet underpads', 'pads'),
+        'diaper': ('Master - Pet underpads', 'pads'),
+        
+        # Strollers and Doll strollers
+        'коляска для кукол': ('Мастер - Аксессуары для кукол', 'doll_accessories'),
+        'коляск': ('Мастер - Багги', 'strollers'),
+        
+        # Plasticine / Modeling
+        'пластилин': ('Мастер - Художественное тесто', 'modeling'),
+        'лепка': ('Мастер - Художественное тесто', 'modeling'),
     }
     
     @classmethod
@@ -478,6 +492,12 @@ class KaspiCategoryMapper:
             return cls.generate_attributes_for_perfumes(product_name, product_description)
         elif category_type == 'model_cars':
             return cls.generate_attributes_for_model_cars(product_name, product_description)
+        elif category_type == 'pads':
+            return cls.generate_attributes_for_pads(product_name, product_description)
+        elif category_type == 'strollers':
+            return cls.generate_attributes_for_strollers(product_name, product_description)
+        elif category_type == 'modeling':
+            return cls.generate_attributes_for_modeling(product_name, product_description)
         
         # Universal AI filling for other categories
         if category_code:
@@ -579,6 +599,55 @@ class KaspiCategoryMapper:
         elif "син" in text: attributes["Toys*Color"] = "Синий"
         elif "бел" in text: attributes["Toys*Color"] = "Белый"
         
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_pads(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Pet underpads."""
+        text = (product_name + " " + product_description).lower()
+        attributes = {
+            "Pet underpads*Type": "пеленки",
+            "Pet underpads*Width": 60,
+            "Pet underpads*Length": 40,
+            "Pet underpads*Brand code": "нет",
+            "Pet care*Material": ["целлюлоза"] # Standard
+        }
+        
+        # Extract dimensions
+        dim_match = re.search(r'(\d+)х(\d+)', text)
+        if not dim_match:
+            dim_match = re.search(r'(\d+)x(\d+)', text)
+            
+        if dim_match:
+            attributes["Pet underpads*Width"] = int(dim_match.group(1))
+            attributes["Pet underpads*Length"] = int(dim_match.group(2))
+            
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_strollers(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Baby Strollers."""
+        attributes = {
+            "Buggy*Type": "коляска-книжка",
+            "Buggy*Material": "текстиль",
+            "Babies*Age": "0+",
+            "Babies*Gender": "унисекс"
+        }
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_modeling(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Modeling clay."""
+        attributes = {
+            "Modeling kits*Type": "пластилин",
+            "Modeling kits*Number of colors": 12,
+            "Toys*Age": "От 3 лет"
+        }
+        # Extract number of colors
+        color_match = re.search(r'(\d+)\s*(цветов|цв)', product_name.lower())
+        if color_match:
+            attributes["Modeling kits*Number of colors"] = int(color_match.group(1))
+            
         return attributes
 
     @staticmethod
