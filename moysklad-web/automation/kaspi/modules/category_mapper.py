@@ -130,12 +130,12 @@ class KaspiCategoryMapper:
         'diaper': ('Master - Pet underpads', 'pads'),
         
         # Strollers and Doll strollers
-        'коляска для кукол': ('Мастер - Аксессуары для кукол', 'doll_accessories'),
-        'коляск': ('Мастер - Багги', 'strollers'),
+        'коляска для кукол': ('Master - Accessories for dolls', 'doll_accessories'),
+        'коляск': ('Master - Buggies', 'strollers'),
         
         # Plasticine / Modeling
-        'пластилин': ('Мастер - Художественное тесто', 'modeling'),
-        'лепка': ('Мастер - Художественное тесто', 'modeling'),
+        'пластилин': ('Master - Artistic dough', 'modeling'),
+        'лепка': ('Master - Artistic dough', 'modeling'),
     }
     
     @classmethod

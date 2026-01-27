@@ -75,6 +75,32 @@ def generate_xml():
 
     print(f"🔗 Fixcom already has {len(existing_skus)} offers.")
 
+    # Merge logic: if we have a local product with ID X, remove any offers in Fixcom that start with "X_"
+    # This suppression allows us to "take over" the product with our clean SKU.
+    local_ids_str = set(str(p['id']) for p in local_products)
+    
+    offers_to_remove = []
+    if offers_node is not None:
+        for offer in offers_node.findall('k:offer', ns):
+            sku = offer.get('sku')
+            if sku:
+                # Check if this SKU belongs to a local product
+                # Logic: SKU is exactly ID or starts with "ID_"
+                for local_id in local_ids_str:
+                    if sku == local_id or sku.startswith(local_id + "_"):
+                        offers_to_remove.append(offer)
+                        # Identify SKU to remove from existing_skus if it was added
+                        if str(sku) in existing_skus:
+                            existing_skus.remove(str(sku))
+                        print(f"♻️  Suppressing Fixcom offer {sku} in favor of local version.")
+                        break
+                        
+        # Remove the suppressed offers
+        for offer in offers_to_remove:
+            offers_node.remove(offer)
+
+    print(f"🔗 Fixcom offers after cleanup: {len(existing_skus)}")
+
     # 5. Add local products to XML
     added_count = 0
     # 5. Add local products to XML
@@ -94,7 +120,9 @@ def generate_xml():
             
         sku = str(sku)
         
+        # If we suppressed the old one, existing_skus doesn't have it, so we add ours.
         if sku in existing_skus:
+            print(f"⚠️ SKU {sku} already exists in Fixcom (not suppressed), skipping.")
             continue
             
         price_kzt = p.get('price_kzt', 0)
@@ -103,14 +131,18 @@ def generate_xml():
         if price < 500:
             continue
             
-        stock = 'yes' if specs.get('stock', 0) > 0 else 'no'
+        stock = 'yes' if specs.get('stock', 0) > 0 or specs.get('legacy') else 'no' # Assume stock for legacy import
+        if specs.get('imported_from_fixcom'):
+            # Use price from DB which we imported
+             price = int(p['price_kzt'])
+             # Ensure we map it correctly if needed, but imported price is usually KZT
         
         # Create Offer element WITH NAMESPACE
         offer = ET.SubElement(offers_node, f'{NS}offer', sku=sku)
         
         model_name = p['name']
-        if len(model_name) > 100:
-            model_name = model_name[:97] + "..."
+        if len(model_name) > 1000: # Schema max 1024
+            model_name = model_name[:997] + "..."
             
         ET.SubElement(offer, f'{NS}model').text = model_name
         ET.SubElement(offer, f'{NS}brand').text = p.get('brand') or 'Generic'

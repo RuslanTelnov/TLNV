@@ -156,6 +156,7 @@ def create_from_wb(article_input):
                 "name": wb_product.get("name"),
                 "price_kzt": wb_product.get("price_kzt", 0),
                 "image_url": wb_product.get("image_url"),
+                "brand": wb_product.get("brand"),
                 "updated_at": "now()"
             }
             # Only add specs if they are interesting

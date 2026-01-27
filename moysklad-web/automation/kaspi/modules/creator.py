@@ -61,15 +61,15 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
         })
 
     payload = {
-        "sku": sku,
-        "title": scraped_data.get("title"),
-        "description": scraped_data.get("description"),
-        "brand": scraped_data.get("brand", "Generic"),
+        "sku": str(sku)[:64],
+        "title": scraped_data.get("title", "")[:1000], # Max 1024
+        "description": scraped_data.get("description", "")[:1000] if scraped_data.get("description") else "",
+        "brand": scraped_data.get("brand", "Generic")[:250], # Max 256
         "category": scraped_data.get("category_name"), # This should be "Master - ..."
         "attributes": attributes_list,
         "images": [{"url": img} if isinstance(img, str) else img for img in scraped_data.get("images", [])],
         "barcode": barcode,
-        "model": scraped_data.get("title")[:50] # Use truncated title as model if not provided
+        "model": scraped_data.get("title", "")[:50] # Use truncated title as model if not provided
     }
     return payload
 
