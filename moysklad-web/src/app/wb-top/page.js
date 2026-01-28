@@ -342,23 +342,7 @@ export default function WbTopPage() {
         }
     };
 
-    const handleAddToXml = async (product) => {
-        showToast('Добавление в XML фид...', 'info');
-        try {
-            const response = await fetch('/api/kaspi/mark-in-feed', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: product.id }),
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Failed to add to XML feed');
-            showToast('Товар добавлен в XML фид!', 'success');
-            fetchProducts(query);
-            return data;
-        } catch (err) {
-            showToast(`Ошибка: ${err.message}`, 'error');
-        }
-    };
+
 
     const showToast = (message, type = 'info') => {
         setToast({ message, type });
@@ -532,24 +516,7 @@ export default function WbTopPage() {
                     <a href="/api/reports/generate" target="_blank" className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
                         📄 Отчет
                     </a>
-                    <a href="/api/kaspi/xml-feed" target="_blank" className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'var(--velveto-accent-primary)', borderColor: 'var(--velveto-accent-primary)' }}>
-                        🔗 Фид
-                    </a>
-                    <button
-                        onClick={() => {
-                            window.open('/api/kaspi/xml-feed', '_blank');
-                            const link = document.createElement('a');
-                            link.href = '/api/kaspi/xml-feed';
-                            link.download = 'kaspi_feed.xml';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        }}
-                        className="velveto-button-outline"
-                        style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem' }}
-                    >
-                        📥 XML
-                    </button>
+
 
                     {/* BIG STANDALONE PARSER TOGGLE */}
                     <button
@@ -682,16 +649,7 @@ export default function WbTopPage() {
                                                         <button onClick={() => handleCreateInMS(p)} className="mini-btn">МС</button>
                                                         <button onClick={() => handleOprihodovanie(p)} className="mini-btn">Склад</button>
                                                         <button onClick={() => handleCreateKaspi(p)} className="mini-btn">Kaspi</button>
-                                                        <button
-                                                            onClick={() => handleAddToXml(p)}
-                                                            className="mini-btn"
-                                                            style={{
-                                                                borderColor: 'var(--velveto-accent-primary)',
-                                                                color: 'var(--velveto-accent-primary)'
-                                                            }}
-                                                        >
-                                                            +XML
-                                                        </button>
+
                                                     </div>
                                                 </td>
                                             </tr>
