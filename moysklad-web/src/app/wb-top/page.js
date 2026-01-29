@@ -650,7 +650,7 @@ export default function WbTopPage() {
 
                                                 <td>
                                                     {/* Kaspi Moderation Status */}
-                                                    {p.kaspi_status && p.kaspi_status !== 'pending' && (
+                                                    {p.kaspi_status && (
                                                         <div
                                                             onClick={(p.kaspi_status === 'rejected' || p.kaspi_status === 'closed') ? (e) => { e.stopPropagation(); setFixModalProduct(p); } : undefined}
                                                             style={{
@@ -661,15 +661,18 @@ export default function WbTopPage() {
                                                                 background: p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.1)' :
                                                                     p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.1)' :
                                                                         p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.1)' :
-                                                                            p.kaspi_status === 'closed' ? 'rgba(100, 100, 100, 0.1)' : 'transparent',
+                                                                            p.kaspi_status === 'closed' ? 'rgba(100, 100, 100, 0.1)' :
+                                                                                p.kaspi_status === 'pending' ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
                                                                 color: p.kaspi_status === 'moderation' ? '#f59e0b' :
                                                                     p.kaspi_status === 'approved' ? '#10b981' :
                                                                         p.kaspi_status === 'rejected' ? '#ef4444' :
-                                                                            p.kaspi_status === 'closed' ? '#888' : 'inherit',
+                                                                            p.kaspi_status === 'closed' ? '#888' :
+                                                                                p.kaspi_status === 'pending' ? '#3b82f6' : 'inherit',
                                                                 border: `1px solid ${p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.3)' :
                                                                     p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.3)' :
                                                                         p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.3)' :
-                                                                            p.kaspi_status === 'closed' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}`,
+                                                                            p.kaspi_status === 'closed' ? 'rgba(255, 255, 255, 0.1)' :
+                                                                                p.kaspi_status === 'pending' ? 'rgba(59, 130, 246, 0.3)' : 'transparent'}`,
                                                                 cursor: (p.kaspi_status === 'rejected' || p.kaspi_status === 'closed') ? 'pointer' : 'default',
                                                                 fontWeight: '600',
                                                                 transition: 'all 0.2s ease'
@@ -679,7 +682,8 @@ export default function WbTopPage() {
                                                             {p.kaspi_status === 'moderation' ? '⏳ На модерации' :
                                                                 p.kaspi_status === 'approved' ? '✅ Одобрено' :
                                                                     p.kaspi_status === 'rejected' ? '❌ Отклонено (AI)' :
-                                                                        p.kaspi_status === 'closed' ? '🔒 Закрыто' : p.kaspi_status}
+                                                                        p.kaspi_status === 'closed' ? '🔒 Закрыто' :
+                                                                            p.kaspi_status === 'pending' ? '🕐 Ожидание' : p.kaspi_status}
                                                         </div>
                                                     )}
                                                 </td>
