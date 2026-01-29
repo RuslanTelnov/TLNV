@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from '@anthropic-ai/sdk';
 import { getSettings } from '@/lib/settings-service';
 
 export async function POST(req) {
@@ -13,6 +14,7 @@ export async function POST(req) {
 
         const settings = await getSettings();
         const openaiApiKey = settings.OPENAI_API_KEY;
+        const anthropicApiKey = settings.ANTHROPIC_API_KEY;
         const googleApiKey = process.env.GOOGLE_API_KEY;
 
         const systemPrompt = `
@@ -33,7 +35,7 @@ export async function POST(req) {
         - "Некорректное название": Suggest a cleaner name (Brand + Model + Type).
         
         If you cannot determine a specific fix, suggest cleaning up the description.
-        Return raw JSON.
+        Return raw JSON only.
         `;
 
         const userPrompt = `
@@ -45,7 +47,31 @@ export async function POST(req) {
         Rejection Reason: ${rejectionReason}
         `;
 
-        // 1. Try OpenAI
+        // 1. Try Anthropic (Priority)
+        if (anthropicApiKey && anthropicApiKey !== 'Not Set') {
+            try {
+                const anthropic = new Anthropic({ apiKey: anthropicApiKey });
+                const message = await anthropic.messages.create({
+                    model: "claude-3-5-sonnet-latest",
+                    max_tokens: 1024,
+                    system: systemPrompt,
+                    messages: [
+                        { role: "user", content: userPrompt }
+                    ]
+                });
+
+                let text = message.content[0].text;
+                // Cleanup text if needed
+                text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                const json = JSON.parse(text);
+                return NextResponse.json({ ...json, provider: 'anthropic' });
+            } catch (err) {
+                console.error('Anthropic Error:', err);
+                // Fallthrough
+            }
+        }
+
+        // 2. Try OpenAI
         if (openaiApiKey && openaiApiKey !== 'Not Set') {
             try {
                 const openai = new OpenAI({ apiKey: openaiApiKey });
@@ -62,17 +88,15 @@ export async function POST(req) {
                 return NextResponse.json({ ...result, provider: 'openai' });
             } catch (err) {
                 console.error('OpenAI Error:', err);
-                // Fallthrough to Gemini
+                // Fallthrough
             }
         }
 
-        // 2. Try Gemini
+        // 3. Try Gemini
         let geminiErrors = [];
         if (googleApiKey) {
-            // Priority: Lite models (separate quota/unused) -> Flash -> Pro
             const modelsToTry = [
                 "gemini-flash-lite-latest",
-                "gemini-2.5-flash-lite",
                 "gemini-1.5-flash-8b",
                 "gemini-flash-latest"
             ];
@@ -80,9 +104,7 @@ export async function POST(req) {
             for (const modelName of modelsToTry) {
                 try {
                     const genAI = new GoogleGenerativeAI(googleApiKey);
-
                     const config = { responseMimeType: "application/json" };
-
                     const model = genAI.getGenerativeModel({
                         model: modelName,
                         generationConfig: config
@@ -91,30 +113,20 @@ export async function POST(req) {
                     const result = await model.generateContent(`${systemPrompt}\n\n${userPrompt}`);
                     const response = result.response;
                     let text = response.text();
-
-                    // Cleanup markdown code blocks if any
                     text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-
                     const json = JSON.parse(text);
                     return NextResponse.json({ ...json, provider: `gemini (${modelName})` });
                 } catch (err) {
-                    console.error(`Gemini Error (${modelName}):`, err.message);
                     geminiErrors.push(`${modelName}: ${err.message}`);
-                    continue; // Try next model
+                    continue;
                 }
             }
         }
 
         return NextResponse.json({
-            error: 'No AI provider configured or available',
-            analysis: 'Все модели AI недоступны (Quota exceeded или 404).',
-            debug: {
-                openaiExpected: !!openaiApiKey,
-                openaiIsSet: openaiApiKey !== 'Not Set',
-                googleExpected: !!googleApiKey,
-                googleStart: googleApiKey ? googleApiKey.substring(0, 5) + '...' : 'null',
-                geminiErrors: geminiErrors
-            },
+            error: 'No AI provider available',
+            analysis: 'Все модели AI недоступны.',
+            debug: { anthropicAvailable: !!anthropicApiKey, openaiAvailable: !!openaiApiKey, geminiErrors },
             actions: []
         }, { status: 503 });
 

@@ -19,9 +19,21 @@ export async function POST(req) {
             }
 
             let updateData = {
-                kaspi_status: 'pending', // Reset status to trigger re-upload
-                kaspi_details: null // Clear previous error
+                kaspi_status: 'pending', // Reset status for UI
+                kaspi_created: false,   // Allow conveyor to re-trigger creation
+                kaspi_details: null,    // Clear previous error
+                conveyor_status: 'idle' // Reset conveyor
             };
+
+            // Fetch current data to increment retries
+            const { data: currentItem } = await supabase
+                .schema('Parser')
+                .table('wb_search_results')
+                .select('moderation_retries')
+                .eq('id', productId)
+                .single();
+
+            updateData.moderation_retries = (currentItem?.moderation_retries || 0) + 1;
 
             // Handle virtual fields (store in specs)
             if (field === 'kaspi_category_id') {

@@ -30,6 +30,7 @@ export async function getSettings(forceRefresh = false) {
         RETAIL_DIVISOR: dbKeys.retail_divisor || process.env.RETAIL_DIVISOR || '0.3',
         MIN_PRICE_DIVISOR: dbKeys.min_price_divisor || process.env.MIN_PRICE_DIVISOR || '0.45',
         OPENAI_API_KEY: dbKeys.openai_api_key || process.env.OPENAI_API_KEY || 'Not Set',
+        ANTHROPIC_API_KEY: dbKeys.anthropic_api_key || process.env.ANTHROPIC_API_KEY || 'Not Set',
         AIRTABLE_API_KEY: dbKeys.airtable_api_key || process.env.AIRTABLE_API_KEY || '',
         AIRTABLE_BASE_ID: dbKeys.airtable_base_id || process.env.AIRTABLE_BASE_ID || '',
         AIRTABLE_TABLE_NAME: dbKeys.airtable_table_name || process.env.AIRTABLE_TABLE_NAME || 'Products',
