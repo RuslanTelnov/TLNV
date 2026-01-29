@@ -37,6 +37,10 @@ class KaspiCategoryMapper:
         'плюш': ('Master - Stuffed toys', 'toys'),
         'медведь': ('Master - Stuffed toys', 'toys'),
         'мишка': ('Master - Stuffed toys', 'toys'),
+        'акула': ('Master - Stuffed toys', 'toys'),
+        'кот': ('Master - Stuffed toys', 'toys'),
+        'котик': ('Master - Stuffed toys', 'toys'),
+        'собак': ('Master - Stuffed toys', 'toys'),
         
         # Model Cars (Correct category for Hot Wheels etc)
         'hot wheels': ('Master - Play vehicles', 'model_cars'),

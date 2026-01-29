@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS wb_top_products (
+CREATE TABLE IF NOT EXISTS "Parser".wb_top_products (
     id BIGINT PRIMARY KEY, -- WB Article ID (nmId)
     name TEXT,
     brand TEXT,

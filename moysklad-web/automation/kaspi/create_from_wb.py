@@ -28,7 +28,7 @@ def init_supabase() -> Client:
             break
             
     url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-    key = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
     
     if not url or not key:
         raise ValueError("Supabase URL or Key not found in environment variables.")
@@ -301,13 +301,14 @@ def create_from_wb(article_input):
                     
                 # 2. Update specs with Kaspi info
                 specs["kaspi_created"] = True
-                specs["kaspi_upload_status"] = "uploaded"
                 specs["kaspi_upload_id"] = upload_id or "unknown"
                 specs["kaspi_sku"] = sku
                 
-                # 3. Save back
+                # 3. Save back with new columns
                 update_data = {
-                    "kaspi_created": True, # Keep this boolean as it exists in table (checked earlier) or is useful
+                    "kaspi_created": True,
+                    "kaspi_status": "moderation",
+                    "kaspi_upload_id": upload_id or "unknown",
                     "specs": specs
                 }
                 
@@ -317,7 +318,7 @@ def create_from_wb(article_input):
                      update_data["specs"] = specs
                 
                 supabase.schema('Parser').table('wb_search_results').update(update_data).eq("id", int(article_id)).execute()
-                print(f"🔄 Updated DB status in wb_search_results (specs): ID={upload_id}")
+                print(f"🔄 Updated DB status in wb_search_results: ID={upload_id}, Status=moderation")
             except Exception as e:
                 print(f"⚠️  Failed to update status in Supabase: {e}")
         else:

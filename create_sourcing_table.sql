@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS sourcing_recommendations (
+CREATE TABLE IF NOT EXISTS "Parser".sourcing_recommendations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     moysklad_id TEXT NOT NULL,
     product_name TEXT,
@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS sourcing_recommendations (
 );
 
 -- Add index for faster lookups
-CREATE INDEX IF NOT EXISTS idx_sourcing_moysklad_id ON sourcing_recommendations(moysklad_id);
+CREATE INDEX IF NOT EXISTS idx_sourcing_moysklad_id ON "Parser".sourcing_recommendations(moysklad_id);

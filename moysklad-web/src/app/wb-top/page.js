@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import ModerationFixModal from '@/components/ModerationFixModal';
 
 export default function WbTopPage() {
     // Parsing / Data States
@@ -46,6 +47,7 @@ export default function WbTopPage() {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [updating, setUpdating] = useState(false);
     const [toast, setToast] = useState(null);
+    const [fixModalProduct, setFixModalProduct] = useState(null);
 
     // --- Effects ---
 
@@ -568,6 +570,7 @@ export default function WbTopPage() {
                                             <th>Доставка</th>
                                             <th>Наличие</th>
                                             <th>Статус Конвейера</th>
+                                            <th>Модерация</th>
                                             <th>Действия</th>
                                         </tr>
                                     </thead>
@@ -634,12 +637,55 @@ export default function WbTopPage() {
                                                         <StatusIcon label="Склад" active={p.stock_added} icon="🏭" />
                                                         <StatusIcon label="Kaspi" active={p.kaspi_created} icon="💳" />
                                                     </div>
+
                                                     {p.conveyor_status && p.conveyor_status !== 'idle' && (
                                                         <div
                                                             style={{ fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'center', color: p.conveyor_status === 'error' ? '#EF4444' : '#10B981', cursor: p.conveyor_status === 'error' ? 'help' : 'default' }}
                                                             title={p.conveyor_status === 'error' ? (p.conveyor_log || 'Unknown Error') : ''}
                                                         >
                                                             {p.conveyor_status === 'processing' ? 'В работе...' : (p.conveyor_status === 'error' ? 'Ошибка (см. лог)' : p.conveyor_status)}
+                                                        </div>
+                                                    )}
+                                                </td>
+
+                                                <td>
+                                                    {/* Kaspi Moderation Status */}
+                                                    {p.kaspi_status && p.kaspi_status !== 'pending' && (
+                                                        <div
+                                                            onClick={p.kaspi_status === 'rejected' ? (e) => { e.stopPropagation(); setFixModalProduct(p); } : undefined}
+                                                            style={{
+                                                                fontSize: '0.8rem',
+                                                                textAlign: 'center',
+                                                                padding: '4px 8px',
+                                                                borderRadius: '8px',
+                                                                background: p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.1)' :
+                                                                    p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.1)' :
+                                                                        p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
+                                                                color: p.kaspi_status === 'moderation' ? '#f59e0b' :
+                                                                    p.kaspi_status === 'approved' ? '#10b981' :
+                                                                        p.kaspi_status === 'rejected' ? '#ef4444' : 'inherit',
+                                                                border: `1px solid ${p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.3)' :
+                                                                    p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.3)' :
+                                                                        p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.3)' : 'transparent'}`,
+                                                                cursor: p.kaspi_status === 'rejected' ? 'pointer' : 'default',
+                                                                fontWeight: '600',
+                                                                transition: 'all 0.2s ease'
+                                                            }}
+                                                            title={p.kaspi_status === 'rejected' ? 'Нажмите, чтобы исправить через AI' : (p.kaspi_details || '')}
+                                                            onMouseEnter={(e) => {
+                                                                if (p.kaspi_status === 'rejected') {
+                                                                    e.currentTarget.style.transform = 'scale(1.05)';
+                                                                    e.currentTarget.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.3)';
+                                                                }
+                                                            }}
+                                                            onMouseLeave={(e) => {
+                                                                e.currentTarget.style.transform = 'scale(1)';
+                                                                e.currentTarget.style.boxShadow = 'none';
+                                                            }}
+                                                        >
+                                                            {p.kaspi_status === 'moderation' ? '⏳ На модерации' :
+                                                                p.kaspi_status === 'approved' ? '✅ Одобрено' :
+                                                                    p.kaspi_status === 'rejected' ? '❌ Отклонено (AI)' : p.kaspi_status}
                                                         </div>
                                                     )}
                                                 </td>
@@ -771,6 +817,13 @@ export default function WbTopPage() {
                         </div>
                     )
                 }
+
+                <ModerationFixModal
+                    isOpen={!!fixModalProduct}
+                    product={fixModalProduct}
+                    onClose={() => setFixModalProduct(null)}
+                    onFixApplied={() => setLastUpdated(new Date())}
+                />
 
             </main >
 

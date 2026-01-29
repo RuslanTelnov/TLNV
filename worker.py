@@ -4,6 +4,7 @@ import sys
 import subprocess
 import threading
 import concurrent.futures
+import random
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -11,7 +12,7 @@ from supabase import create_client, Client
 load_dotenv(os.path.join(os.getcwd(), "moysklad-web", ".env.local"))
 
 url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-key = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
 if not url or not key:
     print("❌ Error: Missing Supabase keys in moysklad-web/.env.local")
@@ -19,11 +20,14 @@ if not url or not key:
 
 supabase: Client = create_client(url, key)
 
-# Fix path to import conveyor logic
+# Fix paths to import modules
 automation_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'moysklad')
 kaspi_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'kaspi')
+airtable_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'airtable')
+
 sys.path.append(automation_path) 
 sys.path.append(kaspi_path)
+sys.path.append(airtable_path)
 
 try:
     from process_conveyor import run_conveyor as run_conveyor_logic
@@ -32,16 +36,86 @@ except ImportError as e:
     def run_conveyor_logic(**kwargs):
         print("Conveyor logic not available due to import error.")
 
+try:
+    from sync_to_airtable import sync_products as sync_to_airtable_func
+except ImportError as e:
+    print(f"⚠️ Warning: Could not import Airtable sync logic: {e}")
+    def sync_to_airtable_func():
+        # Fallback to subprocess if direct import fails
+        try:
+            subprocess.run(["python3", "moysklad-web/automation/airtable/sync_to_airtable.py"], check=False)
+        except:
+            pass
+
+try:
+    from discovery_keywords import KEYWORDS as DISCOVERY_KEYWORDS
+except ImportError:
+    # If discovery_keywords.py import fails, try to load it directly
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("discovery_keywords", os.path.join(automation_path, "discovery_keywords.py"))
+        dk_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(dk_mod)
+        DISCOVERY_KEYWORDS = dk_mod.KEYWORDS
+    except:
+        DISCOVERY_KEYWORDS = ["Хиты", "Игрушки", "Дом", "Кухня", "Спорт", "Авто", "Красота"]
+
 # Global state to track active jobs
 active_jobs_lock = threading.Lock()
 active_jobs = set()
 
-def start_background_conveyor():
-    """Starts the conveyor logic in a separate thread for real-time processing"""
-    print("🚀 Starting Integrated Conveyor (Single Pass: False, Skip Parser: True)...")
-    t = threading.Thread(target=run_conveyor_logic, kwargs={"single_pass": False, "skip_parser": True}, daemon=True)
+def start_background_services():
+    """Starts background services (Kaspi Checker, Airtable Sync)"""
+    def run_periodically():
+        while True:
+            # 1. Kaspi Status Checker
+            try:
+                # print("⏱️  Running Kaspi Status Checker...")
+                subprocess.run(["python3", "moysklad-web/automation/kaspi/check_kaspi_status.py"], check=False)
+            except Exception as e:
+                print(f"⚠️ Kaspi Status Checker Error: {e}")
+            
+            # 2. Airtable Sync
+            try:
+                # print("⏱️  Running Periodic Airtable Sync...")
+                sync_to_airtable_func()
+            except Exception as e:
+                print(f"⚠️ Airtable Sync Error: {e}")
+
+            time.sleep(300) # Every 5 minutes
+            
+    print("🚀 Starting Background Services (Kaspi Checker + Airtable Sync)...")
+    t = threading.Thread(target=run_periodically, daemon=True)
     t.start()
     return t
+
+def check_autonomous_mode():
+    """Checks if autonomous mode is enabled and adds a job if queue is empty"""
+    try:
+        # Check config
+        res = supabase.schema('Parser').table('client_configs').select('is_autonomous_mode').eq('id', 1).limit(1).execute()
+        is_auto = False
+        if res.data:
+            is_auto = res.data[0].get('is_autonomous_mode', False)
+            
+        if is_auto:
+            # Check if queue count is low
+            count_res = supabase.schema('Parser').table("parser_queue").select("id", count="exact").eq("status", "pending").execute()
+            pending_count = count_res.count if count_res.count is not None else 0
+            
+            if pending_count < 2:
+                # Add a random discovery job
+                keyword = random.choice(DISCOVERY_KEYWORDS)
+                print(f"🤖 Autonomous Mode: Adding job for '{keyword}'")
+                supabase.schema('Parser').table("parser_queue").insert({
+                    "mode": "search",
+                    "query": keyword,
+                    "status": "pending"
+                }).execute()
+                return True
+    except Exception as e:
+        print(f"⚠️ Autonomous Mode Check Error: {e}")
+    return False
 
 def run_parser(job):
     job_id = job['id']
@@ -54,7 +128,7 @@ def run_parser(job):
     print(f"🚀 Starting job {job_id}: {mode} '{query}'...")
     
     # Mark as processing
-    supabase.table("parser_queue").update({"status": "processing"}).eq("id", job_id).execute()
+    supabase.schema('Parser').table("parser_queue").update({"status": "processing"}).eq("id", job_id).execute()
     
     cmd = ["python3", "moysklad-web/automation/moysklad/parse_wb_top.py"]
     
@@ -71,46 +145,48 @@ def run_parser(job):
         
         if result.returncode == 0:
             print(f"✅ Job {job_id} completed!")
-            supabase.table("parser_queue").update({
+            supabase.schema('Parser').table("parser_queue").update({
                 "status": "completed",
                 "log": f"Success. Log: {result.stdout[-2000:]}"
             }).eq("id", job_id).execute()
         else:
             print(f"❌ Job {job_id} failed!")
-            supabase.table("parser_queue").update({
+            supabase.schema('Parser').table("parser_queue").update({
                 "status": "error",
                 "log": result.stderr[-2000:]
             }).eq("id", job_id).execute()
             
     except subprocess.TimeoutExpired:
         print(f"⌛ Job {job_id} timed out!")
-        supabase.table("parser_queue").update({
+        supabase.schema('Parser').table("parser_queue").update({
             "status": "error",
             "log": "Timeout error (20 minutes)"
         }).eq("id", job_id).execute()
     except Exception as e:
         print(f"❌ Exception in job {job_id}: {e}")
-        supabase.table("parser_queue").update({
+        supabase.schema('Parser').table("parser_queue").update({
             "status": "error",
             "log": str(e)
         }).eq("id", job_id).execute()
     finally:
         with active_jobs_lock:
             active_jobs.remove(job_id)
+        
+        # Trigger immediate Airtable sync after job
+        try:
+            print(f"🔄 Job {job_id} finished, triggering Airtable sync...")
+            sync_to_airtable_func()
+        except Exception as e:
+            print(f"⚠️ Error in post-job sync: {e}")
 
 def fetch_next_job():
-    """
-    Fetches the next pending job with priority:
-    1. mode='search' (user queries)
-    2. others (top charts, etc)
-    """
     # 1. Check for search jobs
-    res = supabase.table("parser_queue").select("*").eq("status", "pending").eq("mode", "search").order("created_at", desc=False).limit(1).execute()
+    res = supabase.schema('Parser').table("parser_queue").select("*").eq("status", "pending").eq("mode", "search").order("created_at", desc=False).limit(1).execute()
     if res.data:
         return res.data[0]
         
     # 2. Check for any other jobs (top)
-    res = supabase.table("parser_queue").select("*").eq("status", "pending").order("created_at", desc=False).limit(1).execute()
+    res = supabase.schema('Parser').table("parser_queue").select("*").eq("status", "pending").order("created_at", desc=False).limit(1).execute()
     if res.data:
         return res.data[0]
         
@@ -119,11 +195,15 @@ def fetch_next_job():
 def main():
     print("👷 Multi-Worker Parser started. Waiting for jobs...")
     
-    # Start the "Instant" processor
-    start_background_conveyor()
+    # Start Services
+    start_background_services()
+    
+    # Also start the Conveyor Logic (Stream Processor)
+    print("🚀 Starting Integrated Conveyor Stream...")
+    t_conveyor = threading.Thread(target=run_conveyor_logic, kwargs={"single_pass": False, "skip_parser": True}, daemon=True)
+    t_conveyor.start()
     
     # Use ThreadPoolExecutor for concurrent jobs
-    # MAX_WORKERS = 2 allows one 'top' and one 'search' or two 'search'
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         while True:
             try:
@@ -131,10 +211,16 @@ def main():
                 with active_jobs_lock:
                     slots_busy = len(active_jobs)
                 
+                job = None
                 if slots_busy < 2:
                     job = fetch_next_job()
+                    
+                    if not job:
+                        # If no job, try Autonomous Mode
+                        if check_autonomous_mode():
+                            job = fetch_next_job()
+
                     if job:
-                        # Double check if job is already being processed (race condition)
                         with active_jobs_lock:
                             if job['id'] in active_jobs:
                                 continue

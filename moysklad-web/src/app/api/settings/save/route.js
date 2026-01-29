@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import { clearSettingsCache } from '@/lib/settings-service';
 
 export async function POST(req) {
@@ -16,14 +16,9 @@ export async function POST(req) {
             OPENAI_API_KEY
         } = body;
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
-
-        if (!supabaseUrl || !supabaseKey) {
+        if (!supabase) {
             return NextResponse.json({ error: 'Supabase configuration missing' }, { status: 500 });
         }
-
-        const supabase = createClient(supabaseUrl, supabaseKey);
 
         // Map UI names to DB column names
         const updateData = {
@@ -66,7 +61,17 @@ export async function POST(req) {
             !OPENAI_API_KEY.includes('Connected') &&
             OPENAI_API_KEY !== 'Not Set' &&
             OPENAI_API_KEY !== '') {
-            updateData.openai_key = OPENAI_API_KEY;
+            updateData.openai_api_key = OPENAI_API_KEY; // Corrected column name
+        }
+
+        // Airtable
+        setIfValid('airtable_api_key', body.AIRTABLE_API_KEY);
+        setIfValid('airtable_base_id', body.AIRTABLE_BASE_ID);
+        setIfValid('airtable_table_name', body.AIRTABLE_TABLE_NAME);
+
+        // Autonomous Mode (ensure boolean)
+        if (body.IS_AUTONOMOUS_MODE !== undefined) {
+            updateData.is_autonomous_mode = !!body.IS_AUTONOMOUS_MODE;
         }
 
         console.log('Updating settings with fields:', Object.keys(updateData));

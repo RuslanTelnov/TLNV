@@ -168,98 +168,75 @@ export default function Settings() {
                         </button>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        {Object.entries(keys).map(([name, value]) => (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                key={name}
-                                className="velveto-card"
-                                style={{
-                                    padding: '1.5rem 2rem',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '0.8rem',
-                                    border: '1px solid rgba(255,255,255,0.03)'
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{
-                                        color: 'var(--velveto-accent-primary)',
-                                        fontSize: '0.7rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.1em'
-                                    }}>
-                                        {name.replace(/_/g, ' ')}
-                                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+                        {/* Section: Autonomous Mode */}
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="velveto-card" style={{ padding: '2rem', border: '1px solid var(--velveto-accent-primary)', boxShadow: '0 0 20px rgba(255, 215, 0, 0.1)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--velveto-text-primary)' }}>🤖 АВТОНОМНЫЙ РЕЖИМ (24/7)</h3>
+                                    <p style={{ margin: '0.5rem 0 0', color: 'var(--velveto-text-secondary)', fontSize: '0.9rem' }}>
+                                        Если включено, парсер будет работать непрерывно. Когда задачи закончатся, он сам добавит новые ключевые слова в очередь.
+                                    </p>
                                 </div>
-                                <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-                                    <input
-                                        type={name.includes('PASSWORD') || name.includes('TOKEN') || name.includes('KEY') ? "text" : "text"}
-                                        value={value === 'Not Set' ? '' : value}
-                                        placeholder={value === 'Not Set' ? 'Введите значение...' : ''}
-                                        onChange={(e) => handleChange(name, e.target.value)}
-                                        disabled={name === 'SUPABASE_URL'}
-                                        style={{
-                                            fontSize: '1rem',
-                                            color: 'var(--velveto-text-primary)',
-                                            fontFamily: 'monospace',
-                                            background: 'rgba(0,0,0,0.3)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            padding: '0.8rem',
-                                            borderRadius: '4px',
-                                            flex: 1,
-                                            outline: 'none',
-                                            transition: 'border-color 0.2s'
-                                        }}
-                                        onFocus={(e) => e.target.style.borderColor = 'var(--velveto-accent-primary)'}
-                                        onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-                                    />
-                                    {value && value !== 'Not Set' && (
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(value);
-                                                // Minimal feedback
-                                                const btn = document.getElementById(`copy-${name}`);
-                                                if (btn) {
-                                                    const oldText = btn.innerText;
-                                                    btn.innerText = '✓';
-                                                    btn.style.color = '#4CAF50';
-                                                    setTimeout(() => {
-                                                        btn.innerText = oldText;
-                                                        btn.style.color = 'var(--velveto-text-secondary)';
-                                                    }, 2000);
-                                                }
-                                            }}
-                                            id={`copy-${name}`}
-                                            title="Copy to clipboard"
-                                            style={{
-                                                background: 'rgba(255,255,255,0.05)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                color: 'var(--velveto-text-secondary)',
-                                                padding: '0.8rem 1rem',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer',
-                                                fontSize: '0.8rem',
-                                                transition: 'all 0.2s'
-                                            }}
-                                            onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
-                                            onMouseOut={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
-                                        >
-                                            COPY
-                                        </button>
-                                    )}
+                                <div
+                                    onClick={() => handleChange('IS_AUTONOMOUS_MODE', !keys.IS_AUTONOMOUS_MODE)}
+                                    style={{
+                                        width: '60px', height: '34px', background: keys.IS_AUTONOMOUS_MODE ? 'var(--velveto-accent-primary)' : '#555',
+                                        borderRadius: '34px', position: 'relative', cursor: 'pointer', transition: 'all 0.3s'
+                                    }}
+                                >
+                                    <div style={{
+                                        width: '26px', height: '26px', background: '#fff', borderRadius: '50%',
+                                        position: 'absolute', top: '4px', left: keys.IS_AUTONOMOUS_MODE ? '30px' : '4px',
+                                        transition: 'all 0.3s', boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
+                                    }} />
                                 </div>
-                                {name === 'SUPABASE_URL' && (
-                                    <span style={{ fontSize: '0.6rem', color: 'var(--velveto-text-secondary)' }}>
-                                        Системный параметр (только для чтения)
-                                    </span>
-                                )}
-                            </motion.div>
-                        ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Section: Airtable Integration */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <h3 style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', paddingLeft: '0.5rem' }}>Airtable Integration</h3>
+                            {['AIRTABLE_API_KEY', 'AIRTABLE_BASE_ID', 'AIRTABLE_TABLE_NAME'].map(name => (
+                                <SettingInput key={name} name={name} value={keys[name]} onChange={handleChange} />
+                            ))}
+                        </div>
+
+                        {/* Section: Other Keys */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <h3 style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', paddingLeft: '0.5rem' }}>Standard API Keys</h3>
+                            {Object.entries(keys)
+                                .filter(([k]) => !['IS_AUTONOMOUS_MODE', 'AIRTABLE_API_KEY', 'AIRTABLE_BASE_ID', 'AIRTABLE_TABLE_NAME'].includes(k))
+                                .map(([name, value]) => (
+                                    <SettingInput key={name} name={name} value={value} onChange={handleChange} />
+                                ))}
+                        </div>
                     </div>
                 )}
             </main>
         </div>
     )
 }
+
+function SettingInput({ name, value, onChange }) {
+    const isSensitive = name.includes('PASSWORD') || name.includes('TOKEN') || name.includes('KEY');
+    return (
+        <motion.div className="velveto-card" style={{ padding: '1.5rem 2rem', border: '1px solid rgba(255,255,255,0.03)' }}>
+            <div style={{ color: 'var(--velveto-accent-primary)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+                {name.replace(/_/g, ' ')}
+            </div>
+            <input
+                type="text"
+                value={value === 'Not Set' ? '' : value}
+                placeholder={value === 'Not Set' ? 'Введите значение...' : ''}
+                onChange={(e) => onChange(name, e.target.value)}
+                style={{
+                    width: '100%', fontSize: '1rem', color: 'var(--velveto-text-primary)', fontFamily: 'monospace',
+                    background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '4px', outline: 'none'
+                }}
+            />
+        </motion.div>
+    );
+}
+

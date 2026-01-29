@@ -1,15 +1,20 @@
 import os
-from curl_cffi import requests
+import requests
 import base64
 import json
 from dotenv import load_dotenv
 from supabase import create_client
 
-load_dotenv()
+load_dotenv("moysklad-web/.env.local")
 
 # Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("❌ Error: Missing credentials in moysklad-web/.env.local")
+    exit(1)
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # MoySklad
@@ -86,8 +91,8 @@ def sync_stock():
             }
             
             try:
-                # Upsert by moysklad_id
-                res = supabase.schema('Parser').table('products').upsert(product_data, on_conflict="moysklad_id").execute()
+                # Upsert by article (which is unique in DB)
+                res = supabase.schema('Parser').table('products').upsert(product_data, on_conflict="article").execute()
                 
                 if len(res.data) > 0:
                     print(f"   ✅ Upserted {name}: stock={stock}")

@@ -18,7 +18,7 @@ class ImageUploader:
     def __init__(self):
         # Initialize Supabase client
         self.url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-        self.key = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+        self.key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
         
         if not self.url or not self.key:
             # Try loading from .env.local relative to this script if env vars are missing
@@ -26,7 +26,7 @@ class ImageUploader:
             env_path = os.path.join(os.path.dirname(__file__), '../../../.env.local')
             load_dotenv(env_path)
             self.url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-            self.key = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+            self.key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
         if not self.url or not self.key:
             raise ValueError("Supabase credentials not found")

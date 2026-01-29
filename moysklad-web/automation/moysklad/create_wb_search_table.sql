@@ -1,7 +1,7 @@
--- Create table for WB Search Results
-create table if not exists public.wb_search_results (
+-- CREATE TABLE "Parser".for WB Search Results
+CREATE TABLE IF NOT EXISTS "Parser".wb_search_results (
     id bigint primary key, -- WB Product ID (nm_id)
-    position integer,
+    positiON integer,
     name text,
     brand text,
     price_kzt numeric,
@@ -17,7 +17,7 @@ create table if not exists public.wb_search_results (
 );
 
 -- Enable RLS (optional, but good practice)
-alter table public.wb_search_results enable row level security;
+alter table "Parser".wb_search_results enable row level security;
 
 -- Create policy to allow all access (since this is internal tool)
-create policy "Allow all access" on public.wb_search_results for all using (true) with check (true);
+create policy "Allow all access" on "Parser".wb_search_results for all using (true) with check (true);
