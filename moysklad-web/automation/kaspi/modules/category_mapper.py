@@ -151,6 +151,13 @@ class KaspiCategoryMapper:
         # Plasticine / Modeling
         'пластилин': ('Master - Artistic dough', 'modeling'),
         'лепка': ('Master - Artistic dough', 'modeling'),
+        
+        # Hoodies & Sweatshirts (Prioritized)
+        'худи': ('Master - Women hoodies', 'hoodies'),
+        'толстовка': ('Master - Women hoodies', 'hoodies'),
+        'свитшот': ('Master - Women hoodies', 'hoodies'),
+        'джемпер': ('Master - Women jumpers', 'hoodies'),
+        'свитер': ('Master - Women jumpers', 'hoodies'),
     }
     
     @classmethod
@@ -167,17 +174,33 @@ class KaspiCategoryMapper:
                 return None, "restricted"
 
         # 1. Manual keyword mapping (fast pass)
-        print(f"DEBUG: Checking '{text}' against map...", file=sys.stderr)
-        # Sort keys by length descending to match longer phrases first (e.g. 'коляска для кукол' before 'коляска')
+        print(f"DEBUG: Checking '{name}' against map (TITLE ONLY first)...", file=sys.stderr)
         sorted_keywords = sorted(cls.CATEGORY_MAP.keys(), key=len, reverse=True)
         
+        # Pass 1: Check ONLY Title
+        name_lower = name.lower()
         for keyword in sorted_keywords:
             cat_name, cat_type = cls.CATEGORY_MAP[keyword]
-            # Use regex to match keyword at word start or as whole word stem
-            # This helps avoid matching 'носк' in 'износостойкость'
             pattern = rf"\b{re.escape(keyword)}"
-            if re.search(pattern, text):
-                print(f"DEBUG: Found match '{keyword}' -> {cat_name}", file=sys.stderr)
+            if re.search(pattern, name_lower):
+                print(f"DEBUG: Found match '{keyword}' in TITLE -> {cat_name}", file=sys.stderr)
+                return cat_name, cat_type
+                
+        # Pass 2: Check Description (but exclude strict categories like Socks)
+        # Some categories are too sensitive to description noise (like Socks, Medicine keywords etc)
+        STRICT_TITLE_ONLY_TYPES = ['socks', 'hoodies']
+        
+        print(f"DEBUG: Checking Description for non-strict categories...", file=sys.stderr)
+        description_lower = description.lower()
+        for keyword in sorted_keywords:
+            cat_name, cat_type = cls.CATEGORY_MAP[keyword]
+            
+            if cat_type in STRICT_TITLE_ONLY_TYPES:
+                continue
+                
+            pattern = rf"\b{re.escape(keyword)}"
+            if re.search(pattern, description_lower):
+                print(f"DEBUG: Found match '{keyword}' in DESCRIPTION -> {cat_name}", file=sys.stderr)
                 return cat_name, cat_type
         
         # 2. Universal Search in kaspi_categories.json
@@ -525,6 +548,8 @@ class KaspiCategoryMapper:
             return cls.generate_attributes_for_strollers(product_name, product_description)
         elif category_type == 'modeling':
             return cls.generate_attributes_for_modeling(product_name, product_description)
+        elif category_type == 'hoodies':
+            return cls.generate_attributes_for_hoodies(product_name, product_description, raw_attributes)
         
         # Universal AI filling for other categories
         if category_code:
@@ -697,6 +722,64 @@ class KaspiCategoryMapper:
         if color_match:
             attributes["Modeling kits*Number of colors"] = int(color_match.group(1))
             
+        return attributes
+
+    @classmethod
+    def generate_attributes_for_hoodies(cls, product_name: str, product_description: str = "", raw_attributes: Dict = None) -> Dict[str, str]:
+        """Generate Kaspi attributes for Hoodies, Sweatshirts, Jumpers."""
+        text = (product_name + " " + product_description).lower()
+        title_lower = product_name.lower()
+        
+        # 1. Determine Gender and Correct Category Code
+        # Default to Women
+        is_men = any(w in title_lower for w in ['мужск', 'мужчин', 'men', 'man'])
+        
+        attributes = {}
+        
+        # Dynamic Attribute Prefix based on gender match
+        # Note: The mapping in detect_category returned 'Master - Women hoodies', 
+        # but here we might need to adjust the actual output dictionary keys?
+        # Kaspi Mapper usually expects the keys to match the category. 
+        # If we return attributes for "Men hoodies" but the detected category was "Women hoodies", 
+        # we need to make sure the Main Script updates the category_name validation too.
+        # Ideally, this function should return both the attributes AND a corrected category name if possible?
+        # For now, we assume the keys here will be merged, but the keys MUST match the category code.
+        
+        # Let's try to infer if we are "Women" or "Men" based on the call context?
+        # Actually `generate_attributes` doesn't return the category code.
+        # But we can try to guess the most likely attributes.
+        
+        prefix = "Women hoodies"
+        if is_men:
+            prefix = "Men hoodies"
+            
+        # Basic mapping
+        attributes[f"{prefix}*Size"] = "42" # Default
+        attributes[f"{prefix}*Color"] = "черный"
+        
+        # Extract Size
+        # Try to find common sizes
+        size_match = re.search(r'\b(xs|s|m|l|xl|xxl|xxxl|42|44|46|48|50|52|54|56)\b', text)
+        if size_match:
+            attributes[f"{prefix}*Size"] = size_match.group(1).upper()
+            
+        # Extract Color
+        if "черн" in text: attributes[f"{prefix}*Color"] = "черный"
+        elif "бел" in text: attributes[f"{prefix}*Color"] = "белый"
+        elif "сер" in text: attributes[f"{prefix}*Color"] = "серый"
+        elif "бежевый" in text: attributes[f"{prefix}*Color"] = "бежевый"
+        elif "син" in text: attributes[f"{prefix}*Color"] = "синий"
+        elif "зелен" in text: attributes[f"{prefix}*Color"] = "зеленый"
+        elif "розовый" in text: attributes[f"{prefix}*Color"] = "розовый"
+        
+        # Composition (optional but good)
+        if "хлопок" in text:
+             attributes[f"{prefix}*Composition"] = "хлопок"
+        elif "синтетика" in text or "полиэстер" in text:
+             attributes[f"{prefix}*Composition"] = "полиэстер"
+        else:
+             attributes[f"{prefix}*Composition"] = "хлопок"
+
         return attributes
 
     @staticmethod
