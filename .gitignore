@@ -69,3 +69,7 @@ wb_enricher_debug.html
 price.xml
 kaspi_price_manual.xml
 kaspi_upload.xml
+.env.ozon
+kaspi_debug_no_price.png
+kaspi_product_debug.html
+moysklad-web/automation/ozon/ozon-automation/images/

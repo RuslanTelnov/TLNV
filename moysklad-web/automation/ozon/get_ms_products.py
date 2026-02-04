@@ -5,8 +5,10 @@ import json
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-# Load env from moysklad-automation folder
-load_dotenv(os.path.join(os.getcwd(), "moysklad-automation", ".env"))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Navigate up 4 levels to reach moysklad-automation root
+env_path = os.path.abspath(os.path.join(script_dir, "../../../../.env"))
+load_dotenv(env_path)
 
 # MoySklad Settings
 LOGIN = os.getenv("MOYSKLAD_LOGIN")
@@ -24,11 +26,21 @@ HEADERS = {
 # Supabase Settings
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as e:
+        print(f"⚠️ Supabase init failed: {e}")
+        supabase = None
+else:
+    print("⚠️ Supabase credentials missing. Supabase upload will be skipped.")
+    supabase = None
 BUCKET_NAME = "product-images"
 
 def upload_to_supabase(content, filename):
     """Upload image to Supabase Storage and return public URL"""
+    if not supabase:
+        return None
     try:
         path = f"ozon_upload_{filename}"
         # Check if file exists to avoid re-uploading if not needed? 
@@ -47,34 +59,52 @@ def get_products():
     print("🚀 Starting product fetch from MoySklad...")
     
     url = f"{BASE_URL}/entity/assortment"
-    params = {
-        "store": f"https://api.moysklad.ru/api/remap/1.2/entity/store/{MAIN_WAREHOUSE_ID}",
-        "limit": 100, # Increased limit to fetch more products
-        "stockMode": "positiveOnly",
-        "expand": "images,components" # Expand images
-    }
     
-    resp = requests.get(url, headers=HEADERS, params=params)
-    if resp.status_code != 200:
-        print(f"❌ Error fetching assortment: {resp.text}")
-        return
+    offset = 0
+    all_rows = []
+    
+    while True:
+        print(f"🔄 Fetching products offset {offset}...")
+        params = {
+            "store": f"https://api.moysklad.ru/api/remap/1.2/entity/store/{MAIN_WAREHOUSE_ID}",
+            "limit": 100,
+            "offset": offset,
+            "stockMode": "positiveOnly",
+            "expand": "images,components"
+        }
+        
+        try:
+            resp = requests.get(url, headers=HEADERS, params=params)
+            if resp.status_code != 200:
+                print(f"❌ Error fetching assortment: {resp.text}")
+                break
+                
+            data = resp.json()
+            rows = data.get('rows', [])
+            all_rows.extend(rows)
+            
+            if len(rows) < 100:
+                break
+                
+            offset += 100
+        except Exception as e:
+            print(f"❌ Exception fetching page: {e}")
+            break
 
-    data = resp.json()
-    rows = data.get('rows', [])
-    
     products_to_process = []
     
-    print(f"📥 Fetched {len(rows)} items. Processing...")
+    print(f"📥 Fetched total {len(all_rows)} items. Processing...")
     
-    for item in rows:
+    for item in all_rows:
         ms_id = item.get('id')
         name = item.get('name')
         stock = item.get('stock', 0)
-        quantity = item.get('quantity', 0) # Available stock (stock - reserve)
+        quantity = item.get('quantity', 0) 
+        
         description = item.get('description', '')
         article = item.get('article', '')
         
-        # We use 'quantity' to ensure we only take what's actually available for sale
+        # Ensure we only process items with positive quantity
         if quantity <= 0:
             continue
             

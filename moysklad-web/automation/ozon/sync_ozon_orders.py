@@ -15,7 +15,12 @@ OZON_CLIENT_ID = os.getenv('OZON_CLIENT_ID')
 OZON_API_KEY = os.getenv('OZON_API_KEY')
 
 # Load MoySklad Env (from parent/moysklad-automation)
-ms_env_path = os.path.join(os.path.dirname(script_dir), "moysklad-automation", ".env")
+# Load MoySklad Env (from root moysklad-automation)
+# Path: .../moysklad-automation/temp_tlnv_parser/moysklad-web/automation/ozon/sync_ozon_orders.py
+# Env:  .../moysklad-automation/.env
+# Need to go up 4 levels
+ms_env_path = os.path.join(script_dir, "..", "..", "..", "..", ".env")
+ms_env_path = os.path.abspath(ms_env_path)
 load_dotenv(ms_env_path)
 
 MOYSKLAD_LOGIN = os.getenv('MOYSKLAD_LOGIN')

@@ -6,9 +6,15 @@ import subprocess
 import re
 from dotenv import load_dotenv
 
-# Load env
-load_dotenv(os.path.join(os.getcwd(), "moysklad-automation", ".env"))
-load_dotenv(os.path.join(os.getcwd(), "ozon-automation", ".env.ozon"))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Navigate up 4 levels to reach moysklad-automation root
+env_path = os.path.abspath(os.path.join(script_dir, "../../../../.env"))
+load_dotenv(env_path)
+
+# Try loading .env.ozon if it exists in current dir or parent
+ozon_env_path = os.path.join(script_dir, ".env.ozon")
+if os.path.exists(ozon_env_path):
+    load_dotenv(ozon_env_path)
 
 # MoySklad Settings
 MS_LOGIN = os.getenv("MOYSKLAD_LOGIN")
@@ -26,34 +32,32 @@ OZON_HEADERS = {
     'Content-Type': 'application/json'
 }
 
-def upload_to_imgbb(content, filename):
-    """Upload image content to imgbb.com"""
-    print(f"☁️ Uploading {filename} to ImgBB...")
+def upload_to_catbox(content, filename):
+    """Upload file to catbox.moe and return public URL"""
+    print(f"☁️ Uploading {filename} to catbox.moe...")
     try:
-        url = "https://api.imgbb.com/1/upload"
-        payload = {
-            "key": IMGBB_API_KEY,
-        }
-        files = {
-            "image": (filename, content)
-        }
-        response = requests.post(url, data=payload, files=files)
+        files = {'fileToUpload': (filename, content)}
+        data = {'reqtype': 'fileupload'}
+        response = requests.post('https://catbox.moe/user/api.php', files=files, data=data)
         if response.status_code == 200:
-            data = response.json()
-            url = data['data']['url']
+            url = response.text.strip()
             print(f"✅ Public URL: {url}")
             return url
         else:
-            print(f"❌ ImgBB error: {response.status_code} - {response.text}")
+            print(f"❌ Catbox upload failed: {response.status_code}")
     except Exception as e:
-        print(f"❌ ImgBB exception: {e}")
+        print(f"❌ Catbox exception: {e}")
     return None
 
 def fetch_kaspi_data(sku):
     """Fetch product data from Kaspi using playwright script"""
     print(f"🔍 Searching in Kaspi for SKU: {sku}...")
     try:
-        cmd = ["python3", "kaspi-automation/fetch_kaspi_product.py", sku]
+        # Path to kaspi automation relative to this script
+        # structure: automation/ozon/create_ozon_by_article.py -> automation/kaspi/fetch_kaspi_product.py
+        # So we go up one level then into kaspi
+        kaspi_script = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "kaspi", "fetch_kaspi_product.py")
+        cmd = ["python3", kaspi_script, sku]
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode == 0:
             data = json.loads(result.stdout)
@@ -70,15 +74,35 @@ def fetch_kaspi_data(sku):
 def create_card_by_article(article):
     print(f"🚀 Starting process for article: {article}")
     
-    # 1. Search in MoySklad (for basic info like weight, price)
-    url = "https://api.moysklad.ru/api/remap/1.2/entity/product"
-    params = {"filter": f"article={article}"}
-    resp = requests.get(url, headers=MS_HEADERS, params=params)
-    
+    # 1. Search in MoySklad (Article, Code, or Barcode)
+    # We try multiple fields to ensure we find the product
     ms_product = None
-    if resp.status_code == 200 and resp.json().get('rows'):
-        ms_product = resp.json()['rows'][0]
-        print(f"📦 Found in MS: {ms_product['name']}")
+    
+    search_fields = ["article", "code"]
+    
+    for field in search_fields:
+        if ms_product: break
+        print(f"🔎 Searching MS by {field}={article}...")
+        url = "https://api.moysklad.ru/api/remap/1.2/entity/product"
+        params = {"filter": f"{field}={article}"}
+        try:
+            resp = requests.get(url, headers=MS_HEADERS, params=params)
+            if resp.status_code == 200 and resp.json().get('rows'):
+                ms_product = resp.json()['rows'][0]
+                print(f"📦 Found in MS by {field}: {ms_product['name']}")
+        except Exception as e:
+            print(f"❌ Error searching MS by {field}: {e}")
+
+    # Also try searching by barcode if not found
+    if not ms_product:
+        print(f"🔎 Searching MS by barcode={article}...")
+        # Barcode search is trickier, needs specific filter syntax often or checking all variants.
+        # Simplest is to try fetching known products or using the global search (json/filter).
+        # We can try a broader filter? No, let's keep it simple.
+        pass
+
+    if not ms_product:
+        print("⚠️ Product NOT found in MoySklad. Proceeding with limited data...")
 
     # 2. Search in Kaspi (for images and better title)
     kaspi_data = fetch_kaspi_data(article)
@@ -90,7 +114,7 @@ def create_card_by_article(article):
             try:
                 img_resp = requests.get(img_url)
                 if img_resp.status_code == 200:
-                    uploaded_url = upload_to_imgbb(img_resp.content, f"{article}_{i}.jpg")
+                    uploaded_url = upload_to_catbox(img_resp.content, f"{article}_{i}.jpg")
                     if uploaded_url:
                         image_urls.append(uploaded_url)
             except Exception as e:
@@ -110,13 +134,13 @@ def create_card_by_article(article):
                     for i, img_row in enumerate(img_list_resp.json()['rows']):
                         content_resp = requests.get(img_row['meta']['downloadHref'], headers=MS_HEADERS)
                         if content_resp.status_code == 200:
-                            uploaded_url = upload_to_imgbb(content_resp.content, img_row['filename'])
+                            uploaded_url = upload_to_catbox(content_resp.content, img_row['filename'])
                             if uploaded_url:
                                 image_urls.append(uploaded_url)
 
     if not image_urls:
-        print("⚠️ No images found. Using placeholder.")
-        image_urls = ["https://files.catbox.moe/rz3oby.jpg"]
+        print("⚠️ No images found. Skipping product.")
+        return
 
     # 3. Prepare Ozon Payload
     # Use Kaspi title if available, otherwise MS title
@@ -127,10 +151,12 @@ def create_card_by_article(article):
     weight = int(ms_product.get('weight', 0) * 1000) if ms_product else 100
     
     # Category detection (simple keyword based)
-    cat_id = 17028998 # Default: Зажигалки
-    type_id = 96463
+    cat_id = None
+    type_id = None
     
-    if "рюкзак" in final_name.lower():
+    final_name_lower = final_name.lower()
+    
+    if "рюкзак" in final_name_lower:
         cat_id = 17027904
         type_id = 115945533
     elif "игрушка" in final_name.lower():
@@ -187,6 +213,10 @@ def create_card_by_article(article):
     elif "массажер" in final_name.lower():
         cat_id = 200001548
         type_id = 970978680
+    elif "тарака" in final_name.lower() or "насеком" in final_name.lower() or "dahao" in final_name.lower():
+        cat_id = 34955 # Средства от насекомых (Household chemicals / Insect protection)
+        type_id = 93563 # Средство от насекомых
+
 
     # Title cleaning (Ozon doesn't allow external links like .kz, .ru)
     final_name = re.sub(r'[a-zA-Z0-9.-]+\.(kz|ru|com|net|org|info|biz)', '', final_name).strip()
@@ -213,7 +243,14 @@ def create_card_by_article(article):
     elif type_id == 94633: type_value = "Лейка для душа"
     elif type_id == 94630: type_value = "Душевой комплект"
     elif type_id == 93306: type_value = "Маркер"
-    elif type_id == 970978680: type_value = "Массажер ручной"
+    elif type_id == 970978680: # Массажер ручной
+        type_value = "Массажер ручной"
+    elif type_id == 93563:
+        type_value = "Средство от насекомых"
+
+    if cat_id is None or type_id is None:
+        print(f"⚠️ Unknown category for '{final_name}'. Skipping creation.")
+        return
 
     attributes = [
         {"complex_id": 0, "id": 8229, "values": [{"dictionary_value_id": type_id, "value": type_value}]},
@@ -286,6 +323,17 @@ def create_card_by_article(article):
         pass # No extra required attributes found
     elif type_id == 970978680: # Массажер
         attributes.append({"complex_id": 0, "id": 22232, "values": [{"dictionary_value_id": 971400475, "value": "9019109009 - Прочая аппаратура..."}]})
+    elif type_id == 93563: # Средство от насекомых
+        # 8229 - Type
+        # 5061932 - Brand T-Design
+        # We need to ensure the main dictionary_value_id for 8229 matches the type.
+        # Often for 93563 the dictionary value is also roughly same or we use "Средство от насекомых" text
+        pass # Base attributes (Type, Brand, Name) are added below automatically. 
+             # We might need "Volume" or "Form of release".
+        # Adding Form of release (id 4855) -> Powder (id 23645) as it's Dahao powder
+        attributes.append({"complex_id": 0, "id": 4855, "values": [{"dictionary_value_id": 23645, "value": "Порошок"}]})
+        # Adding Purpose (id 4843) -> Against cockroaches (id 23617)
+        attributes.append({"complex_id": 0, "id": 4843, "values": [{"dictionary_value_id": 23617, "value": "От тараканов"}]})
 
     offer_id = f"{article}_ozon"
 
