@@ -62,6 +62,13 @@ export default function Home() {
             color: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)", // Pink/Purple
             icon: "🔥"
         },
+        {
+            title: "Система Контроля",
+            description: "Мониторинг очередей, ошибок и прогресса к 2000 карточек",
+            href: "/conveyor",
+            color: "linear-gradient(135deg, #10B981 0%, #3b82f6 100%)",
+            icon: "⚙️"
+        },
 
     ]
 

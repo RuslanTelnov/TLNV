@@ -344,6 +344,24 @@ export default function WbTopPage() {
         }
     };
 
+    const handleForceSync = async (product) => {
+        if (!confirm(`Принудительно перезапустить конвейер для ${product.name}?`)) return;
+        showToast('Сброс статуса...', 'info');
+        try {
+            const response = await fetch('/api/conveyor/force-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: product.id }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Sync failed');
+            showToast('Статус сброшен! Конвейер подхватит товар.', 'success');
+            fetchProducts(query);
+        } catch (err) {
+            showToast(`Ошибка: ${err.message}`, 'error');
+        }
+    };
+
 
 
     const showToast = (message, type = 'info') => {
@@ -690,10 +708,17 @@ export default function WbTopPage() {
 
                                                 <td>
                                                     <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                                        <button onClick={() => handleCreateInMS(p)} className="mini-btn">МС</button>
-                                                        <button onClick={() => handleOprihodovanie(p)} className="mini-btn">Склад</button>
-                                                        <button onClick={() => handleCreateKaspi(p)} className="mini-btn">Kaspi</button>
-
+                                                        <button onClick={() => handleCreateInMS(p)} className="mini-btn" title="Создать в МойСклад">МС</button>
+                                                        <button onClick={() => handleOprihodovanie(p)} className="mini-btn" title="Сделать оприходование">Склад</button>
+                                                        <button onClick={() => handleCreateKaspi(p)} className="mini-btn" title="Создать карточку в Kaspi">Kaspi</button>
+                                                        <button
+                                                            onClick={() => handleForceSync(p)}
+                                                            className="mini-btn"
+                                                            style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.4)' }}
+                                                            title="Принудительно перезапустить конвейер"
+                                                        >
+                                                            🔄
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
