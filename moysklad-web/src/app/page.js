@@ -69,7 +69,13 @@ export default function Home() {
             color: "linear-gradient(135deg, #10B981 0%, #3b82f6 100%)",
             icon: "⚙️"
         },
-
+        {
+            title: "Заказы Kaspi",
+            description: "Мониторинг заказов и управление отгрузками (Склад ВБ)",
+            href: "/orders",
+            color: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+            icon: "📦"
+        },
     ]
 
     return (

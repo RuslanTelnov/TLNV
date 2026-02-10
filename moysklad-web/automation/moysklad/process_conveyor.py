@@ -149,10 +149,9 @@ def run_conveyor(single_pass=False, skip_parser=False):
                     update_status(wb_id, {"conveyor_status": "processing"})
                     logger.info(f"--- Processing {name} ({wb_id}) ---")
 
-                    # Step A: Create in MS
-                    ms_id_created = None
+                    # Step A: Create in MS (Always call valid creator which handles duplicates and now images)
                     if not ms_created:
-                        logger.info(f"Creating in MS...")
+                        logger.info(f"Ensuring Product in MS...")
                         # Extract all images
                         image_urls = []
                         if 'specs' in product and isinstance(product['specs'], dict):
@@ -165,11 +164,13 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             "id": product['id'],
                             "name": product['name'],
                             "price": int(product.get('price_kzt', 0) or 0),
-                            "image_urls": image_urls
+                            "image_urls": image_urls,
+                            "image_url": product.get('image_url') # Pass single one as fallback
                         }
                         
                         # Ensure create_product_in_ms returns the ID now
-                        result_id, error_msg = ms_creator.create_product_in_ms(prod_data, folder_meta, price_type_meta, extra_attributes=extra_attrs)
+                        # update_existing=True to allow price/info updates (User Request)
+                        result_id, error_msg = ms_creator.create_product_in_ms(prod_data, folder_meta, price_type_meta, extra_attributes=extra_attrs, update_existing=True)
                         
                         if result_id:
                             update_status(wb_id, {"ms_created": True})
@@ -181,7 +182,7 @@ def run_conveyor(single_pass=False, skip_parser=False):
 
                     # Step B: Stocking
                     if ms_created and not stock_added:
-                        logger.info(f"Adding Stock...")
+                        logger.info(f"Checking Stock Availability on target warehouse...")
                         
                         ms_prod = None
                         if ms_id_created:
@@ -197,14 +198,58 @@ def run_conveyor(single_pass=False, skip_parser=False):
                              ms_prod = ms_stock.find_product_by_article(wb_id)
                         
                         if ms_prod:
-                             price = int(product.get('price_kzt', 0) or 0)
-                             res = ms_stock.create_enter(ms_prod['meta'], 10, price)
-                             if res.get('success'):
-                                 update_status(wb_id, {"stock_added": True})
+                             # Get warehouse meta to get its ID
+                             target_warehouse_name = "Склад ВБ"
+                             store_meta = ms_stock.get_store_meta(target_warehouse_name)
+                             store_id = None
+                             if store_meta:
+                                 store_id = store_meta['href'].split('/')[-1]
+
+                             # CHECK: Warehouse-specific stock (What Kaspi sees)
+                             current_stock_wh = ms_stock.get_product_stock(ms_prod['id'], store_id=store_id)
+                             
+                             # CHECK: Global stock (Safety check to avoid adding stock if we have it elsewhere)
+                             # We use the report but look at the global total
+                             global_stock = ms_stock.get_product_stock(ms_prod['id'])
+                             
+                             # CHECK: Warehouse-specific stock (What Kaspi sees currently)
+                             current_stock_wh = ms_stock.get_product_stock(ms_prod['id'], store_id=store_id)
+
+                             # Update specs['stock'] with WAREHOUSE stock (Isolation)
+                             try:
+                                 # Fetch current specs
+                                 current_data = supabase.schema('Parser').table('wb_search_results').select("specs").eq("id", int(wb_id)).execute()
+                                 specs = {}
+                                 if current_data.data and current_data.data[0].get("specs"):
+                                     specs = current_data.data[0]["specs"]
+                                 
+                                 specs['stock'] = current_stock_wh
+                                 specs['warehouse_name'] = target_warehouse_name
+                                 specs['global_stock'] = global_stock
+                                 supabase.schema('Parser').table('wb_search_results').update({"specs": specs}).eq("id", int(wb_id)).execute()
+                             except Exception as db_err:
+                                 logger.warning(f"Failed to update stock spec for {wb_id}: {db_err}")
+
+                             if global_stock > 0:
+                                 logger.info(f"Product {wb_id} has stock globally ({global_stock}). Isolation: Skipping stocking for '{target_warehouse_name}'.")
+                                 update_status(wb_id, {"stock_added": True, "conveyor_log": f"Globally exists: {global_stock}. Warehouse '{target_warehouse_name}' has: {current_stock_wh}"})
                                  stock_added = True
                              else:
-                                 logger.error(f"Stock error: {res.get('error')}")
-                                 update_status(wb_id, {"conveyor_log": f"Stock Error: {res.get('error')}"})
+                                 logger.info(f"Adding Placeholder Stock (10) to '{target_warehouse_name}' (Global stock is 0)...")
+                                 price = int(product.get('price_kzt', 0) or 0)
+                                 # We only enter stock if it's truly missing everywhere
+                                 res = ms_stock.create_enter(ms_prod['meta'], 10, price)
+                                 if res.get('success'):
+                                     update_status(wb_id, {"stock_added": True})
+                                     stock_added = True
+                                     # Update spec again to reflect added stock
+                                     try:
+                                         specs['stock'] = 10 
+                                         supabase.schema('Parser').table('wb_search_results').update({"specs": specs}).eq("id", int(wb_id)).execute()
+                                     except: pass
+                                 else:
+                                     logger.error(f"Stock error: {res.get('error')}")
+                                     update_status(wb_id, {"conveyor_log": f"Stock Error: {res.get('error')}"})
                         else:
                             logger.error("Product not found in MS for stocking")
                             pass
@@ -214,17 +259,30 @@ def run_conveyor(single_pass=False, skip_parser=False):
                         logger.info(f"Creating Kaspi Card...")
                         k_success = create_from_wb(wb_id)
                         if k_success:
+                            # Direct Push to Kaspi Merchant API (Step C.1 - Faster than XML)
+                            try:
+                                from publish_offer import publish_offer
+                                logger.info(f"Publishing Offer for {wb_id} via API (Pre-order 30d)...")
+                                # Use price from product data, default to 10 stock
+                                price_val = int(product.get('price_kzt', 0) or 0)
+                                if price_val > 0:
+                                     # Convert to retail price using the same RETAIL_DIVISOR as in generator
+                                     retail_price = int(price_val / 0.3)
+                                     publish_offer(wb_id, price=retail_price, stock=10, preorder=True)
+                            except Exception as po_err:
+                                logger.warning(f"Failed to push offer directly: {po_err}")
+                            
                             update_status(wb_id, {"kaspi_created": True, "conveyor_status": "done"})
                         else:
                             update_status(wb_id, {"conveyor_log": "Kaspi Creation Failed (check attributes)"})
                     
-                            if k_success:
-                                # If at least one Kaspi card was created, regenerate the XML feed immediately
-                                try:
-                                    logger.info("Regenerating XML Feed...")
-                                    generate_fixed_price.generate_xml()
-                                except Exception as e:
-                                    logger.error(f"Failed to regenerate XML: {e}")
+                        if k_success:
+                            # If at least one Kaspi card was created, regenerate the XML feed immediately
+                            try:
+                                logger.info("Regenerating XML Feed...")
+                                generate_fixed_price.generate_xml()
+                            except Exception as e:
+                                logger.error(f"Failed to regenerate XML: {e}")
 
                     
                     time.sleep(0.05)

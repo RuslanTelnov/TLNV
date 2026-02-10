@@ -122,7 +122,7 @@ def upload_image_to_ms(ms_id, image_url, name):
     except Exception as e:
         print(f"   ❌ Error in image upload process: {e}")
 
-def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes=None):
+def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes=None, update_existing=True):
     """Create product in MoySklad and sync to Supabase"""
     name = product['name']
     price = product['price'] # Integer from DB
@@ -130,16 +130,29 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
     # image_url = product.get('image_url') # Handled later as list
     
     ms_product_id = None
+    ms_product_obj = None # Ensure initialized
     
-    # Check if exists by externalCode (WB ID)
-    url = f"{BASE_URL}/entity/product?filter=externalCode={wb_id}"
+    # Check if exists by article (preferred) or externalCode
+    # We check by article first as it's the user-facing ID
+    url = f"{BASE_URL}/entity/product?filter=article={wb_id}"
     try:
         resp = requests.get(url, headers=HEADERS)
         if resp.status_code == 200:
             rows = resp.json().get('rows', [])
             if rows:
-                print(f"⏭️  Product '{name}' already exists in MS.")
+                print(f"⏭️  Product '{name}' already exists in MS (by article).")
                 ms_product_id = rows[0]['id']
+                ms_product_obj = rows[0]
+            else:
+                # Fallback check by externalCode
+                url_code = f"{BASE_URL}/entity/product?filter=externalCode={wb_id}"
+                resp_code = requests.get(url_code, headers=HEADERS)
+                if resp_code.status_code == 200:
+                   rows_code = resp_code.json().get('rows', [])
+                   if rows_code:
+                       print(f"⏭️  Product '{name}' already exists in MS (by externalCode).")
+                       ms_product_id = rows_code[0]['id']
+                       ms_product_obj = rows_code[0]
     except Exception as e:
         print(f"⚠️ Error checking existence: {e}")
 
@@ -204,27 +217,52 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             print(f"❌ Error creating product request: {e}")
             return False, f"Request Error: {str(e)}"
     else:
-        # Product exists, update price
-        payload = {
-            "salePrices": [
-                {
-                    "value": retail_price_val, 
-                    "priceType": {"meta": price_type_meta}
+        # Product exists
+        if update_existing:
+            # Update price and attributes
+            payload = {
+                "salePrices": [
+                    {
+                        "value": retail_price_val, 
+                        "priceType": {"meta": price_type_meta}
+                    }
+                ],
+                "minPrice": {
+                    "value": min_price_val,
+                    "currency": {"meta": currency_meta}
                 }
-            ],
-            "minPrice": {
-                "value": min_price_val,
-                "currency": {"meta": currency_meta}
             }
-        }
+            if extra_attributes:
+                payload["attributes"] = extra_attributes
+                
+            try:
+                resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS)
+                if resp.status_code == 200:
+                    print(f"🔄 Updated price and attributes for '{name}' to {retail_price_val//100}")
+                else:
+                    print(f"❌ Error updating '{name}': {resp.text}")
+            except Exception as e:
+                print(f"❌ Error updating product request: {e}")
+        else:
+             print(f"⏭️  Skipping update for '{name}' (update_existing=False)")
+
+        # CHECK MISSING IMAGES (Run regardless of update_existing)
         try:
-            resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS)
-            if resp.status_code == 200:
-                print(f"🔄 Updated price for '{name}' to {retail_price_val//100}")
-            else:
-                print(f"❌ Error updating price for '{name}': {resp.text}")
-        except Exception as e:
-            print(f"❌ Error updating product request: {e}")
+            current_images_size = 0
+            if ms_product_obj:
+                 current_images_size = ms_product_obj.get('images', {}).get('meta', {}).get('size', 0)
+            
+            if current_images_size == 0:
+                image_urls = product.get('image_urls', [])
+                if not image_urls and product.get('image_url'):
+                    image_urls = [product.get('image_url')]
+                
+                if image_urls:
+                    print(f"🔧 Product exists but has no images. Uploading {len(image_urls)} images...")
+                    for idx, img_url in enumerate(image_urls):
+                        upload_image_to_ms(ms_product_id, img_url, f"{name}_{idx+1}")
+        except Exception as img_check_err:
+                print(f"⚠️ Error checking images for existing product: {img_check_err}")
 
     # Sync to Supabase 'products' table for Dashboard
     if ms_product_id:

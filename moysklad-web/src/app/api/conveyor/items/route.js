@@ -5,6 +5,7 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const status = searchParams.get('status');
+        const search = searchParams.get('search');
 
         if (!supabase) {
             return NextResponse.json({ error: 'Supabase client not initialized' }, { status: 500 });
@@ -12,14 +13,24 @@ export async function GET(req) {
 
         let query = supabase
             .from('wb_search_results')
-            .select('id, name, updated_at, conveyor_status, conveyor_log, ms_created, stock_added, kaspi_created');
+            .select('id, name, updated_at, conveyor_status, conveyor_log, ms_created, stock_added, kaspi_created, image_url, price_kzt');
 
         if (status && status !== 'total') {
             if (status === 'idle') {
-                // Handle idle which can be null or 'idle'
                 query = query.or('conveyor_status.eq.idle,conveyor_status.is.null');
             } else {
                 query = query.eq('conveyor_status', status);
+            }
+        }
+
+        if (search) {
+            const isNumeric = /^\d+$/.test(search);
+            if (isNumeric) {
+                // Search in name or exact ID match for numeric
+                query = query.or(`name.ilike.%${search}%,id.eq.${search}`);
+            } else {
+                // Search only in name for text
+                query = query.ilike('name', `%${search}%`);
             }
         }
 

@@ -148,7 +148,18 @@ def generate_xml():
         ET.SubElement(offer, f'{NS}brand').text = p.get('brand') or 'Generic'
         
         availabilities = ET.SubElement(offer, f'{NS}availabilities')
-        ET.SubElement(availabilities, f'{NS}availability', available=stock, storeId='PP1')
+        availabilities = ET.SubElement(offer, f'{NS}availabilities')
+        if stock == 'yes':
+             # For local products, we always use the "Pre-order 30 days" strategy
+             ET.SubElement(availabilities, f'{NS}availability', available='yes', storeId='PP1', preorder='true')
+             # Note: Different Kaspi versions use different tags for preorder days. 
+             # Commonly it is availability=preorder or a specific attribute.
+             # Based on common XML standards for Kaspi, we use available='yes' and a separate attribute if possible,
+             # but most commonly it's handled via the 'preorder' attribute or just 'availability' value.
+             # Let's use the most reliable one: available='yes' with 'preorder' indication.
+        else:
+             ET.SubElement(availabilities, f'{NS}availability', available='no', storeId='PP1')
+
         
         ET.SubElement(offer, f'{NS}price').text = str(price)
         

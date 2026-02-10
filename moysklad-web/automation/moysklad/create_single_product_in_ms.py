@@ -216,15 +216,17 @@ def create_product(name, article, price, image_urls=None):
                 return {"error": f"Error updating product: {resp.text}"}
         
         # --- OPRIMODOVANIE (ENTER) ---
-        store_meta = get_or_create_store("Склад ВБ")
-        enter_id = create_enter(product_meta, store_meta, price)
+        # REMOVED: Unconditional stocking here causes duplication. 
+        # The conveyor script now handles stocking by checking global stock first.
+        # store_meta = get_or_create_store("Склад ВБ")
+        # enter_id = create_enter(product_meta, store_meta, price)
         
         return {
             "success": True, 
             "id": ms_product_id, 
             "action": action,
-            "enter_id": enter_id,
-            "store": "Склад ВБ"
+            "enter_id": None,
+            "store": "Склад ВБ (Stocking skipped)"
         }
 
     except Exception as e:

@@ -55,6 +55,26 @@ def find_product_by_article(article):
             return rows[0]
     return None
 
+def get_product_stock(product_id, store_id=None):
+    """
+    Get stock for a product. 
+    If store_id is provided, returns stock for that specific warehouse.
+    Otherwise returns total physical stock.
+    """
+    url = f"{BASE_URL}/report/stock/all?filter=product={BASE_URL}/entity/product/{product_id}"
+    if store_id:
+        url += f";store={BASE_URL}/entity/store/{store_id}"
+        
+    try:
+        resp = requests.get(url, headers=HEADERS)
+        if resp.status_code == 200:
+            rows = resp.json().get('rows', [])
+            if rows:
+                return rows[0].get('stock', 0)
+    except Exception as e:
+        print(f"Error getting stock: {e}")
+    return 0
+
 def create_enter(product_meta, quantity, price):
     url = f"{BASE_URL}/entity/enter"
     

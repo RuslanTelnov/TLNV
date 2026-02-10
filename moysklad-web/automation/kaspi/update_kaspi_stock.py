@@ -9,11 +9,22 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import config
 
-# Load env from moysklad-automation (where Supabase creds are)
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "moysklad-automation", ".env"))
+# Load environment variables
+env_paths = [
+    os.path.join(os.getcwd(), 'moysklad-web', '.env.local'),
+    os.path.join(os.getcwd(), '.env'),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '.env'),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'moysklad-web', '.env.local')
+]
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+for path in env_paths:
+    if os.path.exists(path):
+        load_dotenv(path)
+        print(f"✅ Loaded env from {path}")
+        break
+
+SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("❌ Error: Supabase credentials not found.")
@@ -21,12 +32,13 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def get_zero_stock_products():
-    """Fetch products with stock = 0 from Supabase."""
-    print("Fetching zero-stock products from Supabase...")
+def get_all_products():
+    """Fetch all products from Supabase to sync stock."""
+    print("Fetching products from Supabase...")
     try:
-        # Fetching all for now, can paginate if needed
-        res = supabase.schema('Parser').table('products').select("article, stock").eq("stock", 0).execute()
+        # We fetch article and stock. 
+        # Ideally we should fetch from wb_search_results too if that's the source for Kaspi IDs
+        res = supabase.schema('Parser').table('products').select("article, stock").execute()
         return res.data
     except Exception as e:
         print(f"Error fetching from Supabase: {e}")
@@ -43,19 +55,25 @@ def update_kaspi_availability(products):
     payloads = []
     for p in products:
         sku = p.get("article")
+        stock = p.get("stock", 0)
         if not sku:
             continue
             
         # Construct payload
-        # Note: 'availability' might need to be 'available': 'no' or similar.
-        # Based on common APIs, we'll try "availability": "no"
-        item = {
-            "sku": sku,
-            "availability": "no" 
-        }
+        if stock > 0:
+            item = {
+                "sku": sku,
+                "availability": "preorder",
+                "preorderDays": 30
+            }
+        else:
+            item = {
+                "sku": sku,
+                "availability": "no" 
+            }
         payloads.append(item)
 
-    # Batch send (Kaspi might have limits, let's do chunks of 100)
+    # Batch send (Kaspi limits: chunks of 100 or 500)
     chunk_size = 100
     url = f"{config.KASPI_MERCHANT_API_URL}/products/import"
     headers = {
@@ -71,16 +89,16 @@ def update_kaspi_availability(products):
         try:
             response = requests.post(url, json=chunk, headers=headers)
             if response.status_code in [200, 201, 202, 204]:
-                print("✅ Success")
+                print(f"✅ Batch {i} success")
             else:
-                print(f"❌ Failed: {response.status_code} - {response.text}")
+                print(f"❌ Batch {i} failed: {response.status_code} - {response.text}")
         except Exception as e:
             print(f"Error sending request: {e}")
 
 if __name__ == "__main__":
-    zero_stock_products = get_zero_stock_products()
-    if zero_stock_products:
-        print(f"Found {len(zero_stock_products)} products with 0 stock.")
-        update_kaspi_availability(zero_stock_products)
+    products = get_all_products()
+    if products:
+        print(f"Found {len(products)} products to sync.")
+        update_kaspi_availability(products)
     else:
-        print("No zero-stock products found.")
+        print("No products found to sync.")
