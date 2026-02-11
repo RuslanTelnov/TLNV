@@ -74,45 +74,89 @@ export default function SParfumPricesPage() {
     );
 
     return (
-        <div style={{ minHeight: '100vh', background: '#050814', color: '#fff', padding: '3rem' }}>
+        <div className="page-container" style={{ minHeight: '100vh', background: '#050814', color: '#fff' }}>
+            <style jsx global>{`
+                .page-container {
+                    padding: 3rem;
+                }
+                .controls-container {
+                    padding: 1.5rem 2rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+                .controls-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 3rem;
+                }
+                .header-title {
+                    fontSize: 2.5rem;
+                }
+                
+                @media (max-width: 768px) {
+                    .page-container {
+                        padding: 1rem;
+                    }
+                    .controls-container {
+                        padding: 1rem;
+                    }
+                    .controls-row {
+                        flex-direction: column;
+                        align-items: stretch;
+                        gap: 1rem;
+                    }
+                    .header-title {
+                        font-size: 1.5rem !important;
+                    }
+                    .mobile-stack {
+                         display: flex;
+                         flex-direction: column;
+                         gap: 1rem;
+                    }
+                    th, td {
+                        padding: 0.5rem !important;
+                        font-size: 0.8rem;
+                    }
+                }
+            `}</style>
+
             <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
 
                 {/* Dashboard Controls */}
-                <div style={{
+                <div className="controls-container" style={{
                     position: 'sticky',
                     top: '1rem',
                     zIndex: 1000,
                     background: 'rgba(10, 15, 30, 0.9)',
                     backdropFilter: 'blur(20px)',
-                    padding: '1.5rem 2rem',
                     borderRadius: '20px',
                     border: '1px solid rgba(255,255,255,0.05)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1.5rem',
                     marginBottom: '3rem',
                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Комиссия Ozon (%)</label>
-                            <input
-                                type="number"
-                                value={commissionPct}
-                                onChange={(e) => setCommissionPct(Number(e.target.value))}
-                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(59, 130, 246, 0.3)', color: '#3b82f6', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
-                            />
+                    <div className="controls-row">
+                        <div className="mobile-stack" style={{ display: 'flex', gap: '3rem', width: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between' }}>
+                                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Комиссия Ozon (%)</label>
+                                <input
+                                    type="number"
+                                    value={commissionPct}
+                                    onChange={(e) => setCommissionPct(Number(e.target.value))}
+                                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(59, 130, 246, 0.3)', color: '#3b82f6', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between' }}>
+                                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Налог (%)</label>
+                                <input
+                                    type="number"
+                                    value={taxPct}
+                                    onChange={(e) => setTaxPct(Number(e.target.value))}
+                                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10b981', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
+                                />
+                            </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Налог (%)</label>
-                            <input
-                                type="number"
-                                value={taxPct}
-                                onChange={(e) => setTaxPct(Number(e.target.value))}
-                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10b981', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
-                            />
-                        </div>
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, width: '100%' }}>
                             <input
                                 type="text"
                                 placeholder="Поиск по названию или категории..."
@@ -133,7 +177,7 @@ export default function SParfumPricesPage() {
                 </div>
 
                 <header style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: '100', letterSpacing: '0.1em', marginBottom: '1rem' }}>
+                    <h1 className="header-title" style={{ fontWeight: '100', letterSpacing: '0.1em', marginBottom: '1rem' }}>
                         ДЕТАЛЬНЫЙ АНАЛИЗ <span style={{ color: '#c9a05a' }}>S-PARFUM</span> ПО ПОЗИЦИЯМ
                     </h1>
                     <p style={{ color: 'rgba(255,255,255,0.4)' }}>Индивидуальный расчет выплат для каждого аромата</p>
@@ -141,7 +185,7 @@ export default function SParfumPricesPage() {
 
                 <section style={{ marginBottom: '5rem' }}>
                     <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
+                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px', minWidth: '800px' }}>
                             <thead>
                                 <tr style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', textTransform: 'uppercase' }}>
                                     <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '400' }}>Аромат</th>

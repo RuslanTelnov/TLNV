@@ -92,10 +92,74 @@ export default function Home() {
     ];
 
     return (
-        <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
+        <div className="dashboard-container" style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
+            <style jsx global>{`
+                .container-padding {
+                    padding-top: 6rem;
+                    padding-bottom: 4rem;
+                    padding-left: 2rem; 
+                    padding-right: 2rem;
+                }
+                .header-padding {
+                    padding: 1.5rem 3rem;
+                }
+                .section-header-padding {
+                    padding-left: 2rem;
+                }
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+                    gap: 2.5rem;
+                    max-width: 1400px;
+                    margin: 0 auto;
+                    padding: 0 2rem;
+                }
+                .welcome-title {
+                    font-size: 4rem;
+                }
+                .card-padding {
+                    padding: 3rem;
+                }
+                
+                @media (max-width: 768px) {
+                    .container-padding {
+                        padding-top: 5rem;
+                        padding-left: 1rem;
+                        padding-right: 1rem;
+                    }
+                    .header-padding {
+                        padding: 1rem 1.5rem;
+                    }
+                    .section-header-padding {
+                        padding-left: 1rem;
+                    }
+                    .card-grid {
+                        grid-template-columns: 1fr;
+                        gap: 1.5rem;
+                        padding: 0 1rem;
+                    }
+                    .welcome-title {
+                        font-size: 2.5rem !important;
+                    }
+                    .card-padding {
+                        padding: 1.5rem !important;
+                        min-height: auto !important;
+                    }
+                    .card-icon {
+                        width: 60px !important;
+                        height: 60px !important;
+                        font-size: 2rem !important;
+                        margin-bottom: 1.5rem !important;
+                    }
+                    .section-title {
+                        font-size: 1.2rem !important;
+                        margin-bottom: 1.5rem !important;
+                    }
+                }
+            `}</style>
+
             {/* Header */}
-            <header style={{
-                padding: '1.5rem 3rem',
+            <header className="header-padding" style={{
                 position: 'sticky',
                 top: 0,
                 zIndex: 100,
@@ -133,13 +197,15 @@ export default function Home() {
                     alignItems: 'center',
                     gap: '2rem'
                 }}>
-                    <div style={{
+                    <div className="hide-mobile" style={{
                         color: 'var(--velveto-text-secondary)',
                         fontSize: '0.875rem',
                         fontWeight: '500',
-                        letterSpacing: '0.05em'
+                        letterSpacing: '0.05em',
+                        display: 'none' // Hidden on mobile via CSS if needed, but flex gap handles it well usually. 
+                        // Actually let's keep it simple.
                     }}>
-                        ADMIN PANEL
+                        ADMIN
                     </div>
                     <Link href="/settings">
                         <motion.div
@@ -157,10 +223,9 @@ export default function Home() {
                 </div>
             </header>
 
-            <main className="container" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
-                <div style={{ marginBottom: '6rem', textAlign: 'center' }}>
-                    <h2 style={{
-                        fontSize: '4rem',
+            <main className="container-padding">
+                <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
+                    <h2 className="welcome-title" style={{
                         marginBottom: '1.5rem',
                         letterSpacing: '0.05em',
                         color: 'var(--velveto-text-primary)',
@@ -181,13 +246,12 @@ export default function Home() {
                 </div>
 
                 {/* Kaspi Orders Section - Dedicated */}
-                <div style={{ marginBottom: '5rem' }}>
-                    <h3 style={{
+                <div style={{ marginBottom: '4rem' }}>
+                    <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
                         color: '#ef4444',
                         marginBottom: '2rem',
-                        paddingLeft: '2rem',
                         borderLeft: '2px solid #ef4444',
                         textTransform: 'uppercase',
                         letterSpacing: '0.1em'
@@ -198,23 +262,15 @@ export default function Home() {
                         variants={container}
                         initial="hidden"
                         animate="show"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-                            gap: '2.5rem',
-                            maxWidth: '1400px',
-                            margin: '0 auto',
-                            padding: '0 2rem'
-                        }}
+                        className="card-grid"
                     >
                         {highlightCards.map((card, index) => (
-                            <Link key={index} href={card.href}>
+                            <Link key={index} href={card.href} style={{ textDecoration: 'none' }}>
                                 <motion.div
                                     variants={item}
-                                    whileHover={{ y: -10, scale: 1.02 }}
-                                    className="velveto-card"
+                                    whileHover={{ y: -5, scale: 1.01 }}
+                                    className="velveto-card card-padding"
                                     style={{
-                                        padding: '3rem',
                                         cursor: 'pointer',
                                         position: 'relative',
                                         overflow: 'hidden',
@@ -236,7 +292,7 @@ export default function Home() {
                                         boxShadow: `0 0 20px ${card.color}`
                                     }} />
 
-                                    <div style={{
+                                    <div className="card-icon" style={{
                                         fontSize: '3rem',
                                         marginBottom: '2rem',
                                         background: 'rgba(255,255,255,0.03)',
@@ -271,7 +327,7 @@ export default function Home() {
 
                                     <div style={{
                                         marginTop: 'auto',
-                                        paddingTop: '3rem',
+                                        paddingTop: '2rem',
                                         display: 'flex',
                                         alignItems: 'center',
                                         color: '#ef4444',
@@ -289,12 +345,11 @@ export default function Home() {
                 </div>
 
                 <div style={{ marginBottom: '4rem' }}>
-                    <h3 style={{
+                    <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
                         color: 'var(--velveto-text-secondary)',
                         marginBottom: '2rem',
-                        paddingLeft: '2rem',
                         borderLeft: '2px solid var(--velveto-accent-primary)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.1em'
@@ -305,23 +360,15 @@ export default function Home() {
                         variants={container}
                         initial="hidden"
                         animate="show"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-                            gap: '2.5rem',
-                            maxWidth: '1400px',
-                            margin: '0 auto',
-                            padding: '0 2rem'
-                        }}
+                        className="card-grid"
                     >
                         {toolCards.map((card, index) => (
-                            <Link key={index} href={card.href}>
+                            <Link key={index} href={card.href} style={{ textDecoration: 'none' }}>
                                 <motion.div
                                     variants={item}
-                                    whileHover={{ y: -10, scale: 1.02 }}
-                                    className="velveto-card"
+                                    whileHover={{ y: -5, scale: 1.01 }}
+                                    className="velveto-card card-padding"
                                     style={{
-                                        padding: '3rem',
                                         cursor: 'pointer',
                                         position: 'relative',
                                         overflow: 'hidden',
@@ -359,7 +406,7 @@ export default function Home() {
                                         boxShadow: `0 0 20px ${card.color}`
                                     }} />
 
-                                    <div style={{
+                                    <div className="card-icon" style={{
                                         fontSize: '3rem',
                                         marginBottom: '2rem',
                                         background: 'rgba(255,255,255,0.03)',
@@ -394,7 +441,7 @@ export default function Home() {
 
                                     <div style={{
                                         marginTop: 'auto',
-                                        paddingTop: '3rem',
+                                        paddingTop: '2rem',
                                         display: 'flex',
                                         alignItems: 'center',
                                         color: 'var(--velveto-accent-primary)',
@@ -412,12 +459,11 @@ export default function Home() {
                 </div>
 
                 <div>
-                    <h3 style={{
+                    <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
                         color: 'var(--velveto-text-secondary)',
                         marginBottom: '2rem',
-                        paddingLeft: '2rem',
                         borderLeft: '2px solid var(--velveto-accent-primary)',
                         textTransform: 'uppercase',
                         letterSpacing: '0.1em'
@@ -428,23 +474,15 @@ export default function Home() {
                         variants={container}
                         initial="hidden"
                         animate="show"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-                            gap: '2.5rem',
-                            maxWidth: '1400px',
-                            margin: '0 auto',
-                            padding: '0 2rem'
-                        }}
+                        className="card-grid"
                     >
                         {analyticsCards.map((card, index) => (
-                            <Link key={index} href={card.href}>
+                            <Link key={index} href={card.href} style={{ textDecoration: 'none' }}>
                                 <motion.div
                                     variants={item}
-                                    whileHover={{ y: -10, scale: 1.02 }}
-                                    className="velveto-card"
+                                    whileHover={{ y: -5, scale: 1.01 }}
+                                    className="velveto-card card-padding"
                                     style={{
-                                        padding: '3rem',
                                         cursor: 'pointer',
                                         position: 'relative',
                                         overflow: 'hidden',
@@ -465,7 +503,7 @@ export default function Home() {
                                         boxShadow: `0 0 20px ${card.color}`
                                     }} />
 
-                                    <div style={{
+                                    <div className="card-icon" style={{
                                         fontSize: '3rem',
                                         marginBottom: '2rem',
                                         background: 'rgba(255,255,255,0.03)',
@@ -500,7 +538,7 @@ export default function Home() {
 
                                     <div style={{
                                         marginTop: 'auto',
-                                        paddingTop: '3rem',
+                                        paddingTop: '2rem',
                                         display: 'flex',
                                         alignItems: 'center',
                                         color: 'var(--velveto-accent-primary)',
