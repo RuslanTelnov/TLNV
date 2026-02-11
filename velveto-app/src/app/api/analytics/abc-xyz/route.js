@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 
 const BASE_URL = "https://api.moysklad.ru/api/remap/1.2"
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const LOGIN = process.env.MOYSKLAD_LOGIN
     const PASSWORD = process.env.MOYSKLAD_PASSWORD
