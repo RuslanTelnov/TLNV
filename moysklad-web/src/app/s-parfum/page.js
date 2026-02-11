@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import BackButton from '../../components/BackButton';
 
 export default function SParfumPricesPage() {
     const [rawData, setRawData] = useState(null);
@@ -122,6 +123,9 @@ export default function SParfumPricesPage() {
             `}</style>
 
             <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+                <div style={{ marginBottom: '1rem' }}>
+                    <BackButton />
+                </div>
 
                 {/* Dashboard Controls */}
                 <div className="controls-container" style={{

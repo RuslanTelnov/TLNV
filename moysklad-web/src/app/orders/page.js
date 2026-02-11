@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import BackButton from '../../components/BackButton'
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState([])
@@ -60,9 +61,7 @@ export default function OrdersPage() {
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)', color: 'var(--velveto-text-primary)' }}>
             {/* Nav */}
             <nav style={{ padding: '2rem 3rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                <Link href="/" style={{ color: 'var(--velveto-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.8rem' }}>
-                    ← Back to Dashboard
-                </Link>
+                <BackButton />
                 <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)' }}>KASPI ORDERS MODULE</div>
                 </div>
