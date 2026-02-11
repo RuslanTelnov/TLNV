@@ -15,78 +15,83 @@ const assets = {
 const slides = [
     {
         id: 'intro',
-        title: 'VELVETO ECOSYSTEM',
-        subtitle: 'Advanced Automation & Analytics Platform',
+        title: 'ЭКОСИСТЕМА VELVETO',
+        subtitle: 'Единый центр управления E-commerce',
         bg: assets.intro,
         color: '#3b82f6',
         content: (
             <div className="flex flex-col gap-4">
-                <div className="text-xl opacity-80">Next-Gen E-commerce Management</div>
+                <div className="text-xl opacity-90 leading-relaxed">
+                    Это не просто дашборд. Это <b>операционная система</b> вашего бизнеса. <br />
+                    Мы объединили управление заказами, складом, аналитику и маркетинг в одном окне. <br />
+                    Вы получаете <b>полный контроль</b> над процессами, исключая человеческий фактор и ошибки.
+                </div>
                 <div className="flex gap-4 mt-8">
-                    <FeatureTag text="Next.js Core" />
-                    <FeatureTag text="Python Automation" />
-                    <FeatureTag text="AI Integrated" />
+                    <FeatureTag text="Склад" />
+                    <FeatureTag text="Логистика" />
+                    <FeatureTag text="Финансы" />
+                    <FeatureTag text="Маркетинг" />
                 </div>
             </div>
         )
     },
     {
         id: 'kaspi',
-        title: 'AUTOMATED FULFILLMENT',
-        subtitle: 'Kaspi.kz Integration Module',
+        title: 'РОБОТ-ЛОГИСТ KASPI',
+        subtitle: 'Мгновенная обработка заказов 24/7',
         bg: assets.kaspi,
         color: '#ef4444',
         content: (
             <ul className="text-xl space-y-4 opacity-90">
-                <li>🚀 <b className="text-white">Auto-Accept</b> orders in 1.4s</li>
-                <li>📦 <b className="text-white">Smart Logistics</b> calculation</li>
-                <li>🏷️ <b className="text-white">Label Generation</b> on fly</li>
-                <li>🔍 <b className="text-white">Stock Sync</b> every 5 mins</li>
+                <li>🚀 <b className="text-white">Скорость</b>: Авто-прием заказа за 1.4 секунды. Вы никогда не упустите клиента.</li>
+                <li>📦 <b className="text-white">Умная логистика</b>: Расчет габаритов и выбор тарифа. Экономия до 30% на ошибках.</li>
+                <li>📄 <b className="text-white">Документы</b>: Этикетки и накладные печатаются одной кнопкой.</li>
+                <li>🔍 <b className="text-white">Склад</b>: Синхронизация остатков каждые 5 минут. Нет отмен из-за "нет в наличии".</li>
             </ul>
         )
     },
     {
         id: 'perfume',
         title: 'БИЗНЕС-ПАНЕЛЬ S-PARFUM',
-        subtitle: 'Полный контроль и прозрачность',
+        subtitle: 'Ваше конкурентное преимущество',
         bg: assets.perfume,
         color: '#c9a05a',
         content: (
             <ul className="text-xl space-y-4 opacity-90">
-                <li>✨ <b className="text-white">Прозрачная прибыль</b>: автоматический расчет чистой выплаты</li>
-                <li>📊 <b className="text-white">Контроль цен</b>: мониторинг РРЦ и акций в реальном времени</li>
-                <li>🚚 <b className="text-white">Учет логистики</b>: точный расчет затрат на каждую единицу</li>
-                <li>💎 <b className="text-white">Аналитика</b>: детализация по коллекциям (Exclusive / Luxury)</li>
+                <li>💰 <b className="text-white">Чистая прибыль</b>: Система считает всё — от закупа до налога. Вы видите реальные деньги.</li>
+                <li>👁️ <b className="text-white">Рынок на ладони</b>: Мониторинг цен конкурентов в реальном времени.</li>
+                <li>📊 <b className="text-white">Глубокая аналитика</b>: Детализация продаж по коллекциям (Exclusive vs Luxury).</li>
+                <li>🎯 <b className="text-white">Стратегия</b>: Понимайте, какой товар "качает", а какой тянет вниз.</li>
             </ul>
         )
     },
     {
         id: 'ai',
-        title: 'AI POWERED CORE',
-        subtitle: 'Neural Network Integration',
+        title: 'НЕЙРОСЕТЕВОЕ ЯДРО',
+        subtitle: 'Контент-отдел, который не спит',
         bg: assets.ai,
         color: '#ec4899',
         content: (
             <ul className="text-xl space-y-4 opacity-90">
-                <li>🧠 <b className="text-white">SEO Generation</b> for product cards</li>
-                <li>🤖 <b className="text-white">Content Strategy</b> automation</li>
-                <li>👁️ <b className="text-white">Computer Vision</b> for quality control</li>
-                <li>📈 <b className="text-white">Predictive</b> analytics</li>
+                <li>✍️ <b className="text-white">SEO-тексты</b>: Генерация продающих описаний с ключевыми словами за секунды.</li>
+                <li>🔝 <b className="text-white">Продвижение</b>: Оптимизированные карточки быстрее попадают в ТОП выдачи.</li>
+                <li>🎨 <b className="text-white">Фото-контент</b>: AI улучшает качество и генерирует инфографику (в разработке).</li>
+                <li>⚙️ <b className="text-white">Автоматизация</b>: Нейросеть берет на себя рутину, освобождая ваше время.</li>
             </ul>
         )
     },
     {
         id: 'mobile',
-        title: 'OMNICHANNEL ACCESS',
-        subtitle: 'Native Mobile Experience',
+        title: 'БИЗНЕС В КАРМАНЕ',
+        subtitle: 'Управление из любой точки мира',
         bg: assets.mobile,
         color: '#8b5cf6',
         content: (
             <ul className="text-xl space-y-4 opacity-90">
-                <li>📱 <b className="text-white">iOS & Android</b> Native Apps</li>
-                <li>⚡ <b className="text-white">PWA</b> Support</li>
-                <li>🔔 <b className="text-white">Push Notifications</b> (Coming Soon)</li>
-                <li>👆 <b className="text-white">Touch Optimized</b> Interface</li>
+                <li>📱 <b className="text-white">Нативные приложения</b>: Полноценная работа на iOS и Android.</li>
+                <li>🔔 <b className="text-white">Уведомления</b>: Будьте в курсе каждой продажи и статуса склада.</li>
+                <li>🌍 <b className="text-white">Свобода</b>: Весь функционал десктопа в телефоне. Контролируйте бизнес даже в отпуске.</li>
+                <li>🔒 <b className="text-white">Безопасность</b>: Ваши данные защищены современными протоколами шифрования.</li>
             </ul>
         )
     }
@@ -94,7 +99,7 @@ const slides = [
 
 function FeatureTag({ text }) {
     return (
-        <span className="px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-mono tracking-wider backdrop-blur-md">
+        <span className="px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-mono tracking-wider backdrop-blur-md text-white">
             {text}
         </span>
     )
