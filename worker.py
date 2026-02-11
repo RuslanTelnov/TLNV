@@ -24,10 +24,19 @@ supabase: Client = create_client(url, key)
 automation_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'moysklad')
 kaspi_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'kaspi')
 airtable_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'airtable')
+notifications_path = os.path.join(os.getcwd(), 'automation', 'notifications')
 
 sys.path.append(automation_path) 
 sys.path.append(kaspi_path)
 sys.path.append(airtable_path)
+sys.path.append(notifications_path)
+
+try:
+    from telegram_bot import send_alert
+except ImportError:
+    print("⚠️ Warning: Could not import Telegram notifier")
+    def send_alert(message):
+        pass
 
 try:
     from process_conveyor import run_conveyor as run_conveyor_logic
@@ -92,11 +101,17 @@ def start_background_services():
 def check_autonomous_mode():
     """Checks if autonomous mode is enabled and adds a job if queue is empty"""
     try:
-        # Check config
-        res = supabase.schema('Parser').table('client_configs').select('is_autonomous_mode').eq('id', 1).limit(1).execute()
+        # 1. Fetch config from Supabase
         is_auto = False
-        if res.data:
-            is_auto = res.data[0].get('is_autonomous_mode', False)
+        try:
+            # Query the whole row instead of specific column to avoid 400 if column is missing
+            res = supabase.schema('Parser').table('client_configs').select('*').eq('id', 1).limit(1).execute()
+            if res.data and len(res.data) > 0:
+                is_auto = res.data[0].get('is_autonomous_mode', False)
+        except Exception as e:
+            # Column missing or other DB error, default to manual mode
+            if not ("400" in str(e) or "is_autonomous_mode" in str(e)):
+                print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] ⚠️ Supabase Config Error: {e}", file=sys.stderr)
             
         if is_auto:
             # Check if queue count is low
@@ -200,6 +215,7 @@ def main():
     
     # Also start the Conveyor Logic (Stream Processor)
     print("🚀 Starting Integrated Conveyor Stream...")
+    send_alert("🚀 <b>Worker Started</b>\nMulti-Worker Parser and Conveyor Stream are now online.")
     t_conveyor = threading.Thread(target=run_conveyor_logic, kwargs={"single_pass": False, "skip_parser": True}, daemon=True)
     t_conveyor.start()
     
@@ -230,7 +246,9 @@ def main():
                 time.sleep(2)
                 
             except Exception as e:
-                print(f"\n⚠️ Main Loop Error: {e}")
+                error_msg = f"⚠️ <b>Main Loop Error</b>\n{str(e)}"
+                print(f"\n{error_msg}")
+                send_alert(error_msg)
                 time.sleep(5)
 
 if __name__ == "__main__":
