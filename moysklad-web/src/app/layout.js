@@ -17,6 +17,24 @@ const inter = Inter({
 export const metadata = {
   title: "Velveto Tech Dashboard",
   description: "Premium Automation Platform",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon-192x192.png",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Velveto",
+  },
+};
+
+export const viewport = {
+  themeColor: "#050814",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }) {
