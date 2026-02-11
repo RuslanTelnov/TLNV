@@ -202,11 +202,28 @@ export default function Home() {
                         fontSize: '0.875rem',
                         fontWeight: '500',
                         letterSpacing: '0.05em',
-                        display: 'none' // Hidden on mobile via CSS if needed, but flex gap handles it well usually. 
-                        // Actually let's keep it simple.
+                        display: 'none'
                     }}>
                         ADMIN
                     </div>
+                    <Link href="/presentation" style={{ textDecoration: 'none' }}>
+                        <motion.div
+                            whileHover={{ scale: 1.1, color: '#fff' }}
+                            style={{
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                                color: 'var(--velveto-text-secondary)',
+                                letterSpacing: '0.1em',
+                                textTransform: 'uppercase',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                padding: '0.4rem 0.8rem',
+                                borderRadius: '4px',
+                                marginRight: '1rem'
+                            }}
+                        >
+                            PLAY DEMO
+                        </motion.div>
+                    </Link>
                     <Link href="/settings">
                         <motion.div
                             whileHover={{ rotate: 90 }}
