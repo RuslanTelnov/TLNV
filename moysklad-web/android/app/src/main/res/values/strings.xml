@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Velveto</string>
+    <string name="title_activity_main">Velveto</string>
+    <string name="package_name">com.velveto.app</string>
+    <string name="custom_url_scheme">com.velveto.app</string>
+</resources>
