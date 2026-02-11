@@ -156,8 +156,8 @@ export default function PresentationPage() {
             </AnimatePresence>
 
             {/* Main Content */}
-            <div style={{ zIndex: 10, position: 'relative', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', maxWidth: '1600px', width: '90%', gap: '4rem', alignItems: 'center' }}>
+            <div className="relative z-10 h-full flex items-center justify-center p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 max-w-[1600px] w-full gap-8 md:gap-16 items-center">
 
                     {/* Left: Text Content */}
                     <AnimatePresence mode="wait" custom={direction}>
@@ -168,7 +168,7 @@ export default function PresentationPage() {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: direction > 0 ? 50 : -50, opacity: 0 }}
                             transition={{ duration: 0.5, ease: "easeOut" }}
-                            style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+                            className="flex flex-col gap-4 md:gap-8 order-2 md:order-1"
                         >
                             <div style={{
                                 display: 'inline-block',
@@ -183,10 +183,7 @@ export default function PresentationPage() {
                                 0{current + 1} // {slide.id.toUpperCase()}
                             </div>
 
-                            <h1 style={{
-                                fontSize: '5rem',
-                                lineHeight: '1',
-                                fontWeight: '800',
+                            <h1 className="text-4xl md:text-7xl font-extrabold leading-tight" style={{
                                 background: `linear-gradient(to right, #fff, ${slide.color})`,
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
@@ -195,11 +192,11 @@ export default function PresentationPage() {
                                 {slide.title}
                             </h1>
 
-                            <h2 style={{ fontSize: '2rem', fontWeight: '300', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
+                            <h2 className="text-xl md:text-3xl font-light text-white/70 m-0">
                                 {slide.subtitle}
                             </h2>
 
-                            <div style={{ marginTop: '2rem', color: '#ccc' }}>
+                            <div className="mt-4 md:mt-8 text-gray-300">
                                 {slide.content}
                             </div>
                         </motion.div>
@@ -214,14 +211,7 @@ export default function PresentationPage() {
                             animate={{ scale: 1, opacity: 1, rotateY: 0 }}
                             exit={{ scale: 0.8, opacity: 0, rotateY: direction > 0 ? -45 : 45 }}
                             transition={{ duration: 0.7, type: "spring" }}
-                            style={{
-                                position: 'relative',
-                                width: '100%',
-                                aspectRatio: '1/1',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
+                            className="relative w-full aspect-square flex justify-center items-center order-1 md:order-2 max-h-[40vh] md:max-h-none"
                         >
                             <div style={{
                                 position: 'absolute',
@@ -249,15 +239,11 @@ export default function PresentationPage() {
             </div>
 
             {/* Navigation Controls */}
-            <div style={{ position: 'absolute', bottom: '3rem', right: '3rem', display: 'flex', gap: '1rem', zIndex: 50 }}>
-                <button onClick={prevSlide} style={{
-                    padding: '1rem', borderRadius: '50%', background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)', color: '#fff', cursor: 'pointer',
-                    backdropFilter: 'blur(10px)'
-                }}>
+            <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 flex gap-4 z-50">
+                <button onClick={prevSlide} className="p-4 rounded-full bg-white/10 border border-white/20 text-white cursor-pointer backdrop-blur-md active:scale-95 transition-transform">
                     ←
                 </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 1rem' }}>
+                <div className="flex items-center gap-2 mx-4">
                     {slides.map((_, idx) => (
                         <div key={idx} style={{
                             width: idx === current ? '30px' : '10px',
@@ -268,22 +254,15 @@ export default function PresentationPage() {
                         }} />
                     ))}
                 </div>
-                <button onClick={nextSlide} style={{
-                    padding: '1rem', borderRadius: '50%', background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)', color: '#fff', cursor: 'pointer',
-                    backdropFilter: 'blur(10px)'
-                }}>
+                <button onClick={nextSlide} className="p-4 rounded-full bg-white/10 border border-white/20 text-white cursor-pointer backdrop-blur-md active:scale-95 transition-transform">
                     →
                 </button>
             </div>
 
             {/* Home Link */}
-            <Link href="/" style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 100, textDecoration: 'none' }}>
-                <div style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', letterSpacing: '0.1em', uppercase: 'true'
-                }}>
-                    <span>✕</span> CLOSE PRESENTATION
+            <Link href="/" className="absolute top-6 left-6 z-50 no-underline">
+                <div className="flex items-center gap-2 text-white/50 text-xs tracking-widest uppercase bg-black/20 p-2 rounded backdrop-blur-sm">
+                    <span>✕</span> CLOSE
                 </div>
             </Link>
 
