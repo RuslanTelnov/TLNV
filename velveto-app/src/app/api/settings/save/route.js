@@ -79,7 +79,7 @@ export async function POST(req) {
         const { data, error } = await supabase
             .from('client_configs')
             .update(updateData)
-            .eq('company_name', 'VELVETO');
+            .eq('id', 1);
 
         if (error) {
             console.error('Supabase Update Error:', error);

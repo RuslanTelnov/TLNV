@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 
 # Load env from local file
-load_dotenv(os.path.join(os.getcwd(), "moysklad-web", ".env.local"))
+load_dotenv(os.path.join(os.getcwd(), "temp_tlnv_parser", "velveto-app", ".env.local"))
 
 url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
 key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
@@ -21,10 +21,10 @@ if not url or not key:
 supabase: Client = create_client(url, key)
 
 # Fix paths to import modules
-automation_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'moysklad')
-kaspi_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'kaspi')
-airtable_path = os.path.join(os.getcwd(), 'moysklad-web', 'automation', 'airtable')
-notifications_path = os.path.join(os.getcwd(), 'automation', 'notifications')
+automation_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'moysklad')
+kaspi_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'kaspi')
+airtable_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'airtable')
+notifications_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'automation', 'notifications')
 
 sys.path.append(automation_path) 
 sys.path.append(kaspi_path)
@@ -52,7 +52,7 @@ except ImportError as e:
     def sync_to_airtable_func():
         # Fallback to subprocess if direct import fails
         try:
-            subprocess.run(["python3", "moysklad-web/automation/airtable/sync_to_airtable.py"], check=False)
+            subprocess.run(["python3", "temp_tlnv_parser/velveto-app/automation/airtable/sync_to_airtable.py"], check=False)
         except:
             pass
 
@@ -80,7 +80,7 @@ def start_background_services():
             # 1. Kaspi Status Checker
             try:
                 # print("⏱️  Running Kaspi Status Checker...")
-                subprocess.run(["python3", "moysklad-web/automation/kaspi/check_kaspi_status.py"], check=False)
+                subprocess.run(["python3", "temp_tlnv_parser/velveto-app/automation/kaspi/check_kaspi_status.py"], check=False)
             except Exception as e:
                 print(f"⚠️ Kaspi Status Checker Error: {e}")
             
@@ -102,16 +102,15 @@ def check_autonomous_mode():
     """Checks if autonomous mode is enabled and adds a job if queue is empty"""
     try:
         # 1. Fetch config from Supabase
-        is_auto = False
         try:
-            # Query the whole row instead of specific column to avoid 400 if column is missing
             res = supabase.schema('Parser').table('client_configs').select('*').eq('id', 1).limit(1).execute()
             if res.data and len(res.data) > 0:
                 is_auto = res.data[0].get('is_autonomous_mode', False)
         except Exception as e:
-            # Column missing or other DB error, default to manual mode
+            # If still failing, default to False to be safe, but log it
             if not ("400" in str(e) or "is_autonomous_mode" in str(e)):
-                print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] ⚠️ Supabase Config Error: {e}", file=sys.stderr)
+                print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] ⚠️ Config Check Error: {e}")
+            is_auto = False
             
         if is_auto:
             # Check if queue count is low
@@ -145,7 +144,7 @@ def run_parser(job):
     # Mark as processing
     supabase.schema('Parser').table("parser_queue").update({"status": "processing"}).eq("id", job_id).execute()
     
-    cmd = ["python3", "moysklad-web/automation/moysklad/parse_wb_top.py"]
+    cmd = ["python3", "temp_tlnv_parser/velveto-app/automation/moysklad/parse_wb_top.py"]
     
     if mode == 'top':
         cmd.extend(["--mode", "top"])

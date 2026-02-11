@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 def run_sql(sql_file):
     # Load env
-    load_dotenv('moysklad-web/.env.local')
+    load_dotenv('temp_tlnv_parser/velveto-app/.env.local')
     url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
     key = os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
     
