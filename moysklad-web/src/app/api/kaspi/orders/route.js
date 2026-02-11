@@ -7,35 +7,45 @@ export async function GET() {
     const LOGIN = process.env.MOYSKLAD_LOGIN
     const PASSWORD = process.env.MOYSKLAD_PASSWORD
 
+    console.log(`[API] Fetching Kaspi orders...`)
+
     if (!LOGIN || !PASSWORD) {
+        console.error(`[API] Missing credentials`)
         return NextResponse.json({ error: "Missing MoySklad credentials" }, { status: 500 })
     }
 
     const authHeader = `Basic ${Buffer.from(`${LOGIN}:${PASSWORD}`).toString('base64')}`
 
     try {
-        const url = `${BASE_URL}/entity/customerorder?limit=100&order=created,desc&expand=positions,positions.assortment,state,store`
+        // Use search=kaspi to filter on MS side, making it faster and more reliable
+        const url = `${BASE_URL}/entity/customerorder?limit=100&order=created,desc&search=kaspi&expand=positions,positions.assortment,state,store`
 
         const response = await fetch(url, {
             headers: {
                 'Authorization': authHeader,
                 'Content-Type': 'application/json'
-            }
+            },
+            next: { revalidate: 30 } // Cache for 30 seconds
         })
 
         if (!response.ok) {
+            const errorText = await response.text()
+            console.error(`[API] MS Error ${response.status}: ${errorText}`)
             return NextResponse.json({ error: `MS API Error: ${response.status}` }, { status: response.status })
         }
 
         const data = await response.json()
         const orders = data.rows || []
 
+        console.log(`[API] Found ${orders.length} potential orders from search`)
+
         const formattedOrders = orders
             .filter(order => {
+                const name = (order.name || '').toLowerCase()
                 const code = (order.code || '').toLowerCase()
                 const extCode = (order.externalCode || '').toLowerCase()
                 const description = (order.description || '').toLowerCase()
-                return code.includes('kaspi') || extCode.includes('kaspi') || description.includes('kaspi')
+                return name.includes('kaspi') || code.includes('kaspi') || extCode.includes('kaspi') || description.includes('kaspi')
             })
             .map(order => {
                 // Identify warehouse
@@ -70,10 +80,11 @@ export async function GET() {
                 }
             })
 
+        console.log(`[API] Returning ${formattedOrders.length} formatted Kaspi orders`)
         return NextResponse.json(formattedOrders)
 
     } catch (error) {
-        console.error('API Error:', error)
+        console.error('[API] Fatal Error:', error)
         return NextResponse.json({ error: 'Internal server error while fetching orders' }, { status: 500 })
     }
 }

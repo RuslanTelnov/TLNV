@@ -8,14 +8,16 @@ from typing import Dict, List, Optional, Tuple
 class KaspiCategoryMapper:
     """Maps products to Kaspi categories and generates required attributes."""
     
-    # Restricted categories for Kaspi
+    # Restricted categories for Kaspi (Always blocked)
     RESTRICTED_KEYWORDS = [
-        "лекарство", "аптека", "алкоголь", "водка", "вино", "пиво", "сигареты", "табак", 
-        "оружие", "нож", "пистолет", "бад", "витамины", "химия", "ядохимикаты",
-        "интим", "sex", "эротика", "порно", "реплика", "копия", "1:1", "replica",
-        "золото", "серебро", "бриллиант", "брильянт", 
-        "медицинский", "шприц", "игла", "ветеринар", "корм для", "пиротехника", "фейерверк"
+        "алкоголь", "водка", "вино", "пиво", "сигареты", "табак", 
+        "нож", "пистолет", "бад", "витамины", "химия", "ядохимикаты",
+        "интим", "sex", "эротика", "порно", 
+        "шприц", "игла", "ветеринар", "корм для", "пиротехника", "фейерверк"
     ]
+
+    # Keywords that are blocked EXCEPT for specific categories like toys/cosmetics
+    WARNING_KEYWORDS = ["реплика", "копия", "1:1", "replica", "золото", "серебро", "бриллиант", "брильянт", "меч", "лекарство"]
 
     # Category mappings based on keywords (use stems/roots for better matching)
     CATEGORY_MAP = {
@@ -60,6 +62,7 @@ class KaspiCategoryMapper:
         'светофор': ('Master - Stuffed toys', 'toys'),
         'светофор': ('Master - Stuffed toys', 'toys'),
         'волчок': ('Master - Stuffed toys', 'toys'),
+        'меч': ('Master - Stuffed toys', 'toys'),
         
         # Educational / hobby
         'набор для опыт': ('Master - Board games', 'games'), # or another relevant category
@@ -101,7 +104,19 @@ class KaspiCategoryMapper:
         'gucci': ('Master - Perfumes', 'perfumes'),
         'lanvin': ('Master - Perfumes', 'perfumes'),
         'paco': ('Master - Perfumes', 'perfumes'),
-        'baccarat': ('Master - Perfumes', 'perfumes'),
+        'baccarat': ('Master - Perfumes', 'restricted_perfume'),
+        'аромабокс': ('Master - Perfumes', 'perfumes'),
+        'арома бокс': ('Master - Perfumes', 'perfumes'),
+        'fragrance': ('Master - Perfumes', 'perfumes'),
+        'tester': ('Master - Perfumes', 'perfumes'),
+        'zara': ('Master - Perfumes', 'perfumes'),
+        'lacoste': ('Master - Perfumes', 'perfumes'),
+        'montale': ('Master - Perfumes', 'perfumes'),
+        'tom ford': ('Master - Perfumes', 'perfumes'),
+        'kilian': ('Master - Perfumes', 'perfumes'),
+        'molecule': ('Master - Perfumes', 'perfumes'),
+        'byredo': ('Master - Perfumes', 'perfumes'),
+        'jo malone': ('Master - Perfumes', 'perfumes'),
         
         # Creative / Hobbies
         'набор для творчеств': ('Master - Drawing and coloring kits', 'drawing_kits'),
@@ -128,6 +143,10 @@ class KaspiCategoryMapper:
         'чехол': ('Master - Cases for mobile phones', 'cases'),
         'стекло для': ('Master - Screen protectors for mobile phones', 'cases'),
         'пленка для': ('Master - Screen protectors for mobile phones', 'cases'),
+        
+        # Foundations and Cushions
+        'кушон': ('Master - Foundation', 'foundation'),
+        'тональн': ('Master - Foundation', 'foundation'),
         
         # Diapers and pads (Crucial for the user)
         'пеленк': ('Master - Pet underpads', 'pads'),
@@ -165,13 +184,21 @@ class KaspiCategoryMapper:
         """Detects category based on name and description keywords."""
         text = f"{name} {description}".lower()
         
-        # Check for restricted categories first using word boundaries
+        # 0. Check for restricted categories first using word boundaries
+        print(f"DEBUG: Detecting category for '{name}'...", file=sys.stderr)
         for restricted_kw in cls.RESTRICTED_KEYWORDS:
             # Use regex to match whole word only
             pattern = rf"\b{re.escape(restricted_kw)}\b"
             if re.search(pattern, text, re.IGNORECASE):
-                print(f"⚠️ Detected restricted category keyword: {restricted_kw}", file=sys.stderr)
-                return None, "restricted"
+                # Special bypass for perfumes which might contain sensitive words in description
+                if "perfume" in text or "духи" in text or "аромабокс" in text or "арома бокс" in text:
+                    continue
+                print(f"⚠️ Detected strictly restricted keyword: {restricted_kw}", file=sys.stderr)
+                return cls.apply_policy(None, "no_cat", text)
+
+        # Special check for perfumes (Recently allowed)
+        if any(kw in text for kw in ['духи', 'парфюм', 'аромабокс', 'арома бокс', 'perfume', 'tester', 'fragrance']):
+             print(f"⚠️ Allowing perfume category detection", file=sys.stderr)
 
         # 1. Manual keyword mapping (fast pass)
         print(f"DEBUG: Checking '{name}' against map (TITLE ONLY first)...", file=sys.stderr)
@@ -184,7 +211,7 @@ class KaspiCategoryMapper:
             pattern = rf"\b{re.escape(keyword)}"
             if re.search(pattern, name_lower):
                 print(f"DEBUG: Found match '{keyword}' in TITLE -> {cat_name}", file=sys.stderr)
-                return cat_name, cat_type
+                return cls.apply_policy(cat_name, cat_type, text)
                 
         # Pass 2: Check Description (but exclude strict categories like Socks)
         # Some categories are too sensitive to description noise (like Socks, Medicine keywords etc)
@@ -201,7 +228,7 @@ class KaspiCategoryMapper:
             pattern = rf"\b{re.escape(keyword)}"
             if re.search(pattern, description_lower):
                 print(f"DEBUG: Found match '{keyword}' in DESCRIPTION -> {cat_name}", file=sys.stderr)
-                return cat_name, cat_type
+                return cls.apply_policy(cat_name, cat_type, text)
         
         # 2. Universal Search in kaspi_categories.json
         try:
@@ -241,16 +268,66 @@ class KaspiCategoryMapper:
                 from modules.ai_detector import detect_category_ai
                 ai_code, ai_title = detect_category_ai(name, description, potential_cats)
                 if ai_code:
-                    return ai_code, "universal"
+                    return cls.apply_policy(ai_code, "universal", text)
                 elif potential_cats:
                     # Fallback to the best fuzzy match
                     best_cat = potential_cats[0]
                     print(f"⚠️ AI detection failed, falling back to top fuzzy match: {best_cat['title']} ({best_cat['code']})", file=sys.stderr)
-                    return best_cat['code'], "universal_fuzzy"
+                    return cls.apply_policy(best_cat['code'], "universal_fuzzy", text)
         except Exception as e:
             print(f"⚠️ Universal detection failed: {e}", file=sys.stderr)
 
+        # Check warning keywords BEFORE returning the final result
+        # EXCEPT for toys/model_cars
+        final_cat_name, final_cat_type = None, None
+        
+        # Determine the best match from results above
+        # (This is a bit simplified, ideally we'd pass it through)
+        # Let's re-eval the logic below
+        
+        # Note: The logic above returns immediately if found. 
+        # I need to wrap the return points to check for warning keywords.
+        
+        print(f"❌ No category detected for '{name}' after all checks.", file=sys.stderr)
         return None, None
+
+    @classmethod
+    def apply_policy(cls, category_name: str, category_type: str, text: str) -> Tuple[Optional[str], Optional[str]]:
+        """Applies safety policy to detected category."""
+        if not category_name:
+            return None, None
+            
+        text_lower = text.lower()
+        
+        # Whitelisted categories can use WARNING_KEYWORDS freely
+        whitelisted_types = ['toys', 'model_cars', 'games', 'foundation', 'cosmetics', 'perfumes']
+        is_whitelisted = any(t in category_type for t in whitelisted_types)
+        
+        # 1. Check STRICTLY restricted keywords first (never allowed)
+        for kw in cls.RESTRICTED_KEYWORDS:
+            if kw in text_lower:
+                # Special cases for whitelisted categories (e.g. "оружие", "лекарство" often used in toys/scripts)
+                if is_whitelisted and kw in ["оружие", "лекарство", "медицинский"]:
+                    continue # Treat as warning instead
+                return f"restricted_{kw}", None
+
+        # 2. Check WARNING keywords
+        for kw in cls.WARNING_KEYWORDS:
+            if kw in text_lower:
+                if is_whitelisted:
+                    return category_name, category_type # Allow!
+                return f"restricted_{kw}", None
+                
+        return category_name, category_type
+            
+        # For other categories, check warning keywords
+        for warning_kw in cls.WARNING_KEYWORDS:
+            pattern = rf"\b{re.escape(warning_kw)}\b"
+            if re.search(pattern, text, re.IGNORECASE):
+                print(f"⚠️ Detected warning keyword '{warning_kw}' in restricted category '{category_type}'", file=sys.stderr)
+                return None, "restricted_warning"
+                
+        return category_name, category_type
     
     @staticmethod
     def get_required_attributes(category_type: str) -> List[str]:

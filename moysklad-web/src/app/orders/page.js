@@ -6,20 +6,26 @@ import Link from 'next/link'
 export default function OrdersPage() {
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const [filter, setFilter] = useState('ALL') // ALL, PP1 (WB Warehouse)
     const [searchQuery, setSearchQuery] = useState('')
 
     useEffect(() => {
         const fetchOrders = async () => {
             setLoading(true)
+            setError(null)
             try {
                 const res = await fetch('/api/kaspi/orders')
                 if (res.ok) {
                     const data = await res.json()
                     setOrders(data)
+                } else {
+                    const errData = await res.json().catch(() => ({ error: 'Unknown API error' }))
+                    setError(errData.error || `HTTP ${res.status}`)
                 }
             } catch (e) {
                 console.error("Fetch orders error", e)
+                setError(e.message)
             } finally {
                 setLoading(false)
             }
@@ -117,12 +123,29 @@ export default function OrdersPage() {
                 {/* Orders List */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {loading ? (
-                        <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--velveto-text-muted)' }}>
-                            <div className="animate-pulse">Загрузка заказов из МойСклад...</div>
+                        <div style={{ padding: '6rem', textAlign: 'center', color: 'var(--velveto-text-muted)' }}>
+                            <div className="animate-pulse" style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>📦 Загрузка заказов из МойСклад...</div>
+                            <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>Это может занять до 15 секунд при первом запросе</div>
+                        </div>
+                    ) : error ? (
+                        <div className="velveto-card" style={{ padding: '4rem', textAlign: 'center', border: '1px solid #ef444455' }}>
+                            <div style={{ color: '#ef4444', fontSize: '1.2rem', marginBottom: '1rem' }}>❌ Ошибка загрузки</div>
+                            <div style={{ color: 'var(--velveto-text-secondary)' }}>{error}</div>
+                            <button
+                                onClick={() => window.location.reload()}
+                                style={{
+                                    marginTop: '2rem', padding: '0.6rem 1.5rem', background: '#333',
+                                    color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer'
+                                }}
+                            >
+                                Попробовать снова
+                            </button>
                         </div>
                     ) : filteredOrders.length === 0 ? (
-                        <div className="velveto-card" style={{ padding: '4rem', textAlign: 'center', opacity: 0.5 }}>
+                        <div className="velveto-card" style={{ padding: '6rem', textAlign: 'center', opacity: 0.5 }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
                             Заказов не найдено
+                            {searchQuery && <div style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Попробуйте изменить запрос поиска</div>}
                         </div>
                     ) : (
                         filteredOrders.map(order => (

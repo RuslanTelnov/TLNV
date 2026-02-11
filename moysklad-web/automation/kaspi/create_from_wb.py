@@ -16,14 +16,19 @@ import config
 def init_supabase() -> Client:
     """Initializes Supabase client."""
     # Try different .env locations
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(current_file_dir))
+    
     env_paths = [
+        os.path.join(os.getcwd(), ".env.local"),
         os.path.join(os.getcwd(), "moysklad-web", ".env.local"),
+        os.path.join(project_root, ".env.local"),
         os.path.join(os.getcwd(), ".env"),
-        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "moysklad-web", ".env.local")
     ]
     
     for path in env_paths:
         if os.path.exists(path):
+            print(f"✅ Loaded env from: {path}", file=sys.stderr)
             load_dotenv(path)
             break
             
@@ -304,19 +309,21 @@ def create_from_wb(article_input):
                 specs["kaspi_upload_id"] = upload_id or "unknown"
                 specs["kaspi_sku"] = sku
                 
-                # 3. Save back with new columns
+                # 3. Save back with only existing columns
                 update_data = {
                     "kaspi_created": True,
-                    "kaspi_status": "moderation",
-                    "kaspi_upload_id": upload_id or "unknown",
                     "specs": specs
                 }
                 
                 # Add Kaspi Attributes to specs if available
                 if kaspi_data and kaspi_data.get("attributes"):
                      specs["kaspi_attributes"] = kaspi_data["attributes"]
-                     update_data["specs"] = specs
                 
+                # Store extra info in specs instead of columns
+                specs["kaspi_status"] = "moderation"
+                specs["kaspi_upload_id"] = upload_id or "unknown"
+                update_data["specs"] = specs
+
                 supabase.schema('Parser').table('wb_search_results').update(update_data).eq("id", int(article_id)).execute()
                 print(f"🔄 Updated DB status in wb_search_results: ID={upload_id}, Status=moderation")
             except Exception as e:

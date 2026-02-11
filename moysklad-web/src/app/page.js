@@ -18,7 +18,17 @@ export default function Home() {
         show: { opacity: 1, y: 0 }
     }
 
-    const cards = [
+    const highlightCards = [
+        {
+            title: "Заказы Kaspi",
+            description: "Мониторинг и управление заказами Kaspi",
+            href: "/orders",
+            color: "linear-gradient(135deg, #f87171 0%, #b91c1c 100%)", // Red for Kaspi
+            icon: "🚨"
+        }
+    ];
+
+    const toolCards = [
         {
             title: "Content Factory",
             description: "Генерация контента (SEO, Фото) с помощью ИИ",
@@ -56,27 +66,30 @@ export default function Home() {
             icon: "🔍"
         },
         {
-            title: "Tоп Товаров WB",
-            description: "Мониторинг топ выдачи и хитов продаж",
-            href: "/wb-top",
-            color: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)", // Pink/Purple
-            icon: "🔥"
-        },
-        {
             title: "Система Контроля",
             description: "Мониторинг очередей, ошибок и прогресса к 2000 карточек",
             href: "/conveyor",
             color: "linear-gradient(135deg, #10B981 0%, #3b82f6 100%)",
             icon: "⚙️"
+        }
+    ];
+
+    const analyticsCards = [
+        {
+            title: "Анализ S-Parfum",
+            description: "Мониторинг цен конкурентов и новинок S-Parfum",
+            href: "/s-parfum",
+            color: "linear-gradient(135deg, #c9a05a 0%, #a88241 100%)", // Gold
+            icon: "✨"
         },
         {
-            title: "Заказы Kaspi",
-            description: "Мониторинг заказов и управление отгрузками (Склад ВБ)",
-            href: "/orders",
-            color: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
-            icon: "📦"
-        },
-    ]
+            title: "Tоп Товаров WB",
+            description: "Мониторинг топ выдачи и хитов продаж",
+            href: "/wb-top",
+            color: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)", // Pink/Purple
+            icon: "🔥"
+        }
+    ];
 
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
@@ -167,115 +180,342 @@ export default function Home() {
                     </p>
                 </div>
 
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-                        gap: '2.5rem',
-                        maxWidth: '1400px',
-                        margin: '0 auto',
-                        padding: '0 2rem'
-                    }}
-                >
-                    {cards.map((card, index) => (
-                        <Link key={index} href={card.href}>
-                            <motion.div
-                                variants={item}
-                                whileHover={{ y: -10, scale: 1.02 }}
-                                className="velveto-card"
-                                style={{
-                                    padding: '3rem',
-                                    cursor: 'pointer',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%',
-                                    transition: 'all 0.3s ease'
-                                }}
-                            >
-                                {card.backgroundImage && (
+                {/* Kaspi Orders Section - Dedicated */}
+                <div style={{ marginBottom: '5rem' }}>
+                    <h3 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '300',
+                        color: '#ef4444',
+                        marginBottom: '2rem',
+                        paddingLeft: '2rem',
+                        borderLeft: '2px solid #ef4444',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
+                    }}>
+                        Kaspi
+                    </h3>
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+                            gap: '2.5rem',
+                            maxWidth: '1400px',
+                            margin: '0 auto',
+                            padding: '0 2rem'
+                        }}
+                    >
+                        {highlightCards.map((card, index) => (
+                            <Link key={index} href={card.href}>
+                                <motion.div
+                                    variants={item}
+                                    whileHover={{ y: -10, scale: 1.02 }}
+                                    className="velveto-card"
+                                    style={{
+                                        padding: '3rem',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        transition: 'all 0.3s ease',
+                                        minHeight: '300px'
+                                    }}
+                                >
                                     <div style={{
                                         position: 'absolute',
                                         top: 0,
                                         left: 0,
                                         right: 0,
-                                        bottom: 0,
-                                        backgroundImage: card.backgroundImage,
-                                        backgroundSize: 'cover',
-                                        backgroundPosition: 'center',
-                                        opacity: 0.1,
-                                        transition: 'opacity 0.3s ease',
-                                        zIndex: 0,
-                                        filter: 'grayscale(100%)'
+                                        height: '2px',
+                                        background: card.color,
+                                        zIndex: 1,
+                                        boxShadow: `0 0 20px ${card.color}`
                                     }} />
-                                )}
 
-                                {/* Gradient Background Effect */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    height: '2px',
-                                    background: card.color,
-                                    zIndex: 1,
-                                    boxShadow: `0 0 20px ${card.color}`
-                                }} />
+                                    <div style={{
+                                        fontSize: '3rem',
+                                        marginBottom: '2rem',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'relative',
+                                        zIndex: 1,
+                                        border: '1px solid rgba(255,255,255,0.05)'
+                                    }}>
+                                        {card.icon}
+                                    </div>
 
-                                <div style={{
-                                    fontSize: '3rem',
-                                    marginBottom: '2rem',
-                                    background: 'rgba(255,255,255,0.03)',
-                                    width: '80px',
-                                    height: '80px',
-                                    borderRadius: '20px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    position: 'relative',
-                                    zIndex: 1,
-                                    border: '1px solid rgba(255,255,255,0.05)'
-                                }}>
-                                    {card.icon}
-                                </div>
+                                    <h3 style={{
+                                        fontSize: '1.5rem',
+                                        fontWeight: '400',
+                                        color: 'var(--velveto-text-primary)',
+                                        marginBottom: '1rem',
+                                        letterSpacing: '0.05em',
+                                        fontFamily: 'var(--velveto-font-display)',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {card.title}
+                                    </h3>
 
-                                <h3 style={{
-                                    fontSize: '1.5rem',
-                                    fontWeight: '400',
-                                    color: 'var(--velveto-text-primary)',
-                                    marginBottom: '1rem',
-                                    letterSpacing: '0.05em',
-                                    fontFamily: 'var(--velveto-font-display)',
-                                    textTransform: 'uppercase'
-                                }}>
-                                    {card.title}
-                                </h3>
+                                    <p style={{ color: 'var(--velveto-text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
+                                        {card.description}
+                                    </p>
 
-                                <p style={{ color: 'var(--velveto-text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
-                                    {card.description}
-                                </p>
+                                    <div style={{
+                                        marginTop: 'auto',
+                                        paddingTop: '3rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: '#ef4444',
+                                        fontWeight: '600',
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.1em',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        Открыть заказы <span style={{ marginLeft: '0.5rem' }}>→</span>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </motion.div>
+                </div>
 
-                                <div style={{
-                                    marginTop: 'auto',
-                                    paddingTop: '3rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    color: 'var(--velveto-accent-primary)',
-                                    fontWeight: '600',
-                                    fontSize: '0.9rem',
-                                    letterSpacing: '0.1em',
-                                    textTransform: 'uppercase'
-                                }}>
-                                    Перейти <span style={{ marginLeft: '0.5rem' }}>→</span>
-                                </div>
-                            </motion.div>
-                        </Link>
-                    ))}
-                </motion.div>
+                <div style={{ marginBottom: '4rem' }}>
+                    <h3 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '300',
+                        color: 'var(--velveto-text-secondary)',
+                        marginBottom: '2rem',
+                        paddingLeft: '2rem',
+                        borderLeft: '2px solid var(--velveto-accent-primary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
+                    }}>
+                        Инструменты Управления
+                    </h3>
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+                            gap: '2.5rem',
+                            maxWidth: '1400px',
+                            margin: '0 auto',
+                            padding: '0 2rem'
+                        }}
+                    >
+                        {toolCards.map((card, index) => (
+                            <Link key={index} href={card.href}>
+                                <motion.div
+                                    variants={item}
+                                    whileHover={{ y: -10, scale: 1.02 }}
+                                    className="velveto-card"
+                                    style={{
+                                        padding: '3rem',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                >
+                                    {card.backgroundImage && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            backgroundImage: card.backgroundImage,
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center',
+                                            opacity: 0.1,
+                                            transition: 'opacity 0.3s ease',
+                                            zIndex: 0,
+                                            filter: 'grayscale(100%)'
+                                        }} />
+                                    )}
+
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        height: '2px',
+                                        background: card.color,
+                                        zIndex: 1,
+                                        boxShadow: `0 0 20px ${card.color}`
+                                    }} />
+
+                                    <div style={{
+                                        fontSize: '3rem',
+                                        marginBottom: '2rem',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'relative',
+                                        zIndex: 1,
+                                        border: '1px solid rgba(255,255,255,0.05)'
+                                    }}>
+                                        {card.icon}
+                                    </div>
+
+                                    <h3 style={{
+                                        fontSize: '1.5rem',
+                                        fontWeight: '400',
+                                        color: 'var(--velveto-text-primary)',
+                                        marginBottom: '1rem',
+                                        letterSpacing: '0.05em',
+                                        fontFamily: 'var(--velveto-font-display)',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {card.title}
+                                    </h3>
+
+                                    <p style={{ color: 'var(--velveto-text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
+                                        {card.description}
+                                    </p>
+
+                                    <div style={{
+                                        marginTop: 'auto',
+                                        paddingTop: '3rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: 'var(--velveto-accent-primary)',
+                                        fontWeight: '600',
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.1em',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        Перейти <span style={{ marginLeft: '0.5rem' }}>→</span>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </motion.div>
+                </div>
+
+                <div>
+                    <h3 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '300',
+                        color: 'var(--velveto-text-secondary)',
+                        marginBottom: '2rem',
+                        paddingLeft: '2rem',
+                        borderLeft: '2px solid var(--velveto-accent-primary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
+                    }}>
+                        Аналитика и Финансы
+                    </h3>
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+                            gap: '2.5rem',
+                            maxWidth: '1400px',
+                            margin: '0 auto',
+                            padding: '0 2rem'
+                        }}
+                    >
+                        {analyticsCards.map((card, index) => (
+                            <Link key={index} href={card.href}>
+                                <motion.div
+                                    variants={item}
+                                    whileHover={{ y: -10, scale: 1.02 }}
+                                    className="velveto-card"
+                                    style={{
+                                        padding: '3rem',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                >
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        height: '2px',
+                                        background: card.color,
+                                        zIndex: 1,
+                                        boxShadow: `0 0 20px ${card.color}`
+                                    }} />
+
+                                    <div style={{
+                                        fontSize: '3rem',
+                                        marginBottom: '2rem',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'relative',
+                                        zIndex: 1,
+                                        border: '1px solid rgba(255,255,255,0.05)'
+                                    }}>
+                                        {card.icon}
+                                    </div>
+
+                                    <h3 style={{
+                                        fontSize: '1.5rem',
+                                        fontWeight: '400',
+                                        color: 'var(--velveto-text-primary)',
+                                        marginBottom: '1rem',
+                                        letterSpacing: '0.05em',
+                                        fontFamily: 'var(--velveto-font-display)',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {card.title}
+                                    </h3>
+
+                                    <p style={{ color: 'var(--velveto-text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
+                                        {card.description}
+                                    </p>
+
+                                    <div style={{
+                                        marginTop: 'auto',
+                                        paddingTop: '3rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: 'var(--velveto-accent-primary)',
+                                        fontWeight: '600',
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.1em',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        Перейти <span style={{ marginLeft: '0.5rem' }}>→</span>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </motion.div>
+                </div>
             </main>
         </div>
     )
