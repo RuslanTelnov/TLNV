@@ -144,3 +144,37 @@ h6 {
     display: inline-block;
     animation: spin 1s linear infinite;
 }
+
+/* Mobile Optimization Utilities */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-hidden {
+        display: none !important;
+    }
+
+    /* Global Container Adjustment */
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Header Adjustments */
+    header {
+        padding: 1rem !important;
+    }
+
+    /* Table Horizontal Scroll */
+    .ms-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-only {
+        display: none !important;
+    }
+}

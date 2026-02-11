@@ -88,6 +88,13 @@ export default function Home() {
             href: "/wb-top",
             color: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)", // Pink/Purple
             icon: "🔥"
+        },
+        {
+            title: "ABC / XYZ Анализ",
+            description: "Классификация товаров по прибыли и стабильности спроса",
+            href: "/analytics",
+            color: "linear-gradient(135deg, #10b981 0%, #3b82f6 100%)", // Green to Blue
+            icon: "📊"
         }
     ];
 
@@ -135,8 +142,8 @@ export default function Home() {
                     }
                     .card-grid {
                         grid-template-columns: 1fr;
-                        gap: 1.5rem;
-                        padding: 0 1rem;
+                        gap: 1.25rem;
+                        padding: 0 1.25rem;
                     }
                     .welcome-title {
                         font-size: 2.5rem !important;
@@ -152,8 +159,16 @@ export default function Home() {
                         margin-bottom: 1.5rem !important;
                     }
                     .section-title {
-                        font-size: 1.2rem !important;
-                        margin-bottom: 1.5rem !important;
+                        font-size: 1.1rem !important;
+                        margin-bottom: 1.25rem !important;
+                        margin-left: 1.25rem !important;
+                        padding-left: 0.75rem !important;
+                    }
+                    .header-logo-text {
+                        font-size: 1.4rem !important;
+                    }
+                    .header-badge {
+                        display: none !important;
                     }
                 }
             `}</style>
@@ -171,7 +186,7 @@ export default function Home() {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <h1 style={{
+                    <h1 className="header-logo-text" style={{
                         fontSize: '1.8rem',
                         fontWeight: '300',
                         letterSpacing: '0.18em',
@@ -180,7 +195,7 @@ export default function Home() {
                     }}>
                         VELVETO
                     </h1>
-                    <span style={{
+                    <span className="header-badge" style={{
                         color: 'var(--velveto-accent-primary)',
                         fontSize: '0.7rem',
                         letterSpacing: '0.2em',
@@ -206,7 +221,7 @@ export default function Home() {
                     }}>
                         ADMIN
                     </div>
-                    <Link href="/presentation" style={{ textDecoration: 'none' }}>
+                    <Link href="/presentation" className="desktop-only" style={{ textDecoration: 'none' }}>
                         <motion.div
                             whileHover={{ scale: 1.1, color: '#fff' }}
                             style={{

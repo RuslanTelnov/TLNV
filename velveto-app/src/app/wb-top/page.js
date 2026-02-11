@@ -450,19 +450,20 @@ export default function WbTopPage() {
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
 
             {/* Header */}
-            <header style={{
+            <header className="wb-top-header" style={{
                 padding: '1.5rem 3rem', position: 'sticky', top: 0, zIndex: 100,
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 backdropFilter: 'blur(20px)', background: 'rgba(5, 8, 20, 0.95)', borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                     <Link href="/">
-                        <h1 style={{ fontSize: '1.5rem', fontWeight: '300', letterSpacing: '0.15em', color: 'var(--velveto-text-primary)' }}>VELVETO</h1>
+                        <h1 className="header-logo-text" style={{ fontSize: '1.5rem', fontWeight: '300', letterSpacing: '0.15em', color: 'var(--velveto-text-primary)', margin: 0 }}>VELVETO</h1>
                     </Link>
-                    <div style={{ height: '30px', width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+                    <div className="desktop-only" style={{ height: '30px', width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
 
-                    {/* CONVEYOR TOGGLE */}
+                    {/* CONVEYOR TOGGLE - Desktop */}
                     <button
+                        className="desktop-only"
                         onClick={toggleConveyor}
                         disabled={toggleLoading}
                         style={{
@@ -488,85 +489,144 @@ export default function WbTopPage() {
                         }} />
                         {isConveyorRunning ? 'АВТОПИЛОТ ВКЛЮЧЕН' : 'АВТОПИЛОТ ВЫКЛЮЧЕН'}
                     </button>
-                    {isConveyorRunning && (
-                        <div style={{ fontSize: '0.8rem', color: '#666', fontFamily: 'monospace' }}>
-                            Лог: {conveyorLogs.split('\n').pop()?.substring(0, 50)}...
-                        </div>
-                    )}
                 </div>
 
-                <nav style={{ display: 'flex', gap: '2rem' }}>
-                    <Link href="/" style={{ color: 'var(--velveto-text-muted)', fontSize: '0.9rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Главная</Link>
-                </nav>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button
+                        className="mobile-only"
+                        onClick={() => fetchProducts(query)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '1.5rem',
+                            cursor: 'pointer',
+                            color: 'var(--velveto-accent-primary)'
+                        }}
+                    >
+                        🔄
+                    </button>
+                    <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
+                        <Link href="/" style={{ color: 'var(--velveto-text-muted)', fontSize: '0.9rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Главная</Link>
+                    </nav>
+                </div>
             </header>
+
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .wb-top-header {
+                        padding: 1rem !important;
+                    }
+                    .header-logo-text {
+                        font-size: 1.2rem !important;
+                    }
+                    .search-group {
+                        flex-direction: column !important;
+                        width: 100% !important;
+                    }
+                    .search-form-input {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                    }
+                    .action-button-group {
+                        display: grid !important;
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        width: 100% !important;
+                        gap: 0.5rem !important;
+                    }
+                    .action-button-group > button, .action-button-group > a {
+                        height: 50px !important;
+                        padding: 0 !important;
+                        min-width: 0 !important;
+                        font-size: 0.9rem !important;
+                    }
+                    .filter-bar {
+                        overflow-x: auto !important;
+                        justify-content: flex-start !important;
+                        padding-bottom: 0.5rem !important;
+                        white-space: nowrap !important;
+                    }
+                    .desktop-table-view {
+                        display: none !important;
+                    }
+                    .card-view {
+                        display: grid !important;
+                        grid-template-columns: 1fr !important;
+                        gap: 1.5rem !important;
+                    }
+                    .desktop-only {
+                        display: none !important;
+                    }
+                    .mobile-only {
+                        display: block !important;
+                    }
+                    .chat-widget {
+                        width: 90vw !important;
+                        right: 5vw !important;
+                    }
+                }
+                @media (min-width: 769px) {
+                    .mobile-only {
+                        display: none !important;
+                    }
+                    .card-view {
+                        display: none !important;
+                    }
+                }
+            `}</style>
 
             <main className="container" style={{ padding: '2rem 2rem', maxWidth: '1600px', margin: '0 auto' }}>
 
                 {/* Search & Controls */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center', marginBottom: '3rem', alignItems: 'center' }}>
-                    <form onSubmit={(e) => handleParse(e)} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="search-group" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center', marginBottom: '3rem', alignItems: 'center' }}>
+                    <form onSubmit={(e) => handleParse(e)} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexGrow: 1, maxWidth: '500px' }}>
                         <input
                             type="text"
                             value={query}
                             onChange={(e) => { setQuery(e.target.value); setPage(1); }}
                             placeholder="Поиск WB"
+                            className="search-form-input"
                             style={{
-                                padding: '1rem 1.5rem',
+                                flex: 1,
+                                padding: '1rem',
                                 borderRadius: '16px',
                                 border: '1px solid rgba(255, 255, 255, 0.1)',
                                 background: 'rgba(255, 255, 255, 0.03)',
                                 color: 'white',
-                                width: '350px',
-                                fontSize: '1.1rem',
+                                fontSize: '1rem',
                                 height: '56px',
-                                outline: 'none',
-                                transition: 'border-color 0.3s ease'
+                                outline: 'none'
                             }}
                         />
-                        <button type="submit" disabled={parsing || !!activeJobId || !query} className="velveto-button" style={{ height: '56px', minWidth: '120px', fontSize: '1.1rem', padding: '0 2rem' }}>
-                            {parsing ? '...' :
-                                jobStatus === 'pending' && activeJobId ? 'В очереди' :
-                                    jobStatus === 'processing' && activeJobId ? 'Парсинг...' : 'Найти'}
+                        <button type="submit" disabled={parsing || !!activeJobId || !query} className="velveto-button" style={{ height: '56px', padding: '0 1.5rem' }}>
+                            {parsing ? '...' : 'Найти'}
                         </button>
                     </form>
-                    <button onClick={() => fetchProducts(query)} className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem' }}>Обновить</button>
-                    <button onClick={() => handleParse(null, 'top')} className="velveto-button-outline" style={{ borderColor: parsedColor(parsingMode === 'top'), color: parsedColor(parsingMode === 'top'), height: '56px', fontSize: '1.1rem', padding: '0 2rem' }}>
-                        🔥 Топ
-                    </button>
-                    <a href="/api/reports/generate" target="_blank" className="velveto-button-outline" style={{ height: '56px', fontSize: '1.1rem', padding: '0 2rem', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-                        📄 Отчет
-                    </a>
 
-
-                    {/* BIG STANDALONE PARSER TOGGLE */}
-                    <button
-                        onClick={toggleConveyor}
-                        disabled={toggleLoading}
-                        style={{
-                            height: '56px',
-                            minWidth: '220px',
-                            padding: '0 2rem',
-                            borderRadius: '16px',
-                            background: isConveyorRunning ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                            color: 'white',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            boxShadow: isConveyorRunning ? '0 10px 20px rgba(245, 158, 11, 0.3)' : '0 10px 20px rgba(16, 185, 129, 0.3)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.8rem',
-                            transition: 'all 0.3s ease'
-                        }}
-                    >
-                        {isConveyorRunning ? '🛑 СТОП ПАРСЕР' : '🚀 СТАРТ ПАРСЕР'}
-                    </button>
+                    <div className="action-button-group" style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button onClick={() => fetchProducts(query)} className="velveto-button-outline" style={{ height: '56px', padding: '0 1.5rem' }}>Обновить</button>
+                        <button onClick={() => handleParse(null, 'top')} className="velveto-button-outline" style={{ height: '56px', padding: '0 1.5rem' }}>🔥 Топ</button>
+                        <a href="/api/reports/generate" target="_blank" className="velveto-button-outline" style={{ height: '56px', padding: '0 1.5rem', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>📄 Отчет</a>
+                        <button
+                            onClick={toggleConveyor}
+                            disabled={toggleLoading}
+                            style={{
+                                height: '56px',
+                                padding: '0 1rem',
+                                borderRadius: '16px',
+                                background: isConveyorRunning ? '#f59e0b' : '#10B981',
+                                color: 'white',
+                                border: 'none',
+                                fontWeight: 'bold',
+                                fontSize: '0.8rem'
+                            }}
+                        >
+                            {isConveyorRunning ? 'СТОП' : 'СТАРТ'}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Filters */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
+                <div className="filter-bar" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
                     <FilterBtn label={`Все (${products.length})`} active={filterMode === 'all'} onClick={() => setFilterMode('all')} />
                     <FilterBtn label={`Новые (${newCount})`} active={filterMode === 'new'} onClick={() => setFilterMode('new')} color="#3b82f6" />
                     <FilterBtn label={`Доступные (${availableCount})`} active={filterMode === 'available'} onClick={() => setFilterMode('available')} color="#10b981" />
@@ -578,155 +638,104 @@ export default function WbTopPage() {
                 {loading ? <div style={{ textAlign: 'center', padding: '4rem' }}>Загрузка...</div> :
                     filteredProducts.length === 0 ? <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.5 }}>Пусто</div> :
                         (
-                            <div className="ms-table-container">
-                                <table className="ms-table">
-                                    <thead>
-                                        <tr>
-                                            <th width="40"><input type="checkbox" onChange={toggleSelectAll} checked={selectedIds.size === filteredProducts.length && filteredProducts.length > 0} /></th>
-                                            <th>Товар</th>
-                                            <th>Цена</th>
-                                            <th>Доставка</th>
-                                            <th>Наличие</th>
-                                            <th>Статус Конвейера</th>
-                                            <th>Модерация</th>
-                                            <th>Действия</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredProducts.map(p => (
-                                            <tr key={p.id}>
-                                                <td><input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} /></td>
-                                                <td>
-                                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                                        <div
-                                                            style={{ width: '50px', height: '60px', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
-                                                            onClick={() => setSelectedImage(p.image_url)}
-                                                        >
-                                                            <img src={p.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.0)', hover: { background: 'rgba(0,0,0,0.2)' } }} />
-                                                        </div>
-                                                        <div>
-                                                            <div style={{ fontWeight: 'bold' }}>{p.brand}</div>
-                                                            <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-secondary)' }}>{p.name}</div>
-                                                            <div style={{ fontSize: '0.75rem', opacity: 0.5, display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                                                ID: {p.id}
-                                                                <a
-                                                                    href={`https://www.wildberries.ru/catalog/${p.id}/detail.aspx`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    style={{ color: '#cb11ab', textDecoration: 'none', background: 'rgba(203, 17, 171, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600' }}
-                                                                >
-                                                                    WB ↗
-                                                                </a>
+                            <>
+                                {/* Desktop Table View */}
+                                <div className="desktop-table-view ms-table-container">
+                                    <table className="ms-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="40"><input type="checkbox" onChange={toggleSelectAll} checked={selectedIds.size === filteredProducts.length && filteredProducts.length > 0} /></th>
+                                                <th>Товар</th>
+                                                <th>Цена</th>
+                                                <th>Доставка</th>
+                                                <th>Наличие</th>
+                                                <th>Статус Конвейера</th>
+                                                <th>Модерация</th>
+                                                <th>Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredProducts.map(p => (
+                                                <tr key={p.id}>
+                                                    <td><input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} /></td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                                            <div
+                                                                style={{ width: '50px', height: '60px', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+                                                                onClick={() => setSelectedImage(p.image_url)}
+                                                            >
+                                                                <img src={p.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            </div>
+                                                            <div>
+                                                                <div style={{ fontWeight: 'bold' }}>{p.brand}</div>
+                                                                <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-secondary)' }}>{p.name}</div>
+                                                                <div style={{ fontSize: '0.75rem', opacity: 0.5, display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                                    ID: {p.id}
+                                                                    <a
+                                                                        href={`https://www.wildberries.ru/catalog/${p.id}/detail.aspx`}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        style={{ color: '#cb11ab', textDecoration: 'none', background: 'rgba(203, 17, 171, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: '600' }}
+                                                                    >
+                                                                        WB ↗
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--velveto-accent-primary)' }}>{p.price_kzt} ₸</td>
-
-                                                <td style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem' }}>
-                                                    {p.delivery_days > 0 ? (
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                            <span>🚚</span> {p.delivery_days} дн.
+                                                    </td>
+                                                    <td style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--velveto-accent-primary)' }}>{p.price_kzt} ₸</td>
+                                                    <td style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem' }}>{p.delivery_days > 0 ? `${p.delivery_days} дн.` : '—'}</td>
+                                                    <td style={{ textAlign: 'center' }}>{p.in_stock ? '✅' : '❌'}</td>
+                                                    <td style={{ minWidth: '180px' }}>
+                                                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                                                            <StatusIcon label="MC" active={p.ms_created} icon="📦" />
+                                                            <StatusIcon label="Скл" active={p.stock_added} icon="🏭" />
+                                                            <StatusIcon label="Kas" active={p.kaspi_created} icon="💳" />
                                                         </div>
-                                                    ) : (
-                                                        <span style={{ opacity: 0.5 }}>—</span>
-                                                    )}
-                                                </td>
-
-                                                <td style={{ textAlign: 'center' }}>
-                                                    {p.in_stock ? (
-                                                        <div style={{
-                                                            width: '12px', height: '12px', borderRadius: '50%', background: '#10B981',
-                                                            boxShadow: '0 0 10px rgba(16,185,129,0.5)', margin: '0 auto'
-                                                        }} title="В наличии" />
-                                                    ) : (
-                                                        <div style={{
-                                                            width: '12px', height: '12px', borderRadius: '50%', background: '#EF4444',
-                                                            margin: '0 auto', opacity: 0.5
-                                                        }} title="Нет в наличии" />
-                                                    )}
-                                                </td>
-
-                                                {/* STATUS COLUMNS */}
-                                                <td style={{ minWidth: '180px' }}>
-                                                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                                                        <StatusIcon label="MC" active={p.ms_created} icon="📦" />
-                                                        <StatusIcon label="Склад" active={p.stock_added} icon="🏭" />
-                                                        <StatusIcon label="Kaspi" active={p.kaspi_created} icon="💳" />
-                                                    </div>
-
-                                                    {p.conveyor_status && p.conveyor_status !== 'idle' && (
-                                                        <div
-                                                            style={{ fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'center', color: p.conveyor_status === 'error' ? '#EF4444' : '#10B981', cursor: p.conveyor_status === 'error' ? 'help' : 'default' }}
-                                                            title={p.conveyor_status === 'error' ? (p.conveyor_log || 'Unknown Error') : ''}
-                                                        >
-                                                            {p.conveyor_status === 'processing' ? 'В работе...' : (p.conveyor_status === 'error' ? 'Ошибка (см. лог)' : p.conveyor_status)}
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ fontSize: '0.7rem', textAlign: 'center', opacity: 0.8 }}>{p.kaspi_status || '—'}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                                            <button onClick={() => handleCreateInMS(p)} className="mini-btn">МС</button>
+                                                            <button onClick={() => handleCreateKaspi(p)} className="mini-btn">Kas</button>
                                                         </div>
-                                                    )}
-                                                </td>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                                                <td>
-                                                    {/* Kaspi Moderation Status */}
-                                                    {p.kaspi_status && (
-                                                        <div
-                                                            onClick={(p.kaspi_status === 'rejected' || p.kaspi_status === 'closed') ? (e) => { e.stopPropagation(); setFixModalProduct(p); } : undefined}
-                                                            style={{
-                                                                fontSize: '0.8rem',
-                                                                textAlign: 'center',
-                                                                padding: '4px 8px',
-                                                                borderRadius: '8px',
-                                                                background: p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.1)' :
-                                                                    p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.1)' :
-                                                                        p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.1)' :
-                                                                            p.kaspi_status === 'closed' ? 'rgba(100, 100, 100, 0.1)' :
-                                                                                p.kaspi_status === 'pending' ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                                                                color: p.kaspi_status === 'moderation' ? '#f59e0b' :
-                                                                    p.kaspi_status === 'approved' ? '#10b981' :
-                                                                        p.kaspi_status === 'rejected' ? '#ef4444' :
-                                                                            p.kaspi_status === 'closed' ? '#888' :
-                                                                                p.kaspi_status === 'pending' ? '#3b82f6' : 'inherit',
-                                                                border: `1px solid ${p.kaspi_status === 'moderation' ? 'rgba(245, 158, 11, 0.3)' :
-                                                                    p.kaspi_status === 'approved' ? 'rgba(16, 185, 129, 0.3)' :
-                                                                        p.kaspi_status === 'rejected' ? 'rgba(239, 68, 68, 0.3)' :
-                                                                            p.kaspi_status === 'closed' ? 'rgba(255, 255, 255, 0.1)' :
-                                                                                p.kaspi_status === 'pending' ? 'rgba(59, 130, 246, 0.3)' : 'transparent'}`,
-                                                                cursor: (p.kaspi_status === 'rejected' || p.kaspi_status === 'closed') ? 'pointer' : 'default',
-                                                                fontWeight: '600',
-                                                                transition: 'all 0.2s ease'
-                                                            }}
-                                                            title={p.kaspi_status === 'rejected' ? 'Нажмите, чтобы исправить через AI' : (p.kaspi_details || '')}
-                                                        >
-                                                            {p.kaspi_status === 'moderation' ? '⏳ На модерации' :
-                                                                p.kaspi_status === 'approved' ? '✅ Одобрено' :
-                                                                    p.kaspi_status === 'rejected' ? '❌ Отклонено (AI)' :
-                                                                        p.kaspi_status === 'closed' ? '🔒 Закрыто' :
-                                                                            p.kaspi_status === 'pending' ? '🕐 Ожидание' : p.kaspi_status}
-                                                        </div>
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                                        <button onClick={() => handleCreateInMS(p)} className="mini-btn" title="Создать в МойСклад">МС</button>
-                                                        <button onClick={() => handleOprihodovanie(p)} className="mini-btn" title="Сделать оприходование">Склад</button>
-                                                        <button onClick={() => handleCreateKaspi(p)} className="mini-btn" title="Создать карточку в Kaspi">Kaspi</button>
-                                                        <button
-                                                            onClick={() => handleForceSync(p)}
-                                                            className="mini-btn"
-                                                            style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.4)' }}
-                                                            title="Принудительно перезапустить конвейер"
-                                                        >
-                                                            🔄
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                {/* Mobile Card View */}
+                                <div className="card-view">
+                                    {filteredProducts.map(p => (
+                                        <div key={p.id} className="velveto-card" style={{ padding: '1rem' }}>
+                                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                                                <div style={{ width: '80px', height: '100px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
+                                                    <img src={p.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                </div>
+                                                <div style={{ flexGrow: 1 }}>
+                                                    <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>{p.brand}</div>
+                                                    <div style={{ fontSize: '0.85rem', color: 'var(--velveto-text-secondary)', marginBottom: '0.5rem' }}>{p.name}</div>
+                                                    <div style={{ fontWeight: 'bold', color: 'var(--velveto-accent-primary)', fontSize: '1.2rem' }}>{p.price_kzt} ₸</div>
+                                                </div>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
+                                                <div style={{ display: 'flex', gap: '0.8rem' }}>
+                                                    <StatusIcon label="MC" active={p.ms_created} icon="📦" />
+                                                    <StatusIcon label="Скл" active={p.stock_added} icon="🏭" />
+                                                    <StatusIcon label="Kas" active={p.kaspi_created} icon="💳" />
+                                                </div>
+                                                <button onClick={() => handleForceSync(p)} className="mini-btn" style={{ padding: '0.5rem 1rem' }}>Pезерв</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )
+                }
 
 
                 {/* IMAGE MODAL */}
@@ -754,6 +763,7 @@ export default function WbTopPage() {
                     <AnimatePresence>
                         {isChatOpen && (
                             <motion.div
+                                className="chat-widget"
                                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 20, scale: 0.9 }}

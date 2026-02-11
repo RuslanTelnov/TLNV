@@ -141,7 +141,7 @@ export default function ConveyorPage() {
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)', color: 'var(--velveto-text-primary)' }}>
 
             {/* Nav */}
-            <nav style={{ padding: '2rem 3rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+            <nav style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <Link href="/" style={{ color: 'var(--velveto-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.8rem' }}>
                     ← Back to Dashboard
                 </Link>
@@ -153,10 +153,63 @@ export default function ConveyorPage() {
                 </div>
             </nav>
 
-            <main className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '1rem 3rem' }}>
+            <style jsx>{`
+                .conveyor-health-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                }
+                .conveyor-stat-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 1.5rem;
+                    margin-bottom: 3rem;
+                }
+                .conveyor-layout {
+                    display: grid;
+                    grid-template-columns: 1fr 450px;
+                    gap: 2.5rem;
+                }
+                .item-card-grid {
+                    display: none;
+                }
+                @media (max-width: 1024px) {
+                    .conveyor-health-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                    .conveyor-stat-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                    .conveyor-layout {
+                        grid-template-columns: 1fr;
+                    }
+                }
+                @media (max-width: 768px) {
+                    .monitor-title {
+                        font-size: 2rem !important;
+                    }
+                    .desktop-table {
+                        display: none !important;
+                    }
+                    .item-card-grid {
+                        display: block !important;
+                    }
+                }
+                @media (max-width: 640px) {
+                    .conveyor-health-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .conveyor-stat-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            `}</style>
+
+            <main className="container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '1rem' }}>
 
                 <header style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '200', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>
+                    <h1 className="monitor-title" style={{ fontSize: '3rem', fontWeight: '200', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>
                         System <span style={{ color: 'var(--velveto-accent-primary)' }}>Monitor</span>
                     </h1>
                     <p style={{ color: 'var(--velveto-text-secondary)', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
@@ -164,7 +217,7 @@ export default function ConveyorPage() {
                     </p>
                 </header>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="conveyor-health-grid">
                     <HealthCard label="MOYSKLAD" status={health.moysklad} />
                     <HealthCard label="WILDBERRIES" status={health.wildberries} />
                     <HealthCard label="KASPI" status={health.kaspi} />
@@ -230,7 +283,7 @@ export default function ConveyorPage() {
                 )}
 
                 {/* Stat Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
+                <div className="conveyor-stat-grid">
                     <StatCard
                         label="В ОЧЕРЕДИ"
                         value={stats.idle}
@@ -305,8 +358,9 @@ export default function ConveyorPage() {
                                     <button onClick={() => setSelectedStatus(null)} style={{ background: 'none', border: 'none', color: 'var(--velveto-text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
                                 </div>
                             </div>
-                            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                            <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                                {/* Desktop Table */}
+                                <table className="desktop-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)', color: 'var(--velveto-text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>
                                         <tr>
                                             <th style={{ padding: '1rem', width: '60px' }}>Фото</th>
@@ -384,6 +438,46 @@ export default function ConveyorPage() {
                                         )}
                                     </tbody>
                                 </table>
+
+                                {/* Mobile Card View */}
+                                <div className="item-card-grid">
+                                    {loadingItems ? (
+                                        <div style={{ padding: '2rem', textAlign: 'center' }}>Загрузка...</div>
+                                    ) : filteredItems.length === 0 ? (
+                                        <div style={{ padding: '2rem', textAlign: 'center', opacity: 0.5 }}>Список пуст</div>
+                                    ) : (
+                                        filteredItems.map(item => (
+                                            <div key={item.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '1rem' }}>
+                                                <div style={{ width: '60px', height: '60px', background: '#333', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
+                                                    {item.image_url ? (
+                                                        <img src={item.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    ) : (
+                                                        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>📷</div>
+                                                    )}
+                                                </div>
+                                                <div style={{ flexGrow: 1 }}>
+                                                    <div style={{ fontWeight: '500', marginBottom: '0.25rem', fontSize: '0.9rem' }}>{item.name}</div>
+                                                    <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--velveto-text-muted)' }}>
+                                                        <span>МС: {item.ms_created ? '✅' : '❌'}</span>
+                                                        <span>Скл: {item.stock_added ? '✅' : '❌'}</span>
+                                                        <span>Kaspi: {item.kaspi_created ? '✅' : '❌'}</span>
+                                                    </div>
+                                                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <span style={{ fontWeight: 'bold', color: 'var(--velveto-accent-primary)' }}>{item.price_kzt?.toLocaleString()} ₸</span>
+                                                        <button
+                                                            onClick={() => handleRetry(item.id)}
+                                                            disabled={syncingIds.has(item.id)}
+                                                            className="mini-btn"
+                                                            style={{ padding: '0.4rem 0.8rem' }}
+                                                        >
+                                                            {syncingIds.has(item.id) ? '⏳' : '🔄 Sync'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
                             </div>
                         </motion.div>
                     )}
@@ -404,7 +498,7 @@ export default function ConveyorPage() {
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 450px', gap: '2.5rem' }}>
+                <div className="conveyor-layout">
 
                     {/* Left: Error Hub & Logs */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>

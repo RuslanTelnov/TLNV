@@ -60,10 +60,20 @@ export default function OrdersPage() {
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)', color: 'var(--velveto-text-primary)' }}>
             {/* Nav */}
-            <nav style={{ padding: '2rem 3rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+            <nav className="orders-nav" style={{ padding: '2rem 3rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
                 <BackButton />
-                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)' }}>KASPI ORDERS MODULE</div>
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <Link href="/analytics" style={{
+                        color: 'var(--velveto-text-muted)',
+                        fontSize: '0.8rem',
+                        letterSpacing: '0.1em',
+                        textTransform: 'uppercase',
+                        transition: 'color 0.3s',
+                        textDecoration: 'none'
+                    }}>
+                        Аналитика
+                    </Link>
+                    <div className="desktop-only" style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)' }}>KASPI ORDERS MODULE</div>
                 </div>
             </nav>
 
@@ -78,7 +88,7 @@ export default function OrdersPage() {
                 </header>
 
                 {/* Filters */}
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div className="orders-filters" style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
                     <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '4px' }}>
                         <button
                             onClick={() => setFilter('ALL')}
@@ -104,9 +114,10 @@ export default function OrdersPage() {
 
                     <input
                         type="text"
-                        placeholder="Поиск по номеру заказа или товару..."
+                        placeholder="Поиск..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        className="orders-search-input"
                         style={{
                             background: 'rgba(255,255,255,0.05)', border: '1px solid #333',
                             borderRadius: '8px', padding: '0.7rem 1.2rem', color: 'white',
@@ -114,7 +125,7 @@ export default function OrdersPage() {
                         }}
                     />
 
-                    <div style={{ marginLeft: 'auto', fontSize: '0.9rem', color: 'var(--velveto-text-muted)' }}>
+                    <div className="desktop-only" style={{ marginLeft: 'auto', fontSize: '0.9rem', color: 'var(--velveto-text-muted)' }}>
                         Показано: {filteredOrders.length}
                     </div>
                 </div>
@@ -152,27 +163,27 @@ export default function OrdersPage() {
                                 key={order.id}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="velveto-card"
+                                className="velveto-card order-card"
                                 style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: '120px 1fr 200px 150px', alignItems: 'center', gap: '2rem' }}
                             >
-                                <div style={{ textAlign: 'center' }}>
+                                <div className="order-id-section" style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.3rem' }}>ID ЗАКАЗА</div>
                                     <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{order.code}</div>
                                 </div>
 
-                                <div>
+                                <div className="order-items-section">
                                     <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.5rem' }}>ТОВАРЫ</div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                                         {order.entries.map((entry, i) => (
                                             <div key={i} style={{ fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between' }}>
                                                 <span>{entry.quantity}x {entry.name}</span>
-                                                <span style={{ color: 'var(--velveto-text-muted)', fontSize: '0.8rem' }}>{entry.sku}</span>
+                                                <span style={{ color: 'var(--velveto-text-muted)', fontSize: '0.8rem' }} className="desktop-only">{entry.sku}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div style={{ textAlign: 'right' }}>
+                                <div className="order-info-section" style={{ textAlign: 'right' }}>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.3rem' }}>ИНФО</div>
                                     <div style={{ fontSize: '0.9rem' }}>{order.customer_name}</div>
                                     <div style={{ fontSize: '0.8rem', color: 'var(--velveto-text-muted)' }}>
@@ -183,7 +194,7 @@ export default function OrdersPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ textAlign: 'right' }}>
+                                <div className="order-status-section" style={{ textAlign: 'right' }}>
                                     <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.3rem' }}>СТАТУС / ЦЕНА</div>
                                     <div style={{
                                         display: 'inline-block', padding: '4px 8px', borderRadius: '4px',
@@ -201,6 +212,44 @@ export default function OrdersPage() {
                     )}
                 </div>
             </main>
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .orders-nav {
+                        padding: 1rem !important;
+                    }
+                    main {
+                        padding: 1rem !important;
+                    }
+                    header h1 {
+                        font-size: 2rem !important;
+                    }
+                    .orders-filters {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                    }
+                    .orders-search-input {
+                        min-width: 0 !important;
+                        width: 100% !important;
+                    }
+                    .order-card {
+                        grid-template-columns: 1fr !important;
+                        gap: 1rem !important;
+                        padding: 1rem !important;
+                    }
+                    .order-id-section, .order-info-section, .order-status-section {
+                        text-align: left !important;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .order-id-section div, .order-info-section div, .order-status-section div {
+                        margin-bottom: 0 !important;
+                    }
+                    .desktop-only {
+                        display: none !important;
+                    }
+                }
+            `}</style>
         </div>
     )
 }

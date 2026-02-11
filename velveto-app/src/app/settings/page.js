@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-export default function Settings() {
+export function Settings() {
     const [keys, setKeys] = useState(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -66,7 +66,7 @@ export default function Settings() {
 
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
-            <header style={{
+            <header className="settings-header" style={{
                 padding: '1.5rem 3rem',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -77,7 +77,7 @@ export default function Settings() {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Link href="/">
-                        <h1 style={{
+                        <h1 className="logo-text" style={{
                             fontSize: '1.5rem',
                             fontWeight: '300',
                             letterSpacing: '0.18em',
@@ -89,25 +89,26 @@ export default function Settings() {
                         </h1>
                     </Link>
                 </div>
-                <div style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.875rem', textTransform: 'uppercase' }}>
+                <div className="desktop-only" style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.875rem', textTransform: 'uppercase' }}>
                     Settings & API Keys
                 </div>
             </header>
 
             <main className="container" style={{ paddingTop: '4rem', maxWidth: '1000px', margin: '0 auto', paddingBottom: '4rem' }}>
-                <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div className="settings-page-header" style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
                         <Link href="/">
                             <div style={{ color: 'var(--velveto-accent-primary)', cursor: 'pointer', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 ← На главную
                             </div>
                         </Link>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: '200', color: 'var(--velveto-text-primary)' }}>НАСТРОЙКИ</h2>
+                        <h2 className="title-text" style={{ fontSize: '2.5rem', fontWeight: '200', color: 'var(--velveto-text-primary)' }}>НАСТРОЙКИ</h2>
                     </div>
 
                     <button
                         onClick={handleSave}
                         disabled={saving || loading}
+                        className="save-button"
                         style={{
                             background: 'var(--velveto-accent-primary)',
                             color: '#000',
@@ -239,4 +240,46 @@ function SettingInput({ name, value, onChange }) {
         </motion.div>
     );
 }
+
+const styles = `
+    @media (max-width: 768px) {
+        .settings-header {
+            padding: 1rem !important;
+        }
+        .logo-text {
+            font-size: 1.2rem !important;
+        }
+        main {
+            padding: 2rem 1rem !important;
+        }
+        .settings-page-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1.5rem !important;
+        }
+        .title-text {
+            font-size: 2rem !important;
+        }
+        .save-button {
+            width: 100% !important;
+        }
+        .desktop-only {
+            display: none !important;
+        }
+    }
+`
+
+export function StyleTag() {
+    return <style dangerouslySetInnerHTML={{ __html: styles }} />
+}
+
+// Wrap export to include styles
+const SettingsWithStyles = () => (
+    <>
+        <StyleTag />
+        <Settings />
+    </>
+)
+
+export default SettingsWithStyles
 

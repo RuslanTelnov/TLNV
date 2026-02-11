@@ -60,7 +60,7 @@ export default function WbProducts() {
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
             {/* Header */}
-            <header style={{
+            <header className="wb-header" style={{
                 padding: '1.5rem 3rem',
                 position: 'sticky',
                 top: 0,
@@ -75,7 +75,7 @@ export default function WbProducts() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <Link href="/">
-                            <h1 style={{
+                            <h1 className="header-logo-text" style={{
                                 fontSize: '1.8rem',
                                 fontWeight: '300',
                                 letterSpacing: '0.18em',
@@ -86,7 +86,7 @@ export default function WbProducts() {
                                 VELVETO
                             </h1>
                         </Link>
-                        <span style={{
+                        <span className="header-badge" style={{
                             color: 'var(--velveto-accent-primary)',
                             fontSize: '0.7rem',
                             letterSpacing: '0.2em',
@@ -100,7 +100,7 @@ export default function WbProducts() {
                     </div>
 
                     {/* Navigation Tabs */}
-                    <nav style={{ display: 'flex', gap: '2rem' }}>
+                    <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
                         <Link href="/" style={{
                             color: 'var(--velveto-text-muted)',
                             fontSize: '0.9rem',
@@ -126,31 +126,84 @@ export default function WbProducts() {
                     color: 'var(--velveto-text-secondary)',
                     fontSize: '0.875rem',
                     fontWeight: '500',
-                    letterSpacing: '0.05em'
+                    letterSpacing: '0.05em',
+                    display: 'flex',
+                    gap: '1rem',
+                    alignItems: 'center'
                 }}>
-                    ADMIN PANEL
+                    <button
+                        onClick={fetchProducts}
+                        className="mobile-only"
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--velveto-accent-primary)',
+                            fontSize: '1.2rem',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        🔄
+                    </button>
+                    <span className="desktop-only">ADMIN PANEL</span>
                 </div>
+                <style jsx>{`
+                    @media (max-width: 768px) {
+                        .wb-header {
+                            padding: 1rem !important;
+                        }
+                        .header-logo-text {
+                            font-size: 1.4rem !important;
+                        }
+                        .header-badge {
+                            display: none !important;
+                        }
+                        .wb-title {
+                            font-size: 2.2rem !important;
+                        }
+                        .wb-header-actions {
+                            flex-direction: column !important;
+                            align-items: flex-start !important;
+                            gap: 1.5rem !important;
+                        }
+                        .wb-refresh-btn {
+                            width: 100% !important;
+                        }
+                        .card-view {
+                            display: grid !important;
+                            grid-template-columns: 1fr !important;
+                            gap: 1rem !important;
+                        }
+                        .desktop-table-view {
+                            display: none !important;
+                        }
+                    }
+                    @media (min-width: 769px) {
+                        .card-view {
+                            display: none !important;
+                        }
+                    }
+                `}</style>
             </header>
 
-            <main className="container" style={{ padding: '4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
+            <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>
+                <div className="wb-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                     <div>
-                        <h1 style={{
+                        <h1 className="wb-title" style={{
                             fontSize: '3.5rem',
                             fontWeight: '200',
                             color: 'var(--velveto-text-primary)',
-                            marginBottom: '1rem',
+                            marginBottom: '0.5rem',
                             letterSpacing: '0.05em'
                         }}>
                             Номенклатуры <span style={{ color: 'var(--velveto-accent-primary)' }}>WB</span>
                         </h1>
-                        <p style={{ color: 'var(--velveto-text-muted)', fontSize: '1.1rem' }}>
-                            Управление и мониторинг товаров Wildberries
+                        <p style={{ color: 'var(--velveto-text-muted)', fontSize: '1rem' }}>
+                            Управление и мониторинг товаров
                         </p>
                     </div>
                     <button
                         onClick={fetchProducts}
-                        className="velveto-button"
+                        className="velveto-button wb-refresh-btn desktop-only"
                         style={{
                             padding: '1rem 2rem',
                         }}
@@ -201,7 +254,8 @@ export default function WbProducts() {
                         initial="hidden"
                         animate="show"
                     >
-                        <div style={{ overflowX: 'auto' }}>
+                        {/* Desktop Table View */}
+                        <div className="desktop-table-view" style={{ overflowX: 'auto' }}>
                             <table className="ms-table">
                                 <thead>
                                     <tr>
@@ -283,6 +337,54 @@ export default function WbProducts() {
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Mobile Card View */}
+                        <div className="card-view">
+                            {filteredProducts.map((product) => (
+                                <motion.div
+                                    key={product.id}
+                                    variants={item}
+                                    className="velveto-card"
+                                    onClick={() => setSelectedProduct(product)}
+                                    style={{
+                                        padding: '1rem',
+                                        display: 'flex',
+                                        gap: '1rem',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <div style={{ width: '80px', height: '100px', flexShrink: 0 }}>
+                                        {(product.image_url || (product.images && product.images.length > 0)) ? (
+                                            <img
+                                                src={product.image_url || product.images[0]}
+                                                alt={product.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                            />
+                                        ) : (
+                                            <div style={{ width: '100%', height: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
+                                                📷
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--velveto-text-muted)', marginBottom: '0.25rem' }}>{product.brand}</div>
+                                        <div style={{ fontSize: '1rem', color: 'var(--velveto-text-primary)', fontWeight: '400', marginBottom: '0.5rem', lineHeight: '1.4' }}>{product.name}</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ color: 'var(--velveto-accent-primary)', fontWeight: '600' }}>
+                                                {(product.sale_price_u || product.price)
+                                                    ? (product.currency === 'KZT'
+                                                        ? `${(product.sale_price_u || product.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
+                                                        : `${((product.sale_price_u || product.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
+                                                    : '—'}
+                                            </div>
+                                            <div style={{ fontSize: '0.85rem' }}>
+                                                <span style={{ color: '#F59E0B' }}>★</span> {product.rating}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </motion.div>
                 )}
 
@@ -307,7 +409,7 @@ export default function WbProducts() {
                             animate={{ opacity: 1, scale: 1 }}
                             className="velveto-card"
                             style={{
-                                padding: '3rem',
+                                padding: '1.5rem',
                                 maxWidth: '900px',
                                 width: '100%',
                                 maxHeight: '90vh',
@@ -336,8 +438,8 @@ export default function WbProducts() {
                                 ×
                             </button>
 
-                            <div style={{ display: 'flex', gap: '3rem', marginBottom: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                                <div style={{ width: '300px', flexShrink: 0 }}>
+                            <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                                <div style={{ width: '100%', maxWidth: '300px', flexShrink: 0 }}>
                                     {/* Main Image */}
                                     {selectedProduct.image_url && (
                                         <img

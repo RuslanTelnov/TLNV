@@ -163,7 +163,7 @@ export default function NewProducts() {
             )}
 
             {/* Header */}
-            <header style={{
+            <header className="ms-header" style={{
                 padding: '1.5rem 3rem',
                 position: 'sticky',
                 top: 0,
@@ -176,20 +176,21 @@ export default function NewProducts() {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="logo-section" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <Link href="/">
-                            <h1 style={{
+                            <h1 className="logo-text" style={{
                                 fontSize: '1.8rem',
                                 fontWeight: '300',
                                 letterSpacing: '0.18em',
                                 color: 'var(--velveto-text-primary)',
                                 cursor: 'pointer',
-                                textTransform: 'uppercase'
+                                textTransform: 'uppercase',
+                                margin: 0
                             }}>
                                 VELVETO
                             </h1>
                         </Link>
-                        <span style={{
+                        <span className="desktop-only" style={{
                             color: 'var(--velveto-accent-primary)',
                             fontSize: '0.7rem',
                             letterSpacing: '0.2em',
@@ -203,7 +204,7 @@ export default function NewProducts() {
                     </div>
 
                     {/* Navigation Tabs */}
-                    <nav style={{ display: 'flex', gap: '2rem' }}>
+                    <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
                         <Link href="/" style={{
                             color: 'var(--velveto-text-muted)',
                             fontSize: '0.9rem',
@@ -225,7 +226,7 @@ export default function NewProducts() {
                         </Link>
                     </nav>
                 </div>
-                <div style={{
+                <div className="desktop-only" style={{
                     color: 'var(--velveto-text-secondary)',
                     fontSize: '0.875rem',
                     fontWeight: '500',
@@ -236,7 +237,7 @@ export default function NewProducts() {
             </header>
 
             <main className="container" style={{ padding: '4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
+                <div className="ms-page-header" style={{ marginBottom: '4rem', textAlign: 'center' }}>
                     <h2 style={{
                         fontSize: '3.5rem',
                         marginBottom: '1rem',
@@ -253,10 +254,10 @@ export default function NewProducts() {
                 </div>
 
                 {/* Search Bar */}
-                <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'center' }}>
+                <div className="ms-controls" style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'center' }}>
                     <input
                         type="text"
-                        placeholder="Поиск по названию или артикулу..."
+                        placeholder="Поиск..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         style={{
@@ -269,78 +270,106 @@ export default function NewProducts() {
                             color: 'var(--velveto-text-primary)',
                             fontSize: '1rem',
                             outline: 'none',
-                            transition: 'all 0.3s',
-                            fontFamily: 'var(--velveto-font-ui)'
-                        }}
-                        onFocus={(e) => {
-                            e.target.style.borderColor = 'var(--velveto-accent-primary)';
-                            e.target.style.boxShadow = '0 0 15px rgba(255, 179, 90, 0.1)';
-                        }}
-                        onBlur={(e) => {
-                            e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                            e.target.style.boxShadow = 'none';
+                            transition: 'all 0.3s'
                         }}
                     />
                 </div>
 
-                <motion.div
-                    className="ms-table-container"
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                >
-                    <table className="ms-table">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '80px' }}>Фото</th>
-                                <th>Наименование</th>
-                                <th>Артикул</th>
-                                <th>Мин. цена</th>
-                                <th>Розничная</th>
-                                <th>Себестоимость</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredProducts.map((product, index) => (
-                                <Link key={product.id} href={`/product/${product.id}`} legacyBehavior>
-                                    <motion.tr variants={item} style={{ cursor: 'pointer' }}>
-                                        <td>
-                                            {product.image_url ? (
+                <>
+                    <motion.div
+                        className="ms-table-container desktop-only"
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                    >
+                        <table className="ms-table">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: '80px' }}>Фото</th>
+                                    <th>Наименование</th>
+                                    <th>Артикул</th>
+                                    <th>Мин. цена</th>
+                                    <th>Розничная</th>
+                                    <th>Себестоимость</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredProducts.map((product, index) => (
+                                    <Link key={product.id} href={`/product/${product.id}`} legacyBehavior>
+                                        <motion.tr variants={item} style={{ cursor: 'pointer' }}>
+                                            <td>
                                                 <img
-                                                    src={product.image_url}
+                                                    src={product.image_url || 'https://via.placeholder.com/80'}
                                                     alt={product.name}
                                                     className="ms-thumb"
                                                     style={{ cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.1)' }}
                                                     onClick={(e) => handleImageClick(e, product.image_url)}
                                                 />
-                                            ) : (
-                                                <div className="ms-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', color: 'var(--velveto-text-muted)' }}>
-                                                    Нет
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</td>
-                                        <td className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</td>
-                                        <td style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
-                                            {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
-                                        </td>
-                                        <td className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
-                                            {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
-                                        </td>
-                                        <td>
-                                            {product.cost_price && (
-                                                <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
-                                                    {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
-                                                </span>
-                                            )}
-                                        </td>
-                                    </motion.tr>
-                                </Link>
-                            ))}
-                        </tbody>
-                    </table>
-                </motion.div>
+                                            </td>
+                                            <td className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</td>
+                                            <td className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</td>
+                                            <td style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
+                                                {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
+                                            </td>
+                                            <td className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
+                                                {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
+                                            </td>
+                                            <td>
+                                                {product.cost_price && (
+                                                    <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
+                                                        {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
+                                                    </span>
+                                                )}
+                                            </td>
+                                        </motion.tr>
+                                    </Link>
+                                ))}
+                            </tbody>
+                        </table>
+                    </motion.div>
+
+                    {/* Mobile Card View */}
+                    <div className="card-view mobile-only" style={{ display: 'none' }}>
+                        {filteredProducts.map((product) => (
+                            <div key={product.id} className="velveto-card" style={{ padding: '1rem', marginBottom: '1rem' }} onClick={() => router.push(`/product/${product.id}`)}>
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <img src={product.image_url || 'https://via.placeholder.com/80'} style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'cover' }} />
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>{product.name}</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--velveto-text-muted)' }}>Арт: {product.article}</div>
+                                        <div style={{ color: 'var(--velveto-accent-primary)', fontWeight: 'bold', marginTop: '0.5rem' }}>{product.price ? (product.price / 100).toLocaleString() : 0} ₸</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </>
             </main>
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .ms-header {
+                        padding: 1rem !important;
+                    }
+                    .logo-text {
+                        font-size: 1.2rem !important;
+                    }
+                    main {
+                        padding: 2rem 1rem !important;
+                    }
+                    .ms-page-header h2 {
+                        font-size: 2rem !important;
+                    }
+                    .ms-controls {
+                        margin-bottom: 2rem !important;
+                    }
+                    .desktop-only {
+                        display: none !important;
+                    }
+                    .mobile-only {
+                        display: block !important;
+                    }
+                }
+            `}</style>
         </div>
     )
 }

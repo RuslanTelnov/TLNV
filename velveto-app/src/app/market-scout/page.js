@@ -81,7 +81,7 @@ export default function MarketScoutPage() {
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
             {/* Header */}
-            <header style={{
+            <header className="scout-header" style={{
                 padding: '1.5rem 3rem',
                 position: 'sticky',
                 top: 0,
@@ -95,8 +95,8 @@ export default function MarketScoutPage() {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <a href="/" style={{ textDecoration: 'none' }}>
-                            <h1 style={{
+                        <Link href="/">
+                            <h1 className="header-logo-text" style={{
                                 fontSize: '1.8rem',
                                 fontWeight: '300',
                                 letterSpacing: '0.18em',
@@ -107,8 +107,8 @@ export default function MarketScoutPage() {
                             }}>
                                 VELVETO
                             </h1>
-                        </a>
-                        <span style={{
+                        </Link>
+                        <span className="header-badge" style={{
                             color: 'var(--velveto-accent-primary)',
                             fontSize: '0.7rem',
                             letterSpacing: '0.2em',
@@ -122,8 +122,8 @@ export default function MarketScoutPage() {
                     </div>
 
                     {/* Navigation Tabs */}
-                    <nav style={{ display: 'flex', gap: '2rem' }}>
-                        <a href="/" style={{
+                    <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
+                        <Link href="/" style={{
                             color: 'var(--velveto-text-muted)',
                             fontSize: '0.9rem',
                             letterSpacing: '0.1em',
@@ -132,8 +132,8 @@ export default function MarketScoutPage() {
                             transition: 'color 0.3s'
                         }}>
                             Главная
-                        </a>
-                        <a href="/ms-products" style={{
+                        </Link>
+                        <Link href="/ms-products" style={{
                             color: 'var(--velveto-text-muted)',
                             fontSize: '0.9rem',
                             letterSpacing: '0.1em',
@@ -142,8 +142,8 @@ export default function MarketScoutPage() {
                             transition: 'color 0.3s'
                         }}>
                             Номенклатуры
-                        </a>
-                        <a href="/market-scout" style={{
+                        </Link>
+                        <Link href="/market-scout" style={{
                             color: 'var(--velveto-accent-primary)',
                             fontSize: '0.9rem',
                             letterSpacing: '0.1em',
@@ -153,10 +153,10 @@ export default function MarketScoutPage() {
                             textDecoration: 'none'
                         }}>
                             Market Scout
-                        </a>
+                        </Link>
                     </nav>
                 </div>
-                <div style={{
+                <div className="desktop-only" style={{
                     color: 'var(--velveto-text-secondary)',
                     fontSize: '0.875rem',
                     fontWeight: '500',
@@ -165,10 +165,36 @@ export default function MarketScoutPage() {
                     ADMIN PANEL
                 </div>
             </header>
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .scout-header {
+                        padding: 1rem !important;
+                    }
+                    .header-logo-text {
+                        font-size: 1.4rem !important;
+                    }
+                    .header-badge {
+                        display: none !important;
+                    }
+                    .scout-title {
+                        font-size: 2.2rem !important;
+                    }
+                    .scout-form {
+                        padding: 1.25rem !important;
+                    }
+                    .arbitrage-summary {
+                        grid-template-columns: 1fr !important;
+                        gap: 1.5rem !important;
+                    }
+                    .arbitrage-header-text {
+                        font-size: 1.5rem !important;
+                    }
+                }
+            `}</style>
 
-            <main className="container" style={{ padding: '4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                    <h1 style={{
+            <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>
+                <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                    <h1 className="scout-title" style={{
                         fontSize: '3.5rem',
                         marginBottom: '1rem',
                         color: 'var(--velveto-text-primary)',
@@ -178,14 +204,14 @@ export default function MarketScoutPage() {
                     }}>
                         Market <span style={{ color: 'var(--velveto-accent-primary)' }}>Scout</span>
                     </h1>
-                    <p style={{ color: 'var(--velveto-text-muted)', fontSize: '1.1rem' }}>
-                        Поиск по названию (МойСклад) или <span style={{ color: 'var(--velveto-accent-primary)' }}>Kaspi Артикулу</span>
+                    <p style={{ color: 'var(--velveto-text-muted)', fontSize: '1rem' }}>
+                        Поиск по названию или <span style={{ color: 'var(--velveto-accent-primary)' }}>Kaspi Артикулу</span>
                     </p>
                 </div>
 
-                <form onSubmit={handleSearch} style={{
+                <form onSubmit={handleSearch} className="scout-form" style={{
                     maxWidth: '800px',
-                    margin: '0 auto 4rem',
+                    margin: '0 auto 3rem',
                     background: 'var(--velveto-bg-secondary)',
                     padding: '2rem',
                     borderRadius: '24px',
@@ -226,8 +252,8 @@ export default function MarketScoutPage() {
                     </div>
 
                     {!/^\d+$/.test(query) && (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                            <div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
+                            <div style={{ flex: '1 1 300px' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--velveto-text-secondary)', fontSize: '0.9rem' }}>
                                     Целевая цена (Опционально)
                                 </label>
@@ -250,7 +276,7 @@ export default function MarketScoutPage() {
                                     }}
                                 />
                             </div>
-                            <div>
+                            <div style={{ flex: '1 1 300px' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--velveto-text-secondary)', fontSize: '0.9rem' }}>
                                     URL изображения (Опционально)
                                 </label>
@@ -415,7 +441,7 @@ export default function MarketScoutPage() {
                                             </div>
                                         </div>
 
-                                        <div style={{
+                                        <div className="arbitrage-summary" style={{
                                             display: 'grid',
                                             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                                             gap: '2rem',
@@ -482,240 +508,243 @@ export default function MarketScoutPage() {
                             })()
                         )}
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'start' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'start' }}>
+                            <div style={{ flex: '1 1 300px', height: '100%' }}>
 
-                            {/* KASPI CARD */}
-                            <div className="velveto-card" style={{
-                                background: 'var(--velveto-bg-secondary)',
-                                borderRadius: '20px',
-                                overflow: 'hidden',
-                                border: '2px solid #cb11ab',
-                                boxShadow: '0 10px 20px rgba(203, 17, 171, 0.15)',
-                                height: '100%'
-                            }}>
-                                <div style={{
-                                    padding: '0.75rem',
-                                    background: '#cb11ab',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                    fontSize: '1rem',
-                                    letterSpacing: '0.1em'
+                                {/* KASPI CARD */}
+                                <div className="velveto-card" style={{
+                                    background: 'var(--velveto-bg-secondary)',
+                                    borderRadius: '20px',
+                                    overflow: 'hidden',
+                                    border: '2px solid #cb11ab',
+                                    boxShadow: '0 10px 20px rgba(203, 17, 171, 0.15)',
+                                    height: '100%'
                                 }}>
-                                    KASPI.KZ
-                                </div>
-                                <div style={{ padding: '1.5rem' }}>
                                     <div style={{
-                                        height: '200px',
+                                        padding: '0.75rem',
+                                        background: '#cb11ab',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        textAlign: 'center',
+                                        fontSize: '1rem',
+                                        letterSpacing: '0.1em'
+                                    }}>
+                                        KASPI.KZ
+                                    </div>
+                                    <div style={{ padding: '1.5rem' }}>
+                                        <div style={{
+                                            height: '200px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginBottom: '1.5rem',
+                                            background: 'white',
+                                            borderRadius: '12px',
+                                            padding: '0.5rem'
+                                        }}>
+                                            {kaspiProduct.image_url ? (
+                                                <img
+                                                    src={kaspiProduct.image_url}
+                                                    alt={kaspiProduct.title}
+                                                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                                />
+                                            ) : (
+                                                <div style={{ color: '#888', fontSize: '0.9rem' }}>Нет фото</div>
+                                            )}
+                                        </div>
+
+                                        <h3 style={{
+                                            fontSize: '1.1rem',
+                                            marginBottom: '1rem',
+                                            color: 'var(--velveto-text-primary)',
+                                            lineHeight: '1.3',
+                                            height: '2.6em',
+                                            overflow: 'hidden'
+                                        }}>
+                                            {kaspiProduct.title}
+                                        </h3>
+
+                                        <div style={{ marginBottom: '1.5rem' }}>
+                                            <div style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
+                                                Цена продажи
+                                            </div>
+                                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--velveto-text-primary)' }}>
+                                                {kaspiProduct.price.toLocaleString()} ₸
+                                            </div>
+                                        </div>
+
+                                        <a
+                                            href={kaspiProduct.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="velveto-button"
+                                            style={{
+                                                display: 'block',
+                                                width: '100%',
+                                                textAlign: 'center',
+                                                padding: '0.75rem',
+                                                background: '#cb11ab',
+                                                color: 'white',
+                                                borderRadius: '10px',
+                                                textDecoration: 'none',
+                                                fontWeight: '600',
+                                                fontSize: '1rem'
+                                            }}
+                                        >
+                                            Перейти в магазин
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ flex: '1 1 300px' }}>
+                                {/* WB CARD */}
+                                {results.length > 0 ? (
+                                    (() => {
+                                        const item = results[0];
+                                        const wbPriceKzt = Math.round(item.price * 5.2);
+
+                                        return (
+                                            <div className="velveto-card" style={{
+                                                background: 'var(--velveto-bg-secondary)',
+                                                borderRadius: '20px',
+                                                overflow: 'hidden',
+                                                border: '2px solid #a73afd', // WB Color (Purple-ish)
+                                                boxShadow: '0 10px 20px rgba(167, 58, 253, 0.15)',
+                                                height: '100%'
+                                            }}>
+                                                <div style={{
+                                                    padding: '0.75rem',
+                                                    background: 'linear-gradient(90deg, #cb11ab 0%, #481173 100%)',
+                                                    color: 'white',
+                                                    fontWeight: 'bold',
+                                                    textAlign: 'center',
+                                                    fontSize: '1rem',
+                                                    letterSpacing: '0.1em'
+                                                }}>
+                                                    WILDBERRIES
+                                                </div>
+                                                <div style={{ padding: '1.5rem' }}>
+                                                    <div style={{
+                                                        height: '200px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        marginBottom: '1.5rem',
+                                                        background: 'white',
+                                                        borderRadius: '12px',
+                                                        padding: '0.5rem'
+                                                    }}>
+                                                        <img
+                                                            src={item.image_url}
+                                                            alt={item.title}
+                                                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                                        />
+                                                    </div>
+
+                                                    <h3 style={{
+                                                        fontSize: '1.1rem',
+                                                        marginBottom: '1rem',
+                                                        color: 'var(--velveto-text-primary)',
+                                                        lineHeight: '1.3',
+                                                        height: '2.6em',
+                                                        overflow: 'hidden'
+                                                    }}>
+                                                        {item.title}
+                                                    </h3>
+
+                                                    <div style={{ marginBottom: '1.5rem' }}>
+                                                        <div style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
+                                                            Цена покупки (примерно)
+                                                        </div>
+                                                        <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--velveto-accent-primary)' }}>
+                                                            {wbPriceKzt.toLocaleString()} ₸
+                                                        </div>
+                                                        <div style={{ color: 'var(--velveto-text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+                                                            ({item.price} ₽)
+                                                        </div>
+                                                    </div>
+
+                                                    <a
+                                                        href={item.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="velveto-button"
+                                                        style={{
+                                                            display: 'block',
+                                                            width: '100%',
+                                                            textAlign: 'center',
+                                                            padding: '0.75rem',
+                                                            background: 'linear-gradient(90deg, #cb11ab 0%, #481173 100%)',
+                                                            color: 'white',
+                                                            borderRadius: '10px',
+                                                            textDecoration: 'none',
+                                                            fontWeight: '600',
+                                                            fontSize: '1rem'
+                                                        }}
+                                                    >
+                                                        Заказать на WB
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()
+                                ) : (
+                                    <div style={{
+                                        height: '100%',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        marginBottom: '1.5rem',
-                                        background: 'white',
-                                        borderRadius: '12px',
-                                        padding: '0.5rem'
+                                        border: '2px dashed rgba(255,255,255,0.1)',
+                                        borderRadius: '20px',
+                                        color: 'var(--velveto-text-muted)',
+                                        fontSize: '1rem',
+                                        padding: '2rem',
+                                        textAlign: 'center'
                                     }}>
-                                        {kaspiProduct.image_url ? (
-                                            <img
-                                                src={kaspiProduct.image_url}
-                                                alt={kaspiProduct.title}
-                                                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                                            />
-                                        ) : (
-                                            <div style={{ color: '#888', fontSize: '0.9rem' }}>Нет фото</div>
-                                        )}
+                                        Товары на Wildberries не найдены
                                     </div>
-
-                                    <h3 style={{
-                                        fontSize: '1.1rem',
-                                        marginBottom: '1rem',
-                                        color: 'var(--velveto-text-primary)',
-                                        lineHeight: '1.3',
-                                        height: '2.6em',
-                                        overflow: 'hidden'
-                                    }}>
-                                        {kaspiProduct.title}
-                                    </h3>
-
-                                    <div style={{ marginBottom: '1.5rem' }}>
-                                        <div style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
-                                            Цена продажи
-                                        </div>
-                                        <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--velveto-text-primary)' }}>
-                                            {kaspiProduct.price.toLocaleString()} ₸
-                                        </div>
-                                    </div>
-
-                                    <a
-                                        href={kaspiProduct.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="velveto-button"
-                                        style={{
-                                            display: 'block',
-                                            width: '100%',
-                                            textAlign: 'center',
-                                            padding: '0.75rem',
-                                            background: '#cb11ab',
-                                            color: 'white',
-                                            borderRadius: '10px',
-                                            textDecoration: 'none',
-                                            fontWeight: '600',
-                                            fontSize: '1rem'
-                                        }}
-                                    >
-                                        Перейти в магазин
-                                    </a>
-                                </div>
+                                )}
                             </div>
 
-                            {/* WB CARD */}
-                            {results.length > 0 ? (
-                                (() => {
-                                    const item = results[0];
-                                    const wbPriceKzt = Math.round(item.price * 5.2);
-
-                                    return (
-                                        <div className="velveto-card" style={{
-                                            background: 'var(--velveto-bg-secondary)',
-                                            borderRadius: '20px',
-                                            overflow: 'hidden',
-                                            border: '2px solid #a73afd', // WB Color (Purple-ish)
-                                            boxShadow: '0 10px 20px rgba(167, 58, 253, 0.15)',
-                                            height: '100%'
-                                        }}>
-                                            <div style={{
-                                                padding: '0.75rem',
-                                                background: 'linear-gradient(90deg, #cb11ab 0%, #481173 100%)',
-                                                color: 'white',
-                                                fontWeight: 'bold',
-                                                textAlign: 'center',
-                                                fontSize: '1rem',
-                                                letterSpacing: '0.1em'
+                            {/* OTHER RESULTS */}
+                            {results.length > 1 && (
+                                <div style={{ marginTop: '3rem' }}>
+                                    <h3 style={{ color: 'var(--velveto-text-muted)', marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.1rem' }}>
+                                        Другие варианты на Wildberries
+                                    </h3>
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                                        gap: '1.5rem'
+                                    }}>
+                                        {results.slice(1).map((item, index) => (
+                                            <div key={index} className="velveto-card" style={{
+                                                background: 'var(--velveto-bg-secondary)',
+                                                borderRadius: '16px',
+                                                overflow: 'hidden',
+                                                border: '1px solid rgba(255, 255, 255, 0.05)',
+                                                opacity: 0.8
                                             }}>
-                                                WILDBERRIES
-                                            </div>
-                                            <div style={{ padding: '1.5rem' }}>
-                                                <div style={{
-                                                    height: '200px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    marginBottom: '1.5rem',
-                                                    background: 'white',
-                                                    borderRadius: '12px',
-                                                    padding: '0.5rem'
-                                                }}>
-                                                    <img
-                                                        src={item.image_url}
-                                                        alt={item.title}
-                                                        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                                                    />
+                                                <div style={{ height: '150px', background: 'white', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <img src={item.image_url} alt={item.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                                 </div>
-
-                                                <h3 style={{
-                                                    fontSize: '1.1rem',
-                                                    marginBottom: '1rem',
-                                                    color: 'var(--velveto-text-primary)',
-                                                    lineHeight: '1.3',
-                                                    height: '2.6em',
-                                                    overflow: 'hidden'
-                                                }}>
-                                                    {item.title}
-                                                </h3>
-
-                                                <div style={{ marginBottom: '1.5rem' }}>
-                                                    <div style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>
-                                                        Цена покупки (примерно)
+                                                <div style={{ padding: '0.75rem' }}>
+                                                    <div style={{ fontSize: '0.8rem', color: 'var(--velveto-text-primary)', marginBottom: '0.25rem', height: '2.4em', overflow: 'hidden' }}>
+                                                        {item.title}
                                                     </div>
-                                                    <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--velveto-accent-primary)' }}>
-                                                        {wbPriceKzt.toLocaleString()} ₸
+                                                    <div style={{ fontWeight: 'bold', color: 'var(--velveto-accent-primary)', fontSize: '1rem' }}>
+                                                        {item.price} ₽
                                                     </div>
-                                                    <div style={{ color: 'var(--velveto-text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-                                                        ({item.price} ₽)
-                                                    </div>
+                                                    <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: 'var(--velveto-text-muted)', fontSize: '0.75rem' }}>
+                                                        Открыть →
+                                                    </a>
                                                 </div>
-
-                                                <a
-                                                    href={item.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="velveto-button"
-                                                    style={{
-                                                        display: 'block',
-                                                        width: '100%',
-                                                        textAlign: 'center',
-                                                        padding: '0.75rem',
-                                                        background: 'linear-gradient(90deg, #cb11ab 0%, #481173 100%)',
-                                                        color: 'white',
-                                                        borderRadius: '10px',
-                                                        textDecoration: 'none',
-                                                        fontWeight: '600',
-                                                        fontSize: '1rem'
-                                                    }}
-                                                >
-                                                    Заказать на WB
-                                                </a>
                                             </div>
-                                        </div>
-                                    );
-                                })()
-                            ) : (
-                                <div style={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    border: '2px dashed rgba(255,255,255,0.1)',
-                                    borderRadius: '20px',
-                                    color: 'var(--velveto-text-muted)',
-                                    fontSize: '1rem',
-                                    padding: '2rem',
-                                    textAlign: 'center'
-                                }}>
-                                    Товары на Wildberries не найдены
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                         </div>
-
-                        {/* OTHER RESULTS */}
-                        {results.length > 1 && (
-                            <div style={{ marginTop: '3rem' }}>
-                                <h3 style={{ color: 'var(--velveto-text-muted)', marginBottom: '1.5rem', textAlign: 'center', fontSize: '1.1rem' }}>
-                                    Другие варианты на Wildberries
-                                </h3>
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                                    gap: '1.5rem'
-                                }}>
-                                    {results.slice(1).map((item, index) => (
-                                        <div key={index} className="velveto-card" style={{
-                                            background: 'var(--velveto-bg-secondary)',
-                                            borderRadius: '16px',
-                                            overflow: 'hidden',
-                                            border: '1px solid rgba(255, 255, 255, 0.05)',
-                                            opacity: 0.8
-                                        }}>
-                                            <div style={{ height: '150px', background: 'white', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <img src={item.image_url} alt={item.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                                            </div>
-                                            <div style={{ padding: '0.75rem' }}>
-                                                <div style={{ fontSize: '0.8rem', color: 'var(--velveto-text-primary)', marginBottom: '0.25rem', height: '2.4em', overflow: 'hidden' }}>
-                                                    {item.title}
-                                                </div>
-                                                <div style={{ fontWeight: 'bold', color: 'var(--velveto-accent-primary)', fontSize: '1rem' }}>
-                                                    {item.price} ₽
-                                                </div>
-                                                <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: 'var(--velveto-text-muted)', fontSize: '0.75rem' }}>
-                                                    Открыть →
-                                                </a>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </div>
                 )}
 

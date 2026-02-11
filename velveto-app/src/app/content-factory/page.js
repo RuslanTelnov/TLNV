@@ -100,7 +100,7 @@ export default function ContentFactoryPage() {
     return (
         <div style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)', color: 'var(--velveto-text-primary)' }}>
             {/* Header */}
-            <header style={{
+            <header className="factory-header" style={{
                 padding: '1.5rem 3rem',
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                 display: 'flex',
@@ -115,21 +115,48 @@ export default function ContentFactoryPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                     <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <span style={{ color: 'var(--velveto-text-muted)', fontSize: '1.2rem' }}>←</span>
-                        <span style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem', letterSpacing: '0.1em' }}>НАЗАД</span>
+                        <span className="desktop-only" style={{ color: 'var(--velveto-text-secondary)', fontSize: '0.9rem', letterSpacing: '0.1em' }}>НАЗАД</span>
                     </Link>
-                    <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.1)' }}></div>
-                    <h1 style={{ margin: 0, fontSize: '1.5rem', letterSpacing: '0.1em', fontWeight: '300' }}>
+                    <div className="desktop-only" style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.1)' }}></div>
+                    <h1 className="header-logo-text" style={{ margin: 0, fontSize: '1.5rem', letterSpacing: '0.1em', fontWeight: '300' }}>
                         КОНТЕНТ <span style={{ color: '#f472b6', fontWeight: '600' }}>ЗАВОД</span>
                     </h1>
                 </div>
+                <style jsx>{`
+                    @media (max-width: 768px) {
+                        .factory-header {
+                            padding: 1rem !important;
+                        }
+                        .header-logo-text {
+                            font-size: 1.2rem !important;
+                        }
+                        .product-selector-group {
+                            flex-direction: column !important;
+                        }
+                        .article-input-group {
+                            width: 100% !important;
+                        }
+                        .tab-container {
+                            gap: 1rem !important;
+                            overflow-x: auto !important;
+                            white-space: nowrap !important;
+                        }
+                        .studio-grid {
+                            gap: 1.5rem !important;
+                        }
+                        .tone-selector {
+                            flex-wrap: wrap !important;
+                        }
+                    }
+                `}</style>
             </header>
 
-            <main className="container" style={{ padding: '3rem', maxWidth: '1400px', margin: '0 auto' }}>
+            <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>
 
                 {/* Product Selector with Search */}
                 <div style={{ marginBottom: '3rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--velveto-text-muted)', fontSize: '0.9rem' }}>ВЫБЕРИТЕ ТОВАР ИЛИ НАЙДИТЕ ПО АРТИКУЛУ</label>
-                    <div style={{ display: 'flex', gap: '1rem', maxWidth: '800px' }}>
+                    <div className="product-selector-group" style={{ display: 'flex', gap: '1rem', maxWidth: '800px' }}>
                         <select
                             value={product}
                             onChange={(e) => setProduct(e.target.value)}
@@ -140,8 +167,9 @@ export default function ContentFactoryPage() {
                                 border: '1px solid rgba(255,255,255,0.1)',
                                 borderRadius: '12px',
                                 color: '#000000',
-                                fontSize: '1.1rem',
-                                outline: 'none'
+                                fontSize: '1rem',
+                                outline: 'none',
+                                maxWidth: '100%'
                             }}
                         >
                             <option value="">Выберите товар из МойСклад...</option>
@@ -154,21 +182,22 @@ export default function ContentFactoryPage() {
                             )}
                         </select>
 
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <div className="article-input-group" style={{ display: 'flex', gap: '0.5rem' }}>
                             <input
                                 type="text"
                                 placeholder="Артикул"
                                 value={articleSearch}
                                 onChange={(e) => setArticleSearch(e.target.value)}
                                 style={{
-                                    width: '150px',
+                                    flex: 1,
                                     padding: '1rem',
                                     background: 'rgba(255,255,255,0.05)',
                                     border: '1px solid rgba(255,255,255,0.1)',
                                     borderRadius: '12px',
                                     color: 'white',
                                     fontSize: '1rem',
-                                    outline: 'none'
+                                    outline: 'none',
+                                    minWidth: '100px'
                                 }}
                             />
                             <button
@@ -207,7 +236,7 @@ export default function ContentFactoryPage() {
                 </div>
 
                 {/* Tabs */}
-                <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="tab-container" style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                     {['text', 'visual'].map(tab => (
                         <div
                             key={tab}
@@ -234,10 +263,10 @@ export default function ContentFactoryPage() {
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}
+                        style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem' }}
                     >
                         {/* Inputs */}
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
                             <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontWeight: '400' }}>Настройки Генерации</h2>
 
                             <div style={{ marginBottom: '1.5rem' }}>
@@ -253,20 +282,21 @@ export default function ContentFactoryPage() {
 
                             <div style={{ marginBottom: '1.5rem' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--velveto-text-muted)' }}>Тон текста</label>
-                                <div style={{ display: 'flex', gap: '1rem' }}>
-                                    {['Профессиональный', 'Дружелюбный', 'Люкс', 'Срочный'].map(tone => (
+                                <div className="tone-selector" style={{ display: 'flex', gap: '0.5rem' }}>
+                                    {['Профессиональный', 'Люкс'].map(t => (
                                         <button
-                                            key={tone}
-                                            onClick={() => setTone(tone)}
+                                            key={t}
+                                            onClick={() => setTone(t)}
                                             style={{
                                                 padding: '0.5rem 1rem',
-                                                background: tone === tone ? (tone === tone ? '#f472b6' : 'rgba(255,255,255,0.05)') : 'rgba(255,255,255,0.05)',
+                                                background: tone === t ? '#f472b6' : 'rgba(255,255,255,0.05)',
                                                 border: '1px solid rgba(255,255,255,0.1)',
                                                 borderRadius: '100px',
                                                 color: 'white',
-                                                cursor: 'pointer'
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem'
                                             }}
-                                        >{tone}</button>
+                                        >{t}</button>
                                     ))}
                                 </div>
                             </div>
@@ -281,7 +311,7 @@ export default function ContentFactoryPage() {
                         </div>
 
                         {/* Output */}
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
                             <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontWeight: '400' }}>Результат</h2>
                             <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--velveto-text-muted)', border: '2px dashed rgba(255,255,255,0.1)', borderRadius: '12px' }}>
                                 {generatedText ? (
@@ -299,10 +329,10 @@ export default function ContentFactoryPage() {
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem' }}
+                        style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem' }}
                     >
                         {/* Controls */}
-                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
                             <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontWeight: '400' }}>Фотостудия</h2>
 
                             <div
@@ -377,7 +407,7 @@ export default function ContentFactoryPage() {
                         </div>
 
                         {/* Gallery */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                        <div style={{ flex: '2 1 300px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
                             {generatedImages.length > 0 ? generatedImages.map((img, i) => (
                                 <motion.div
                                     key={i}
@@ -395,9 +425,10 @@ export default function ContentFactoryPage() {
                             )}
                         </div>
                     </motion.div>
-                )}
+                )
+                }
 
-            </main>
-        </div>
+            </main >
+        </div >
     )
 }

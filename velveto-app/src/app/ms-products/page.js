@@ -299,7 +299,7 @@ export default function MsProducts() {
             )}
 
             {/* Header */}
-            <header style={{
+            <header className="ms-header" style={{
                 padding: '1.5rem 3rem',
                 position: 'sticky',
                 top: 0,
@@ -312,20 +312,21 @@ export default function MsProducts() {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="logo-section" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <Link href="/">
-                            <h1 style={{
+                            <h1 className="logo-text" style={{
                                 fontSize: '1.8rem',
                                 fontWeight: '300',
                                 letterSpacing: '0.18em',
                                 color: 'var(--velveto-text-primary)',
                                 cursor: 'pointer',
-                                textTransform: 'uppercase'
+                                textTransform: 'uppercase',
+                                margin: 0
                             }}>
                                 VELVETO
                             </h1>
                         </Link>
-                        <span style={{
+                        <span className="desktop-only" style={{
                             color: 'var(--velveto-accent-primary)',
                             fontSize: '0.7rem',
                             letterSpacing: '0.2em',
@@ -339,7 +340,7 @@ export default function MsProducts() {
                     </div>
 
                     {/* Navigation Tabs */}
-                    <nav style={{ display: 'flex', gap: '2rem' }}>
+                    <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
                         <Link href="/" style={{
                             color: 'var(--velveto-text-muted)',
                             fontSize: '0.9rem',
@@ -359,12 +360,21 @@ export default function MsProducts() {
                         }}>
                             Номенклатуры МойСклад
                         </Link>
+                        <Link href="/analytics" style={{
+                            color: 'var(--velveto-text-muted)',
+                            fontSize: '0.9rem',
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            transition: 'color 0.3s'
+                        }}>
+                            Аналитика
+                        </Link>
                     </nav>
                 </div>
             </header>
 
             <main className="container" style={{ padding: '4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
+                <div className="ms-page-header" style={{ marginBottom: '4rem', textAlign: 'center' }}>
                     <h2 style={{
                         fontSize: '3.5rem',
                         marginBottom: '1rem',
@@ -381,7 +391,7 @@ export default function MsProducts() {
                 </div>
 
                 {/* Controls Container */}
-                <div style={{
+                <div className="ms-controls" style={{
                     marginBottom: '3rem',
                     display: 'flex',
                     justifyContent: 'center',
@@ -392,10 +402,10 @@ export default function MsProducts() {
                     margin: '0 auto 3rem'
                 }}>
                     {/* Search Bar */}
-                    <div style={{ position: 'relative', flex: '1', minWidth: '300px' }}>
+                    <div style={{ position: 'relative', flex: '2', minWidth: '300px' }}>
                         <input
                             type="text"
-                            placeholder="Поиск по названию или артикулу..."
+                            placeholder="Поиск..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             style={{
@@ -408,45 +418,19 @@ export default function MsProducts() {
                                 fontSize: '1rem',
                                 outline: 'none',
                                 transition: 'all 0.3s',
-                                fontFamily: 'var(--velveto-font-ui)'
-                            }}
-                            onFocus={(e) => {
-                                e.target.style.borderColor = 'var(--velveto-accent-primary)';
-                                e.target.style.boxShadow = '0 0 15px rgba(255, 179, 90, 0.1)';
-                            }}
-                            onBlur={(e) => {
-                                e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                                e.target.style.boxShadow = 'none';
+                                height: '54px'
                             }}
                         />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                style={{
-                                    position: 'absolute',
-                                    right: '1rem',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'var(--velveto-text-muted)',
-                                    cursor: 'pointer',
-                                    fontSize: '1.2rem'
-                                }}
-                            >
-                                ✕
-                            </button>
-                        )}
                     </div>
 
                     {/* Warehouse Selector */}
-                    <div style={{ minWidth: '250px' }}>
+                    <div style={{ flex: '1', minWidth: '200px' }}>
                         <select
                             value={selectedWarehouse}
                             onChange={(e) => setSelectedWarehouse(e.target.value)}
                             style={{
                                 width: '100%',
-                                padding: '1rem 1.5rem',
+                                padding: '0 1.5rem',
                                 borderRadius: '12px',
                                 border: '1px solid var(--velveto-accent-primary)',
                                 background: 'rgba(0, 0, 0, 0.3)',
@@ -454,19 +438,17 @@ export default function MsProducts() {
                                 fontSize: '1rem',
                                 cursor: 'pointer',
                                 outline: 'none',
-                                height: '54px', // Match input height
-                                appearance: 'none', // Remove default arrow
+                                height: '54px',
+                                appearance: 'none',
                                 backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffb35a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundPosition: 'right 1rem center',
                                 backgroundSize: '1em'
                             }}
                         >
-                            <option value="all" style={{ background: '#1a1a1a' }}>📦 Все склады</option>
+                            <option value="all">📦 Все склады</option>
                             {warehouses.map(w => (
-                                <option key={w.id} value={w.moysklad_id} style={{ background: '#1a1a1a' }}>
-                                    🏭 {w.name}
-                                </option>
+                                <option key={w.id} value={w.moysklad_id}>🏭 {w.name}</option>
                             ))}
                         </select>
                     </div>
@@ -487,127 +469,103 @@ export default function MsProducts() {
                     </div>
                 )}
 
-                <motion.div
-                    className="ms-table-container"
-                    variants={container}
-                    initial="hidden"
-                    animate="show"
-                    key={currentPage}
-                >
-                    <table className="ms-table">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '80px' }}>Фото</th>
-                                <th>Наименование</th>
-                                <th>Артикул</th>
-                                <th>Мин. цена</th>
-                                <th>Розничная</th>
-                                <th>Себестоимость</th>
-                                <th>Остаток</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((product, index) => (
-                                <tr
-                                    key={product.id}
-                                    onClick={() => router.push(`/product/${product.id}`)}
-                                    style={{ cursor: 'pointer', transition: 'background 0.2s' }}
-                                    className="hover:bg-white/5"
-                                >
-                                    <td>
-                                        <img
-                                            src={product.image_url || placeholders[product.id % placeholders.length]}
-                                            alt={product.name}
-                                            className="ms-thumb"
-                                            style={{ cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.1)' }}
-                                            onClick={(e) => handleImageClick(e, product.image_url || placeholders[product.id % placeholders.length])}
-                                        />
-                                    </td>
-                                    <td className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</td>
-                                    <td className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</td>
-                                    <td style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
-                                        {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
-                                    </td>
-                                    <td className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
-                                        {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
-                                    </td>
-                                    <td>
-                                        {product.cost_price && (
-                                            <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
-                                                {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <span style={{
-                                            fontWeight: 'bold',
-                                            color: getDisplayStock(product) > 0 ? 'var(--velveto-status-success)' : 'var(--velveto-status-error)',
-                                            transition: 'color 0.3s'
-                                        }}>
-                                            {getDisplayStock(product)}
-                                            {selectedWarehouse !== 'all' && (
-                                                <span style={{ fontSize: '0.7em', paddingLeft: '4px', opacity: 0.7 }}>
-                                                    (на складе)
+                <>
+                    <motion.div
+                        className="ms-table-container desktop-only"
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        key={`desktop-${currentPage}`}
+                    >
+                        <table className="ms-table">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: '80px' }}>Фото</th>
+                                    <th>Наименование</th>
+                                    <th>Артикул</th>
+                                    <th>Мин. цена</th>
+                                    <th>Розничная</th>
+                                    <th>Себестоимость</th>
+                                    <th>Остаток</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentItems.map((product, index) => (
+                                    <tr
+                                        key={product.id}
+                                        onClick={() => router.push(`/product/${product.id}`)}
+                                        style={{ cursor: 'pointer', transition: 'background 0.2s' }}
+                                        className="hover:bg-white/5"
+                                    >
+                                        <td>
+                                            <img
+                                                src={product.image_url || placeholders[product.id % placeholders.length]}
+                                                alt={product.name}
+                                                className="ms-thumb"
+                                                style={{ cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.1)' }}
+                                                onClick={(e) => handleImageClick(e, product.image_url || placeholders[product.id % placeholders.length])}
+                                            />
+                                        </td>
+                                        <td className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</td>
+                                        <td className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</td>
+                                        <td style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
+                                            {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
+                                        </td>
+                                        <td className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
+                                            {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
+                                        </td>
+                                        <td>
+                                            {product.cost_price && (
+                                                <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
+                                                    {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
                                                 </span>
                                             )}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            onClick={(e) => handleExportToOzon(e, product)}
-                                            disabled={exportingId === product.id || successIds.has(product.id)}
-                                            style={{
-                                                padding: '6px 12px',
-                                                borderRadius: '6px',
-                                                background: successIds.has(product.id)
-                                                    ? 'var(--velveto-status-success)'
-                                                    : (exportingId === product.id ? 'var(--velveto-text-muted)' : 'var(--velveto-accent-primary)'),
-                                                color: 'var(--velveto-bg-primary)',
-                                                border: 'none',
-                                                cursor: (exportingId === product.id || successIds.has(product.id)) ? 'default' : 'pointer',
-                                                fontWeight: '600',
-                                                fontSize: '0.8rem',
-                                                transition: 'all 0.2s',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                minWidth: '140px', // Fixed width to prevent jumping
-                                                justifyContent: 'center'
-                                            }}
-                                        >
-                                            {exportingId === product.id && (
-                                                <motion.span
-                                                    animate={{ rotate: 360 }}
-                                                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                                                    style={{
-                                                        display: 'inline-block',
-                                                        width: '12px',
-                                                        height: '12px',
-                                                        border: '2px solid rgba(255,255,255,0.3)',
-                                                        borderTop: '2px solid white',
-                                                        borderRadius: '50%'
-                                                    }}
-                                                />
-                                            )}
-                                            {successIds.has(product.id) ? (
-                                                <motion.span
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: 1 }}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-                                                >
-                                                    ✓ Выгружено
-                                                </motion.span>
-                                            ) : (
-                                                exportingId === product.id ? 'Загрузка...' : 'Выгрузка на Ozon'
-                                            )}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </motion.div>
+                                        </td>
+                                        <td>
+                                            <span style={{
+                                                fontWeight: 'bold',
+                                                color: getDisplayStock(product) > 0 ? 'var(--velveto-status-success)' : 'var(--velveto-status-error)',
+                                                transition: 'color 0.3s'
+                                            }}>
+                                                {getDisplayStock(product)}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button onClick={(e) => handleExportToOzon(e, product)} disabled={exportingId === product.id || successIds.has(product.id)} className="mini-btn">Ozon</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </motion.div>
+
+                    {/* Mobile Card View */}
+                    <div className="card-view mobile-only" style={{ display: 'none' }}>
+                        {currentItems.map((product) => (
+                            <div key={product.id} className="velveto-card" style={{ padding: '1rem', marginBottom: '1rem' }} onClick={() => router.push(`/product/${product.id}`)}>
+                                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                                    <img src={product.image_url || placeholders[product.id % placeholders.length]} style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'cover' }} />
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>{product.name}</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--velveto-text-muted)' }}>Арт: {product.article}</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                                            <div style={{ color: 'var(--velveto-accent-primary)', fontWeight: 'bold' }}>{product.price ? (product.price / 100).toLocaleString() : 0} ₸</div>
+                                            <div style={{ color: getDisplayStock(product) > 0 ? 'var(--velveto-status-success)' : 'var(--velveto-status-error)', fontWeight: 'bold' }}>{getDisplayStock(product)} шт</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={(e) => handleExportToOzon(e, product)}
+                                    disabled={exportingId === product.id || successIds.has(product.id)}
+                                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: successIds.has(product.id) ? 'var(--velveto-status-success)' : 'var(--velveto-accent-primary)', color: 'black', border: 'none', fontWeight: 'bold' }}
+                                >
+                                    {successIds.has(product.id) ? 'Выгружено' : (exportingId === product.id ? 'Загрузка...' : 'Выгрузить на Ozon')}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </>
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
@@ -661,21 +619,41 @@ export default function MsProducts() {
             </main>
 
             {/* Debug Footer */}
-            <div style={{
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                background: 'rgba(0,0,0,0.8)',
-                color: '#0f0',
-                padding: '0.5rem',
-                fontSize: '0.8rem',
-                fontFamily: 'monospace',
-                zIndex: 9999,
-                pointerEvents: 'none'
-            }}>
-                Debug: Products={products.length} | Filtered={filteredProducts.length} | Page={currentPage}/{totalPages} | Search="{searchQuery}" | Loading={String(loading)} | Error={String(error)}
-            </div>
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    .ms-header {
+                        padding: 1rem !important;
+                    }
+                    .logo-text {
+                        font-size: 1.2rem !important;
+                    }
+                    main {
+                        padding: 2rem 1rem !important;
+                    }
+                    .ms-page-header h2 {
+                        font-size: 2rem !important;
+                    }
+                    .ms-controls {
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+                        margin-bottom: 2rem !important;
+                    }
+                    .desktop-only {
+                        display: none !important;
+                    }
+                    .mobile-only {
+                        display: block !important;
+                    }
+                    .mini-btn {
+                        padding: 0.5rem 1rem;
+                        background: var(--velveto-accent-primary);
+                        color: black;
+                        border: none;
+                        border-radius: 6px;
+                        font-weight: bold;
+                    }
+                }
+            `}</style>
         </div >
     )
 }
