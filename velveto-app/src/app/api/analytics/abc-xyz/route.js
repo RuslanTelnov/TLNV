@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 const BASE_URL = "https://api.moysklad.ru/api/remap/1.2"
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
     const LOGIN = process.env.MOYSKLAD_LOGIN
@@ -15,32 +15,45 @@ export async function GET() {
     const authHeader = `Basic ${Buffer.from(`${LOGIN}:${PASSWORD}`).toString('base64')}`
 
     try {
-        // Fetch last 500 orders for better statistics
-        const url = `${BASE_URL}/entity/customerorder?limit=500&order=created,desc&search=kaspi&expand=positions,positions.assortment`
+        // We will fetch 3 pages of 100 orders each to get a good sample size (300 orders)
+        // This is more reliable than asking for 500 at once which might skip expansions
+        let allOrders = []
+        const pagesToFetch = 3
 
-        const response = await fetch(url, {
-            headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
-            next: { revalidate: 3600 } // Cache for 1 hour for analytics
-        })
+        for (let i = 0; i < pagesToFetch; i++) {
+            const offset = i * 100
+            const url = `${BASE_URL}/entity/customerorder?limit=100&offset=${offset}&order=created,desc&search=kaspi&expand=positions,positions.assortment`
 
-        if (!response.ok) {
-            const errText = await response.text();
-            console.error('MS API Error:', errText);
-            return NextResponse.json({ error: `MS API Error: ${response.status}` }, { status: response.status })
+            const response = await fetch(url, {
+                headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+                next: { revalidate: 3600 }
+            })
+
+            if (!response.ok) {
+                console.error(`MS API Error on page ${i}:`, response.status)
+                break
+            }
+
+            const data = await response.json()
+            const rows = data.rows || []
+            if (rows.length === 0) break
+            allOrders = [...allOrders, ...rows]
         }
-
-        const data = await response.json()
-        const orders = data.rows || []
 
         const productStats = {}
 
-        orders.forEach(order => {
+        allOrders.forEach(order => {
+            // MoySklad can return positions differently if not fully expanded or empty
             const positions = order.positions?.rows || []
-            const date = order.created.split(' ')[0]
+            const date = order.created ? order.created.split(' ')[0] : 'Unknown'
 
             positions.forEach(pos => {
-                const sku = pos.assortment?.article || pos.assortment?.code || 'N/A'
-                const name = pos.assortment?.name || 'Unknown'
+                // Ensure we have assortment data
+                const assortment = pos.assortment
+                if (!assortment) return
+
+                const sku = assortment.article || assortment.code || 'N/A'
+                const name = assortment.name || 'Unknown'
                 const price = (pos.price || 0) / 100
                 const qty = pos.quantity || 0
                 const revenue = price * qty
@@ -78,22 +91,22 @@ export async function GET() {
             else p.abc = 'C'
         })
 
-        // Assign XYZ (simplified)
+        // Assign XYZ
         products.forEach(p => {
             const daysCount = p.salesDays.size
             if (daysCount > 10) p.xyz = 'X'
             else if (daysCount > 3) p.xyz = 'Y'
             else p.xyz = 'Z'
 
-            // Clean up Set for JSON
             delete p.salesDays
         })
 
         return NextResponse.json({
             summary: {
                 totalRevenue,
-                totalOrders: orders.length,
-                totalProducts: products.length
+                totalOrders: allOrders.length,
+                totalProducts: products.length,
+                fetchedPages: pagesToFetch
             },
             products
         })
