@@ -47,16 +47,16 @@ const slides = [
     },
     {
         id: 'perfume',
-        title: 'COMPETITIVE INTELLIGENCE',
-        subtitle: 'S-Parfum Market Analysis',
+        title: 'БИЗНЕС-ПАНЕЛЬ S-PARFUM',
+        subtitle: 'Полный контроль и прозрачность',
         bg: assets.perfume,
         color: '#c9a05a',
         content: (
             <ul className="text-xl space-y-4 opacity-90">
-                <li>✨ <b className="text-white">Real-time Pricing</b> breakdown</li>
-                <li>💰 <b className="text-white">Net Margin</b> calculation</li>
-                <li>📊 <b className="text-white">Tier System</b> (Luxury/Selective)</li>
-                <li>🎯 <b className="text-white">Commission</b> optimization</li>
+                <li>✨ <b className="text-white">Прозрачная прибыль</b>: автоматический расчет чистой выплаты</li>
+                <li>📊 <b className="text-white">Контроль цен</b>: мониторинг РРЦ и акций в реальном времени</li>
+                <li>🚚 <b className="text-white">Учет логистики</b>: точный расчет затрат на каждую единицу</li>
+                <li>💎 <b className="text-white">Аналитика</b>: детализация по коллекциям (Exclusive / Luxury)</li>
             </ul>
         )
     },
