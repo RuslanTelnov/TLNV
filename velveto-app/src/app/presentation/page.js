@@ -136,12 +136,12 @@ export default function PresentationPage() {
     return (
         <div style={{ height: '100vh', width: '100vw', background: '#000', overflow: 'hidden', position: 'relative', fontFamily: 'Inter, sans-serif' }}>
 
-            {/* Background Image with Blur */}
+            {/* Background Image with Blur and Overlay */}
             <AnimatePresence initial={false} mode="wait">
                 <motion.div
                     key={slide.id + '-bg'}
                     initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 0.4, scale: 1 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1 }}
                     style={{
@@ -149,11 +149,13 @@ export default function PresentationPage() {
                         backgroundImage: `url(${slide.bg})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        filter: 'blur(30px) brightness(0.5)',
+                        filter: 'blur(40px) brightness(0.3)',
                         zIndex: 0
                     }}
                 />
             </AnimatePresence>
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%)', zIndex: 1 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2), transparent 20%, transparent 80%, rgba(0,0,0,0.2))', zIndex: 1 }} />
 
             {/* Main Content */}
             <div className="relative z-10 h-full flex items-center justify-center p-4">
@@ -170,33 +172,33 @@ export default function PresentationPage() {
                             transition={{ duration: 0.5, ease: "easeOut" }}
                             className="flex flex-col gap-4 md:gap-8 order-2 md:order-1"
                         >
-                            <div style={{
-                                display: 'inline-block',
-                                color: slide.color,
-                                fontSize: '1rem',
-                                letterSpacing: '0.3em',
-                                fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                borderLeft: `4px solid ${slide.color}`,
-                                paddingLeft: '1rem'
-                            }}>
+                            <div
+                                className="inline-flex items-center text-[0.75rem] md:text-[0.875rem] font-bold uppercase mb-1 md:mb-2"
+                                style={{
+                                    color: slide.color,
+                                    letterSpacing: '0.4em',
+                                    borderLeft: `4px solid ${slide.color}`,
+                                    paddingLeft: '1rem',
+                                }}
+                            >
                                 0{current + 1} // {slide.id.toUpperCase()}
                             </div>
 
-                            <h1 className="text-4xl md:text-7xl font-extrabold leading-tight" style={{
-                                background: `linear-gradient(to right, #fff, ${slide.color})`,
+                            <h1 className="text-3xl md:text-8xl font-black leading-[1.1] tracking-tight" style={{
+                                background: `linear-gradient(to bottom right, #fff 30%, ${slide.color} 100%)`,
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
-                                margin: 0
+                                margin: 0,
+                                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
                             }}>
                                 {slide.title}
                             </h1>
 
-                            <h2 className="text-xl md:text-3xl font-light text-white/70 m-0">
+                            <h2 className="text-lg md:text-3xl font-medium text-white/80 m-0 tracking-wide max-w-2xl leading-snug">
                                 {slide.subtitle}
                             </h2>
 
-                            <div className="mt-4 md:mt-8 text-gray-300">
+                            <div className="mt-4 md:mt-10 text-gray-200 text-base md:text-xl leading-relaxed">
                                 {slide.content}
                             </div>
                         </motion.div>
@@ -211,61 +213,87 @@ export default function PresentationPage() {
                             animate={{ scale: 1, opacity: 1, rotateY: 0 }}
                             exit={{ scale: 0.8, opacity: 0, rotateY: direction > 0 ? -45 : 45 }}
                             transition={{ duration: 0.7, type: "spring" }}
-                            className="relative w-full aspect-square flex justify-center items-center order-1 md:order-2 max-h-[40vh] md:max-h-none"
+                            className="relative w-full flex justify-center items-center order-1 md:order-2"
                         >
                             <div style={{
                                 position: 'absolute',
-                                inset: '10%',
+                                inset: '5%',
                                 background: slide.color,
-                                filter: 'blur(100px)',
-                                opacity: 0.3,
+                                filter: 'blur(120px)',
+                                opacity: 0.2,
                                 borderRadius: '50%'
                             }} />
-                            <img
-                                src={slide.bg}
-                                alt={slide.title}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'contain',
-                                    filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.5))',
-                                    transform: 'perspective(1000px) rotateY(-10deg)',
-                                    borderRadius: '2rem'
-                                }}
-                            />
+                            <div className="relative w-full h-full flex justify-center items-center p-4">
+                                <img
+                                    src={slide.bg}
+                                    alt={slide.title}
+                                    className="max-h-[35vh] md:max-h-[70vh] w-full object-contain rounded-[2rem] md:rounded-[2.5rem] border border-white/10"
+                                    style={{
+                                        filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7))',
+                                        transform: 'perspective(1500px) rotateY(-5deg) rotateX(2deg)',
+                                    }}
+                                />
+                            </div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
             </div>
 
             {/* Navigation Controls */}
-            <div className="absolute bottom-6 md:bottom-12 right-6 md:right-12 flex gap-4 z-50">
-                <button onClick={prevSlide} className="p-4 rounded-full bg-white/10 border border-white/20 text-white cursor-pointer backdrop-blur-md active:scale-95 transition-transform">
-                    ←
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-12 md:right-12 flex items-center gap-6 z-50">
+                <button
+                    onClick={prevSlide}
+                    className="group w-14 h-14 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer backdrop-blur-xl hover:bg-white/10 hover:border-white/30 active:scale-95 transition-all duration-300"
+                    aria-label="Previous slide"
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-1 transition-transform">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
                 </button>
-                <div className="flex items-center gap-2 mx-4">
+
+                <div className="flex items-center gap-2 mx-2">
                     {slides.map((_, idx) => (
-                        <div key={idx} style={{
-                            width: idx === current ? '30px' : '10px',
-                            height: '4px',
-                            borderRadius: '2px',
-                            background: idx === current ? '#fff' : 'rgba(255,255,255,0.2)',
-                            transition: 'all 0.3s'
-                        }} />
+                        <button
+                            key={idx}
+                            onClick={() => {
+                                setDirection(idx > current ? 1 : -1)
+                                setCurrent(idx)
+                            }}
+                            className="transition-all duration-300"
+                            style={{
+                                width: idx === current ? '24px' : '6px',
+                                height: '6px',
+                                borderRadius: '3px',
+                                background: idx === current ? slide.color : 'rgba(255,255,255,0.2)',
+                            }}
+                        />
                     ))}
                 </div>
-                <button onClick={nextSlide} className="p-4 rounded-full bg-white/10 border border-white/20 text-white cursor-pointer backdrop-blur-md active:scale-95 transition-transform">
-                    →
+
+                <button
+                    onClick={nextSlide}
+                    className="group w-14 h-14 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer backdrop-blur-xl hover:bg-white/10 hover:border-white/30 active:scale-95 transition-all duration-300"
+                    aria-label="Next slide"
+                >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                 </button>
             </div>
 
             {/* Home Link */}
-            <Link href="/" className="absolute top-6 left-6 z-50 no-underline">
-                <div className="flex items-center gap-2 text-white/50 text-xs tracking-widest uppercase bg-black/20 p-2 rounded backdrop-blur-sm">
-                    <span>✕</span> CLOSE
+            <Link href="/" className="absolute top-6 left-6 md:top-8 md:left-8 z-50 group no-underline">
+                <div className="flex items-center gap-2 md:gap-3 text-white/60 group-hover:text-white transition-colors py-1.5 px-3 md:py-2 md:px-4 rounded-lg md:rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span className="text-[10px] md:text-sm font-bold tracking-[0.2em] uppercase">На главную</span>
                 </div>
             </Link>
 
-        </div>
+        </div >
     )
 }
