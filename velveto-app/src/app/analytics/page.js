@@ -184,18 +184,35 @@ export default function AnalyticsPage() {
                                 value={`${Math.round(data.summary.totalRevenue).toLocaleString()} ₸`}
                                 accent="var(--velveto-accent-primary)"
                                 growth={data.summary.comparison?.revenueGrowth}
+                                tooltip="Выручка за выбранный период по всем заказам с пометкой 'kaspi'"
                             />
                             <StatCard
                                 label="Заказов обработано"
                                 value={data.summary.totalOrders}
                                 subvalue={data.summary.totalInMS > data.summary.totalOrders ? `из ${data.summary.totalInMS}` : null}
                                 growth={data.summary.comparison?.ordersGrowth}
+                                tooltip="Количество успешных заказов. Процент показывает рост/падение к прошлому такому же периоду."
                             />
                             <StatCard label="Активных SKU" value={data.summary.totalProducts} />
                         </div>
 
-                        {/* Trend Chart */}
+                        {/* Trend Chart with Legend */}
                         <div style={{ marginBottom: '4rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <div style={{ width: '12px', height: '12px', background: 'var(--velveto-accent-primary)', borderRadius: '30%' }} />
+                                        <span style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', fontWeight: '600' }}>ТЕКУЩИЙ ПЕРИОД</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.5 }}>
+                                        <div style={{ width: '12px', height: '12px', background: 'rgba(255,255,255,0.2)', borderRadius: '30%' }} />
+                                        <span style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', fontWeight: '600' }}>СРАВНЕНИЕ АВТОМАТИЧЕСКОЕ</span>
+                                    </div>
+                                </div>
+                                <div style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)', maxWidth: '300px', textAlign: 'right', fontStyle: 'italic' }}>
+                                    * Сравнение происходит с идентичным по длительности периодом, идущим ровно перед выбранным.
+                                </div>
+                            </div>
                             <TrendChart data={data.dailyTrends} />
                         </div>
 
@@ -280,89 +297,167 @@ export default function AnalyticsPage() {
     )
 }
 
-function StatCard({ label, value, subvalue, accent, growth }) {
+function StatCard({ label, value, subvalue, accent, growth, tooltip }) {
     const isPositive = growth > 0
     const isNegative = growth < 0
 
     return (
-        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
+        <div
+            title={tooltip}
+            style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden', cursor: tooltip ? 'help' : 'default' }}
+        >
             <div style={{ fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.2em', fontWeight: '600', display: 'flex', justifyContent: 'space-between' }}>
                 {label}
                 {growth !== undefined && growth !== 0 && (
-                    <span style={{ color: isPositive ? '#10b981' : '#ef4444', fontWeight: '900', fontSize: '0.75rem' }}>
+                    <span style={{
+                        color: isPositive ? '#10b981' : '#ef4444',
+                        fontWeight: '900',
+                        fontSize: '0.75rem',
+                        background: isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        padding: '2px 8px',
+                        borderRadius: '6px'
+                    }}>
                         {isPositive ? '↑' : '↓'} {Math.abs(growth)}%
                     </span>
                 )}
             </div>
-            <div style={{ fontSize: '2.8rem', fontWeight: '800', color: accent || 'white', lineHeight: '1' }}>{value}</div>
-            {subvalue && <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)', marginTop: '0.5rem' }}>{subvalue}</div>}
+            <div style={{ fontSize: '2.8rem', fontWeight: '800', color: accent || 'white', lineHeight: '1', position: 'relative', zIndex: 1 }}>{value}</div>
+            {subvalue && <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)', marginTop: '0.5rem', position: 'relative', zIndex: 1 }}>{subvalue}</div>}
 
             {/* Subtle background glow for trend */}
-            {growth !== undefined && (
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-20px',
-                    right: '-20px',
-                    width: '100px',
-                    height: '100px',
-                    background: isPositive ? 'rgba(16, 185, 129, 0.05)' : isNegative ? 'rgba(239, 68, 68, 0.05)' : 'transparent',
-                    filter: 'blur(40px)',
-                    borderRadius: '50%'
-                }} />
-            )}
+            <div style={{
+                position: 'absolute',
+                top: '-50px',
+                right: '-50px',
+                width: '150px',
+                height: '150px',
+                background: isPositive ? 'rgba(16, 185, 129, 0.03)' : isNegative ? 'rgba(239, 68, 68, 0.03)' : 'rgba(255,255,255,0.01)',
+                filter: 'blur(60px)',
+                borderRadius: '50%'
+            }} />
         </div>
     )
 }
 
 function TrendChart({ data }) {
+    const [hoverData, setHoverData] = useState(null)
+    const [mouseX, setMouseX] = useState(null)
+
     if (!data || data.length < 2) return null
 
     const maxRevenue = Math.max(...data.map(d => d.revenue)) || 1
-    const minRevenue = Math.min(...data.map(d => d.revenue))
-
     const width = 1000
-    const height = 200
-    const padding = 40
+    const height = 250
+    const padding = 50
 
     const points = data.map((d, i) => {
         const x = (i / (data.length - 1)) * (width - padding * 2) + padding
         const y = height - ((d.revenue / maxRevenue) * (height - padding * 2)) - padding
-        return { x, y }
+        return { x, y, ...d }
     })
 
     const pathData = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ')
     const areaData = pathData + ` L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`
 
+    const handleMouseMove = (e) => {
+        const svg = e.currentTarget
+        const rect = svg.getBoundingClientRect()
+        const x = (e.clientX - rect.left) * (width / rect.width)
+
+        let closest = points[0]
+        let minDist = Math.abs(x - points[0].x)
+
+        points.forEach(p => {
+            const dist = Math.abs(x - p.x)
+            if (dist < minDist) {
+                minDist = dist
+                closest = p
+            }
+        })
+
+        setHoverData(closest)
+        setMouseX(closest.x)
+    }
+
     return (
-        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 30px 60px rgba(0,0,0,0.3)', position: 'relative' }}>
             <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: '600' }}>Динамика выручки</h4>
-                <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>MAX: {Math.round(maxRevenue).toLocaleString()} ₸</div>
+                <h4 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: '600' }}>Динамика выручки (KASPI)</h4>
+                <div style={{ display: 'flex', gap: '1.5rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: '900', letterSpacing: '0.1em' }}>MAX: {Math.round(maxRevenue).toLocaleString()} ₸</div>
+                </div>
             </div>
 
-            <div style={{ position: 'relative', width: '100%', height: `${height}px` }}>
-                <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+            <div style={{ position: 'relative', width: '100%', height: `${height}px`, cursor: 'crosshair' }}>
+                {/* Tooltip */}
+                {hoverData && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        style={{
+                            position: 'absolute',
+                            left: `${(mouseX / width) * 100}%`,
+                            top: `${(hoverData.y / height) * 100}%`,
+                            transform: 'translate(-50%, -130%)',
+                            background: 'rgba(5, 8, 20, 0.95)',
+                            backdropFilter: 'blur(10px)',
+                            padding: '12px 18px',
+                            borderRadius: '16px',
+                            border: '1px solid var(--velveto-accent-primary)',
+                            zIndex: 100,
+                            pointerEvents: 'none',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                            minWidth: '140px'
+                        }}
+                    >
+                        <div style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>{hoverData.date}</div>
+                        <div style={{ fontSize: '1.1rem', fontWeight: '900', color: 'var(--velveto-accent-primary)' }}>{Math.round(hoverData.revenue).toLocaleString()} ₸</div>
+                    </motion.div>
+                )}
+
+                <svg
+                    viewBox={`0 0 ${width} ${height}`}
+                    style={{ width: '100%', height: '100%', overflow: 'visible' }}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={() => { setHoverData(null); setMouseX(null); }}
+                >
                     <defs>
                         <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="var(--velveto-accent-primary)" stopOpacity="0.3" />
+                            <stop offset="0%" stopColor="var(--velveto-accent-primary)" stopOpacity="0.2" />
                             <stop offset="100%" stopColor="var(--velveto-accent-primary)" stopOpacity="0" />
                         </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
 
-                    {/* Grid lines */}
-                    {[0, 0.5, 1].map(v => (
+                    {[0, 0.25, 0.5, 0.75, 1].map(v => (
                         <line
                             key={v}
                             x1={padding}
                             y1={height - (v * (height - padding * 2)) - padding}
                             x2={width - padding}
                             y2={height - (v * (height - padding * 2)) - padding}
-                            stroke="rgba(255,255,255,0.05)"
+                            stroke="rgba(255,255,255,0.03)"
                             strokeWidth="1"
                         />
                     ))}
 
-                    {/* Area */}
+                    {mouseX && (
+                        <line
+                            x1={mouseX} y1={padding / 2}
+                            x2={mouseX} y2={height - padding / 2}
+                            stroke="var(--velveto-accent-primary)"
+                            strokeWidth="2"
+                            strokeDasharray="4 4"
+                            opacity="0.5"
+                        />
+                    )}
+
                     <motion.path
                         d={areaData}
                         fill="url(#chartGradient)"
@@ -371,42 +466,44 @@ function TrendChart({ data }) {
                         transition={{ duration: 1 }}
                     />
 
-                    {/* Path */}
                     <motion.path
                         d={pathData}
                         fill="none"
                         stroke="var(--velveto-accent-primary)"
-                        strokeWidth="3"
+                        strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        filter="url(#glow)"
                         initial={{ pathLength: 0, opacity: 0 }}
                         animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
                     />
 
-                    {/* Points */}
-                    {points.map((p, i) => (
+                    {hoverData && (
                         <motion.circle
-                            key={i}
-                            cx={p.x}
-                            cy={p.y}
-                            r="4"
-                            fill="var(--velveto-bg-secondary)"
+                            cx={hoverData.x}
+                            cy={hoverData.y}
+                            r="8"
+                            fill="white"
                             stroke="var(--velveto-accent-primary)"
-                            strokeWidth="2"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 1 + (i * 0.05) }}
+                            strokeWidth="4"
+                            filter="url(#glow)"
                         />
-                    ))}
+                    )}
                 </svg>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', padding: `0 ${padding}px` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', padding: `0 ${padding}px` }}>
                 {data.length > 0 && (
                     <>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)' }}>{data[0].date}</span>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)' }}>{data[data.length - 1].date}</span>
+                        <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.6rem', color: 'var(--velveto-text-muted)', marginBottom: '2px' }}>ОТ</div>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>{data[0].date}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '0.6rem', color: 'var(--velveto-text-muted)', marginBottom: '2px' }}>ДО</div>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>{data[data.length - 1].date}</div>
+                        </div>
                     </>
                 )}
             </div>
