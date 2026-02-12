@@ -35,7 +35,7 @@ export default function SParfumPricesPage() {
                     const tax = base.price * (taxPct / 100);
                     const totalFees = base.logistics + commission + tax;
                     const netRemainder = base.price - totalFees;
-                    const costPrice = base.price / (1 + markupPct / 100);
+                    const costPrice = base.price * (1 - markupPct / 100);
 
                     volumeData[vol] = {
                         ...base,
@@ -57,7 +57,7 @@ export default function SParfumPricesPage() {
                 const tax = item.price * (taxPct / 100);
                 const totalFees = item.logistics + commission + tax;
                 const netRemainder = item.price - totalFees;
-                const costPrice = item.price / (1 + markupPct / 100);
+                const costPrice = item.price * (1 - markupPct / 100);
 
                 return {
                     ...item,
@@ -165,7 +165,7 @@ export default function SParfumPricesPage() {
                                 />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between' }}>
-                                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Накрутка (%)</label>
+                                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Маржа (%)</label>
                                 <input
                                     type="number"
                                     value={markupPct}
