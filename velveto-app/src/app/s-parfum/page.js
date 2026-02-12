@@ -36,6 +36,8 @@ export default function SParfumPricesPage() {
                     const totalFees = base.logistics + commission + tax;
                     const netRemainder = base.price - totalFees;
                     const costPrice = base.price * (1 - markupPct / 100);
+                    const netProfit = netRemainder - costPrice;
+                    const netProfitPct = (netProfit / base.price) * 100;
 
                     volumeData[vol] = {
                         ...base,
@@ -44,6 +46,8 @@ export default function SParfumPricesPage() {
                         totalFees: Math.round(totalFees),
                         netRemainder: Math.round(netRemainder),
                         costPrice: Math.round(costPrice),
+                        netProfit: Math.round(netProfit),
+                        netProfitPct: Math.round(netProfitPct),
                         margin: Math.round((netRemainder / base.price) * 100)
                     };
                 });
@@ -58,6 +62,8 @@ export default function SParfumPricesPage() {
                 const totalFees = item.logistics + commission + tax;
                 const netRemainder = item.price - totalFees;
                 const costPrice = item.price * (1 - markupPct / 100);
+                const netProfit = netRemainder - costPrice;
+                const netProfitPct = (netProfit / item.price) * 100;
 
                 return {
                     ...item,
@@ -66,6 +72,8 @@ export default function SParfumPricesPage() {
                     totalFees: Math.round(totalFees),
                     netRemainder: Math.round(netRemainder),
                     costPrice: Math.round(costPrice),
+                    netProfit: Math.round(netProfit),
+                    netProfitPct: Math.round(netProfitPct),
                     margin: Math.round((netRemainder / item.price) * 100)
                 };
             });
@@ -243,8 +251,11 @@ export default function SParfumPricesPage() {
                                                         }}>
                                                             {item.volumes[vol].netRemainder.toLocaleString()} ₸
                                                         </div>
+                                                        <div style={{ fontSize: '0.65rem', color: '#10b981', opacity: 0.8, fontWeight: 'bold' }}>
+                                                            {item.volumes[vol].netProfitPct}% ч.п.
+                                                        </div>
                                                         <div style={{ fontSize: '0.6rem', opacity: 0.4 }}>
-                                                            {item.volumes[vol].margin}%
+                                                            {item.volumes[vol].margin}% выпл.
                                                         </div>
                                                     </div>
                                                 ) : <span style={{ color: 'rgba(255,255,255,0.05)' }}>—</span>}
@@ -274,8 +285,16 @@ export default function SParfumPricesPage() {
                                     Сборы: -{(item.commission + item.tax).toLocaleString()} ₸
                                 </div>
                                 <div style={{ textAlign: 'right', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
-                                    <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>К ВЫПЛАТЕ</div>
-                                    <div style={{ fontSize: '1.8rem', fontWeight: '100', color: '#10b981' }}>{item.netRemainder.toLocaleString()} ₸</div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                        <div style={{ textAlign: 'left' }}>
+                                            <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>ЧИСТАЯ ПРИБЫЛЬ</div>
+                                            <div style={{ fontSize: '1rem', color: '#10b981', fontWeight: 'bold' }}>{item.netProfitPct}%</div>
+                                        </div>
+                                        <div>
+                                            <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>К ВЫПЛАТЕ</div>
+                                            <div style={{ fontSize: '1.8rem', fontWeight: '100', color: '#10b981' }}>{item.netRemainder.toLocaleString()} ₸</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
