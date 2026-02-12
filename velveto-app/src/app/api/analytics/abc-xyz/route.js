@@ -25,9 +25,26 @@ export async function GET(request) {
         let hasMore = true
         let totalCount = 0
 
-        // Correct pagination and filtering for MoySklad
+        // Calculate previous period
+        let previousRange = null
+        if (from && to) {
+            const f = new Date(from)
+            const t = new Date(to)
+            const diff = t.getTime() - f.getTime()
+            const pTo = new Date(f.getTime() - 24 * 60 * 60 * 1000)
+            const pFrom = new Date(pTo.getTime() - diff)
+            previousRange = {
+                from: pFrom.toISOString().split('T')[0],
+                to: pTo.toISOString().split('T')[0]
+            }
+        }
+
+        // Fetch range include previous for comparison
+        let fetchFrom = from
+        if (previousRange) fetchFrom = previousRange.from
+
         let filterParts = []
-        if (from) filterParts.push(`created>=${from} 00:00:00`)
+        if (fetchFrom) filterParts.push(`created>=${fetchFrom} 00:00:00`)
         if (to) filterParts.push(`created<=${to} 23:59:59`)
 
         const filterStr = filterParts.length > 0 ? `&filter=${encodeURIComponent(filterParts.join(';'))}` : ''
@@ -54,9 +71,7 @@ export async function GET(request) {
             allOrders = [...allOrders, ...rows]
             totalCount = data.meta.size
 
-            // Safety cap at 2000 orders to prevent Vercel timeout (10s/30s)
-            // 2000 orders with expansions is a lot of data
-            if (rows.length < limit || allOrders.length >= 2000 || allOrders.length >= totalCount) {
+            if (rows.length < limit || allOrders.length >= 2500 || allOrders.length >= totalCount) {
                 hasMore = false
             } else {
                 offset += limit
@@ -64,10 +79,19 @@ export async function GET(request) {
         }
 
         const productStats = {}
+        const dailyTrendsMap = {}
+
+        let currentRevenue = 0
+        let currentOrders = 0
+        let prevRevenue = 0
+        let prevOrders = 0
 
         allOrders.forEach(order => {
-            const positions = order.positions?.rows || []
             const date = order.created ? order.created.split(' ')[0] : 'Unknown'
+            const isCurrent = from && to ? (date >= from && date <= to) : true
+
+            const positions = order.positions?.rows || []
+            let orderTotal = 0
 
             positions.forEach(pos => {
                 const assortment = pos.assortment
@@ -78,23 +102,39 @@ export async function GET(request) {
                 const price = (pos.price || 0) / 100
                 const qty = pos.quantity || 0
                 const revenue = price * qty
+                orderTotal += revenue
 
-                if (!productStats[sku]) {
-                    productStats[sku] = {
-                        sku,
-                        name,
-                        revenue: 0,
-                        quantity: 0,
-                        orders: 0,
-                        salesDays: new Set()
+                if (isCurrent) {
+                    if (!productStats[sku]) {
+                        productStats[sku] = {
+                            sku,
+                            name,
+                            revenue: 0,
+                            quantity: 0,
+                            orders: 0,
+                            salesDays: new Set()
+                        }
                     }
-                }
 
-                productStats[sku].revenue += revenue
-                productStats[sku].quantity += qty
-                productStats[sku].orders += 1
-                productStats[sku].salesDays.add(date)
+                    productStats[sku].revenue += revenue
+                    productStats[sku].quantity += qty
+                    productStats[sku].orders += 1
+                    productStats[sku].salesDays.add(date)
+                }
             })
+
+            if (isCurrent) {
+                currentRevenue += orderTotal
+                currentOrders += 1
+            } else if (previousRange && date >= previousRange.from && date <= previousRange.to) {
+                prevRevenue += orderTotal
+                prevOrders += 1
+            }
+
+            // Always track daily trends for chart
+            if (date !== 'Unknown') {
+                dailyTrendsMap[date] = (dailyTrendsMap[date] || 0) + orderTotal
+            }
         })
 
         const products = Object.values(productStats)
@@ -113,7 +153,6 @@ export async function GET(request) {
         })
 
         // Assign XYZ
-        // Calculate based on the date range provided or a default 30 days
         products.forEach(p => {
             const daysCount = p.salesDays.size
             if (daysCount > 10) p.xyz = 'X'
@@ -122,15 +161,32 @@ export async function GET(request) {
             delete p.salesDays
         })
 
+        // Format daily trends for chart
+        const dailyTrends = Object.entries(dailyTrendsMap)
+            .map(([date, revenue]) => ({ date, revenue }))
+            .sort((a, b) => a.date.localeCompare(b.date))
+
+        // Growth calculations
+        const revenueGrowth = prevRevenue > 0 ? ((currentRevenue - prevRevenue) / prevRevenue) * 100 : 0
+        const ordersGrowth = prevOrders > 0 ? ((currentOrders - prevOrders) / prevOrders) * 100 : 0
+
         return NextResponse.json({
             summary: {
                 totalRevenue,
-                totalOrders: allOrders.length,
+                totalOrders: currentOrders,
                 totalProducts: products.length,
                 totalInMS: totalCount,
-                dateRange: { from, to }
+                dateRange: { from, to },
+                comparison: {
+                    prevRevenue,
+                    prevOrders,
+                    revenueGrowth: Math.round(revenueGrowth),
+                    ordersGrowth: Math.round(ordersGrowth),
+                    hasComparison: !!previousRange
+                }
             },
-            products
+            products,
+            dailyTrends
         })
 
     } catch (error) {

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import BackButton from '../../components/BackButton'
 
 export default function AnalyticsPage() {
@@ -29,6 +29,7 @@ export default function AnalyticsPage() {
             const json = await res.json()
             if (json.error) throw new Error(json.error)
             setData(json)
+            console.log('Analytics Data:', json)
         } catch (err) {
             setError(err.message)
         } finally {
@@ -177,10 +178,25 @@ export default function AnalyticsPage() {
                 ) : data && (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                         {/* Summary Cards */}
-                        <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
-                            <StatCard label="Общая выручка" value={`${Math.round(data.summary.totalRevenue).toLocaleString()} ₸`} accent="var(--velveto-accent-primary)" />
-                            <StatCard label="Заказов обработано" value={data.summary.totalOrders} subvalue={data.summary.totalInMS > data.summary.totalOrders ? `из ${data.summary.totalInMS}` : null} />
+                        <div className="stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
+                            <StatCard
+                                label="Общая выручка"
+                                value={`${Math.round(data.summary.totalRevenue).toLocaleString()} ₸`}
+                                accent="var(--velveto-accent-primary)"
+                                growth={data.summary.comparison?.revenueGrowth}
+                            />
+                            <StatCard
+                                label="Заказов обработано"
+                                value={data.summary.totalOrders}
+                                subvalue={data.summary.totalInMS > data.summary.totalOrders ? `из ${data.summary.totalInMS}` : null}
+                                growth={data.summary.comparison?.ordersGrowth}
+                            />
                             <StatCard label="Активных SKU" value={data.summary.totalProducts} />
+                        </div>
+
+                        {/* Trend Chart */}
+                        <div style={{ marginBottom: '4rem' }}>
+                            <TrendChart data={data.dailyTrends} />
                         </div>
 
                         {/* Matrix Header */}
@@ -264,12 +280,136 @@ export default function AnalyticsPage() {
     )
 }
 
-function StatCard({ label, value, subvalue, accent }) {
+function StatCard({ label, value, subvalue, accent, growth }) {
+    const isPositive = growth > 0
+    const isNegative = growth < 0
+
     return (
-        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.2em', fontWeight: '600' }}>{label}</div>
+        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '0.2em', fontWeight: '600', display: 'flex', justifyContent: 'space-between' }}>
+                {label}
+                {growth !== undefined && growth !== 0 && (
+                    <span style={{ color: isPositive ? '#10b981' : '#ef4444', fontWeight: '900', fontSize: '0.75rem' }}>
+                        {isPositive ? '↑' : '↓'} {Math.abs(growth)}%
+                    </span>
+                )}
+            </div>
             <div style={{ fontSize: '2.8rem', fontWeight: '800', color: accent || 'white', lineHeight: '1' }}>{value}</div>
             {subvalue && <div style={{ fontSize: '0.9rem', color: 'var(--velveto-text-muted)', marginTop: '0.5rem' }}>{subvalue}</div>}
+
+            {/* Subtle background glow for trend */}
+            {growth !== undefined && (
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-20px',
+                    right: '-20px',
+                    width: '100px',
+                    height: '100px',
+                    background: isPositive ? 'rgba(16, 185, 129, 0.05)' : isNegative ? 'rgba(239, 68, 68, 0.05)' : 'transparent',
+                    filter: 'blur(40px)',
+                    borderRadius: '50%'
+                }} />
+            )}
+        </div>
+    )
+}
+
+function TrendChart({ data }) {
+    if (!data || data.length < 2) return null
+
+    const maxRevenue = Math.max(...data.map(d => d.revenue)) || 1
+    const minRevenue = Math.min(...data.map(d => d.revenue))
+
+    const width = 1000
+    const height = 200
+    const padding = 40
+
+    const points = data.map((d, i) => {
+        const x = (i / (data.length - 1)) * (width - padding * 2) + padding
+        const y = height - ((d.revenue / maxRevenue) * (height - padding * 2)) - padding
+        return { x, y }
+    })
+
+    const pathData = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ')
+    const areaData = pathData + ` L ${points[points.length - 1].x} ${height} L ${points[0].x} ${height} Z`
+
+    return (
+        <div style={{ background: 'var(--velveto-bg-secondary)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--velveto-text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: '600' }}>Динамика выручки</h4>
+                <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>MAX: {Math.round(maxRevenue).toLocaleString()} ₸</div>
+            </div>
+
+            <div style={{ position: 'relative', width: '100%', height: `${height}px` }}>
+                <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                    <defs>
+                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--velveto-accent-primary)" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="var(--velveto-accent-primary)" stopOpacity="0" />
+                        </linearGradient>
+                    </defs>
+
+                    {/* Grid lines */}
+                    {[0, 0.5, 1].map(v => (
+                        <line
+                            key={v}
+                            x1={padding}
+                            y1={height - (v * (height - padding * 2)) - padding}
+                            x2={width - padding}
+                            y2={height - (v * (height - padding * 2)) - padding}
+                            stroke="rgba(255,255,255,0.05)"
+                            strokeWidth="1"
+                        />
+                    ))}
+
+                    {/* Area */}
+                    <motion.path
+                        d={areaData}
+                        fill="url(#chartGradient)"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1 }}
+                    />
+
+                    {/* Path */}
+                    <motion.path
+                        d={pathData}
+                        fill="none"
+                        stroke="var(--velveto-accent-primary)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                    />
+
+                    {/* Points */}
+                    {points.map((p, i) => (
+                        <motion.circle
+                            key={i}
+                            cx={p.x}
+                            cy={p.y}
+                            r="4"
+                            fill="var(--velveto-bg-secondary)"
+                            stroke="var(--velveto-accent-primary)"
+                            strokeWidth="2"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 1 + (i * 0.05) }}
+                        />
+                    ))}
+                </svg>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', padding: `0 ${padding}px` }}>
+                {data.length > 0 && (
+                    <>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)' }}>{data[0].date}</span>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--velveto-text-muted)' }}>{data[data.length - 1].date}</span>
+                    </>
+                )}
+            </div>
         </div>
     )
 }
