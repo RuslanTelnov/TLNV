@@ -11,6 +11,7 @@ export default function SParfumPricesPage() {
     // User adjustable coefficients
     const [commissionPct, setCommissionPct] = useState(13);
     const [taxPct, setTaxPct] = useState(3);
+    const [markupPct, setMarkupPct] = useState(40);
 
     useEffect(() => {
         fetch('/api/s-parfum/prices')
@@ -34,6 +35,7 @@ export default function SParfumPricesPage() {
                     const tax = base.price * (taxPct / 100);
                     const totalFees = base.logistics + commission + tax;
                     const netRemainder = base.price - totalFees;
+                    const costPrice = base.price / (1 + markupPct / 100);
 
                     volumeData[vol] = {
                         ...base,
@@ -41,6 +43,7 @@ export default function SParfumPricesPage() {
                         tax: Math.round(tax),
                         totalFees: Math.round(totalFees),
                         netRemainder: Math.round(netRemainder),
+                        costPrice: Math.round(costPrice),
                         margin: Math.round((netRemainder / base.price) * 100)
                     };
                 });
@@ -54,6 +57,7 @@ export default function SParfumPricesPage() {
                 const tax = item.price * (taxPct / 100);
                 const totalFees = item.logistics + commission + tax;
                 const netRemainder = item.price - totalFees;
+                const costPrice = item.price / (1 + markupPct / 100);
 
                 return {
                     ...item,
@@ -61,12 +65,13 @@ export default function SParfumPricesPage() {
                     tax: Math.round(tax),
                     totalFees: Math.round(totalFees),
                     netRemainder: Math.round(netRemainder),
+                    costPrice: Math.round(costPrice),
                     margin: Math.round((netRemainder / item.price) * 100)
                 };
             });
 
         return { prices: filteredPrices, others: filteredOthers };
-    }, [rawData, commissionPct, taxPct, searchQuery]);
+    }, [rawData, commissionPct, taxPct, markupPct, searchQuery]);
 
     if (loading) return (
         <div style={{ minHeight: '100vh', background: '#050814', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -159,6 +164,15 @@ export default function SParfumPricesPage() {
                                     style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10b981', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
                                 />
                             </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between' }}>
+                                <label style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>Накрутка (%)</label>
+                                <input
+                                    type="number"
+                                    value={markupPct}
+                                    onChange={(e) => setMarkupPct(Number(e.target.value))}
+                                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #c9a05a88', color: '#c9a05a', padding: '8px 12px', borderRadius: '8px', width: '70px', fontWeight: 'bold' }}
+                                />
+                            </div>
                         </div>
                         <div style={{ flex: 1, width: '100%' }}>
                             <input
@@ -210,7 +224,10 @@ export default function SParfumPricesPage() {
                                                 {item.volumes[vol] ? (
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                                                         <div style={{ fontSize: '1rem', fontWeight: '500', color: '#c9a05a' }}>{item.volumes[vol].price.toLocaleString()} ₸</div>
-                                                        <div style={{ fontSize: '0.65rem', color: '#3b82f6' }}>
+                                                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 'bold', letterSpacing: '0.05em' }}>
+                                                            Себ: {item.volumes[vol].costPrice.toLocaleString()} ₸
+                                                        </div>
+                                                        <div style={{ fontSize: '0.65rem', color: '#3b82f6', marginTop: '4px' }}>
                                                             Лог: -{item.volumes[vol].logistics} ₸
                                                         </div>
                                                         <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>
@@ -220,9 +237,9 @@ export default function SParfumPricesPage() {
                                                             fontSize: '0.85rem',
                                                             fontWeight: 'bold',
                                                             color: '#10b981',
-                                                            marginTop: '4px',
+                                                            marginTop: '6px',
                                                             borderTop: '1px solid rgba(255,255,255,0.05)',
-                                                            paddingTop: '4px'
+                                                            paddingTop: '6px'
                                                         }}>
                                                             {item.volumes[vol].netRemainder.toLocaleString()} ₸
                                                         </div>
@@ -246,8 +263,11 @@ export default function SParfumPricesPage() {
                         {processedData.others.map((item, idx) => (
                             <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                 <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '1rem' }}>{item.name}</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem', fontSize: '0.85rem' }}>
+                                    <span style={{ color: '#c9a05a', fontWeight: 'bold' }}>Цена: {item.price.toLocaleString()} ₸</span>
+                                    <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>Себ: {item.costPrice.toLocaleString()} ₸</span>
+                                </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem' }}>
-                                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>Цена: {item.price.toLocaleString()} ₸</span>
                                     <span style={{ color: '#3b82f6' }}>Лог: -{item.logistics} ₸</span>
                                 </div>
                                 <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>
