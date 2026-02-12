@@ -111,7 +111,7 @@ export default function PresentationPage() {
                 pointerEvents: 'none'
             }} />
 
-            {/* Top Bar: Home Button */}
+            {/* Top Bar: Controls */}
             <div style={{ position: 'absolute', top: '40px', left: '40px', zIndex: 100 }}>
                 <Link href="/" style={{ textDecoration: 'none' }}>
                     <div style={{
@@ -165,9 +165,9 @@ export default function PresentationPage() {
                             width: idx === current ? '40px' : '10px',
                             height: '6px',
                             borderRadius: '3px',
-                            background: idx === current ? slide.color : 'rgba(255,255,255,0.2)',
+                            background: idx === current ? slides[idx].color : 'rgba(255,255,255,0.2)',
                             transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                            boxShadow: idx === current ? `0 0 25px ${slide.color}88` : 'none'
+                            boxShadow: idx === current ? `0 0 25px ${slides[idx].color}88` : 'none'
                         }} />
                     ))}
                 </div>
@@ -241,6 +241,7 @@ export default function PresentationPage() {
                             <p style={{ fontSize: 'min(2vw, 22px)', lineHeight: 1.6, color: 'rgba(255,255,255,0.5)', maxWidth: '700px', margin: 0, fontWeight: '300' }}>
                                 {slide.content}
                             </p>
+
                         </motion.div>
                     </AnimatePresence>
 
@@ -255,6 +256,7 @@ export default function PresentationPage() {
                             style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}
                         >
                             <div style={{ position: 'absolute', width: '100%', height: '100%', background: slide.color, filter: 'blur(180px)', opacity: 0.15, borderRadius: '50%' }} />
+
                             <img
                                 src={slide.bg}
                                 alt={slide.title}

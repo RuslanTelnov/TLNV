@@ -4,7 +4,11 @@ const BASE_URL = "https://api.moysklad.ru/api/remap/1.2"
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request) {
+    const { searchParams } = new URL(request.url)
+    const from = searchParams.get('from')
+    const to = searchParams.get('to')
+
     const LOGIN = process.env.MOYSKLAD_LOGIN
     const PASSWORD = process.env.MOYSKLAD_PASSWORD
 
@@ -15,44 +19,61 @@ export async function GET() {
     const authHeader = `Basic ${Buffer.from(`${LOGIN}:${PASSWORD}`).toString('base64')}`
 
     try {
-        // We will fetch 3 pages of 100 orders each to get a good sample size (300 orders)
-        // This is more reliable than asking for 500 at once which might skip expansions
         let allOrders = []
-        const pagesToFetch = 3
+        let offset = 0
+        const limit = 100
+        let hasMore = true
+        let totalCount = 0
 
-        for (let i = 0; i < pagesToFetch; i++) {
-            const offset = i * 100
-            const url = `${BASE_URL}/entity/customerorder?limit=100&offset=${offset}&order=created,desc&search=kaspi&expand=positions,positions.assortment`
+        // Correct pagination and filtering for MoySklad
+        let filterParts = []
+        if (from) filterParts.push(`created>=${from} 00:00:00`)
+        if (to) filterParts.push(`created<=${to} 23:59:59`)
+
+        const filterStr = filterParts.length > 0 ? `&filter=${encodeURIComponent(filterParts.join(';'))}` : ''
+
+        while (hasMore) {
+            const url = `${BASE_URL}/entity/customerorder?limit=${limit}&offset=${offset}&order=created,desc&search=kaspi&expand=positions,positions.assortment${filterStr}`
 
             const response = await fetch(url, {
-                headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
-                next: { revalidate: 3600 }
+                headers: {
+                    'Authorization': authHeader,
+                    'Content-Type': 'application/json'
+                },
+                cache: 'no-store'
             })
 
             if (!response.ok) {
-                console.error(`MS API Error on page ${i}:`, response.status)
-                break
+                const errText = await response.text()
+                console.error(`MS API Error at offset ${offset}:`, response.status, errText)
+                throw new Error(`MoySklad API error: ${response.status}`)
             }
 
             const data = await response.json()
             const rows = data.rows || []
-            if (rows.length === 0) break
             allOrders = [...allOrders, ...rows]
+            totalCount = data.meta.size
+
+            // Safety cap at 2000 orders to prevent Vercel timeout (10s/30s)
+            // 2000 orders with expansions is a lot of data
+            if (rows.length < limit || allOrders.length >= 2000 || allOrders.length >= totalCount) {
+                hasMore = false
+            } else {
+                offset += limit
+            }
         }
 
         const productStats = {}
 
         allOrders.forEach(order => {
-            // MoySklad can return positions differently if not fully expanded or empty
             const positions = order.positions?.rows || []
             const date = order.created ? order.created.split(' ')[0] : 'Unknown'
 
             positions.forEach(pos => {
-                // Ensure we have assortment data
                 const assortment = pos.assortment
                 if (!assortment) return
 
-                const sku = assortment.article || assortment.code || 'N/A'
+                const sku = assortment.article || assortment.code || assortment.id
                 const name = assortment.name || 'Unknown'
                 const price = (pos.price || 0) / 100
                 const qty = pos.quantity || 0
@@ -92,12 +113,12 @@ export async function GET() {
         })
 
         // Assign XYZ
+        // Calculate based on the date range provided or a default 30 days
         products.forEach(p => {
             const daysCount = p.salesDays.size
             if (daysCount > 10) p.xyz = 'X'
             else if (daysCount > 3) p.xyz = 'Y'
             else p.xyz = 'Z'
-
             delete p.salesDays
         })
 
@@ -106,7 +127,8 @@ export async function GET() {
                 totalRevenue,
                 totalOrders: allOrders.length,
                 totalProducts: products.length,
-                fetchedPages: pagesToFetch
+                totalInMS: totalCount,
+                dateRange: { from, to }
             },
             products
         })
