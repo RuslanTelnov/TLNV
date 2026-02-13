@@ -156,12 +156,8 @@ def map_wb_to_kaspi(wb_product):
     if len(description) < 100:
         description = f"{description}. Качественный товар от проверенного бренда. Идеально подходит для ежедневного использования."
     
-    brand_raw = wb_product.get("brand")
+    # FORCE GENERIC BRAND (User Request: "везде указывай без бренда")
     brand = "Generic"
-    if brand_raw and isinstance(brand_raw, str):
-        clean = brand_raw.strip()
-        if clean and clean.lower() not in ["хит продаж", "promo", "new", "sale"]:
-            brand = clean
             
     scraped_data = {
         "title": product_name,

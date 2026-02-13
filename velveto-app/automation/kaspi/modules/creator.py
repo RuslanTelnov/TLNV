@@ -42,7 +42,7 @@ def generate_internal_ean13(seed, prefix="200"):
     checksum = calculate_ean13_checksum(base)
     return base + checksum
 
-def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
+def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="201"):
     """
     Prepares the payload for creating a product card using Kaspi Content API.
     """
@@ -51,10 +51,20 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
     scraped_attributes = scraped_data.get("attributes", {})
     
     # Generate an internal EAN-13 barcode based on SKU
-    # Using custom prefix allows forcing new cards (e.g. 201 instead of 200)
+    # Force 201 prefix to avoid collisions and force new card creation
     barcode = generate_internal_ean13(sku, prefix=custom_barcode_prefix)
     
+    # BLACKLIST keywords that should NOT be taken from source data (WB)
+    # to avoid collisions or grouping with existing cards
+    blacklist_keywords = ["barcode", "штрихкод", "ean", "vendor code", "артикул производителя", "brand", "марка", "бренд"]
+    
     for code, value in scraped_attributes.items():
+        # Check if attribute code contains any blacklisted keyword
+        code_lower = code.lower()
+        if any(kw in code_lower for kw in blacklist_keywords):
+            # print(f"🚫 Filtering out conflicting attribute: {code}")
+            continue
+            
         attributes_list.append({
             "code": code,
             "value": value
@@ -63,18 +73,32 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
     # ADD BARCODE AS ATTRIBUTE
     # Try to find the correct 'Vendor code' or 'Barcode' attribute based on category
     category_name = scraped_data.get("category_name", "")
-    if category_name.startswith("Master - "):
+    
+    if category_name and category_name.startswith("Master - "):
         prefix = category_name.replace("Master - ", "")
+        
+        # Add Vendor Code (The unique ID that prevents grouping)
         barcode_attr = f"{prefix}*Vendor code"
         attributes_list.append({
             "code": barcode_attr,
             "value": barcode
         })
-    # Fallback to generic if not Master
+        
+        # Add Brand to attributes
+        brand_attr = f"{prefix}*Brand"
+        attributes_list.append({
+            "code": brand_attr,
+            "value": "Generic"
+        })
     else:
+        # Fallback for non-Master categories
         attributes_list.append({
             "code": "Barcode",
             "value": barcode
+        })
+        attributes_list.append({
+            "code": "Brand",
+            "value": "Generic"
         })
 
     # TITLE SHOULD REMAIN ORIGINAL AS PER USER REQUEST
@@ -84,8 +108,8 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="200"):
         "sku": str(sku)[:64],
         "title": original_title[:1000],
         "description": scraped_data.get("description", "")[:1000] if scraped_data.get("description") else "",
-        "brand": scraped_data.get("brand", "Generic")[:250], # Max 256
-        "category": scraped_data.get("category_name"), # This should be "Master - ..."
+        "brand": "Generic", # FORCE GENERIC BRAND
+        "category": scraped_data.get("category_name"), 
         "attributes": attributes_list,
         "images": [{"url": img} if isinstance(img, str) else img for img in scraped_data.get("images", [])]
     }
