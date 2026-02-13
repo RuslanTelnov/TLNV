@@ -107,6 +107,27 @@ export default function AnalyticsPage() {
                             onChange={(e) => setToDate(e.target.value)}
                             style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '0.85rem', outline: 'none', cursor: 'pointer', colorScheme: 'dark' }}
                         />
+                        <nav className="desktop-only" style={{ display: 'flex', gap: '2rem' }}>
+                            <Link href="/analytics" style={{
+                                color: 'var(--velveto-accent-primary)',
+                                fontSize: '0.9rem',
+                                letterSpacing: '0.1em',
+                                textTransform: 'uppercase',
+                                fontWeight: '600',
+                                textShadow: '0 0 10px rgba(255, 179, 90, 0.4)'
+                            }}>
+                                ABC-Анализ
+                            </Link>
+                            <Link href="/ms-products" style={{
+                                color: 'var(--velveto-text-muted)',
+                                fontSize: '0.9rem',
+                                letterSpacing: '0.1em',
+                                textTransform: 'uppercase',
+                                transition: 'color 0.3s'
+                            }}>
+                                Склад
+                            </Link>
+                        </nav>
                         <button
                             onClick={fetchData}
                             disabled={loading}

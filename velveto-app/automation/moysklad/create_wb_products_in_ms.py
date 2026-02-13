@@ -5,11 +5,35 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 
 # Explicitly load from web env
-load_dotenv("moysklad-web/.env.local")
+try:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Assuming moysklad-web is sibling of automation or velveto-app?
+    # Let's try locating it by climbing up
+    # ../../../moysklad-web/.env.local based on script location in automation/moysklad
+    
+    # Try looking for .env.local in common locations
+    possible_paths = [
+        os.path.join(current_dir, "../../../moysklad-web/.env.local"),
+        os.path.join(current_dir, "../../.env.local"), # Inside velveto-app
+        os.path.join(os.getcwd(), "moysklad-web/.env.local")
+    ]
+    
+    for p in possible_paths:
+        if os.path.exists(p):
+            print(f"✅ Loading env from: {p}")
+            load_dotenv(p)
+            break
+    else:
+        print(f"❌ .env.local not found. Searched in: {possible_paths}")
+
+except: pass
 
 # Supabase settings
 SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL:
+    print("❌ SUPABASE_URL is missing!")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 import sys
@@ -53,6 +77,55 @@ def get_or_create_group(name):
             print(f"❌ Error creating group: {resp.text}")
     except Exception as e:
         print(f"❌ Error getting/creating group: {e}")
+    return None
+
+# Cache for attributes to avoid repeated API calls
+_ATTRIBUTES_CACHE = {}
+
+def get_all_attributes():
+    """Fetch all existing attributes from MoySklad"""
+    global _ATTRIBUTES_CACHE
+    if _ATTRIBUTES_CACHE:
+        return _ATTRIBUTES_CACHE
+
+    url = f"{BASE_URL}/entity/product/metadata/attributes"
+    try:
+        resp = requests.get(url, headers=HEADERS)
+        if resp.status_code == 200:
+            rows = resp.json().get('rows', [])
+            for row in rows:
+                _ATTRIBUTES_CACHE[row['name']] = row
+            print(f"📦 Loaded {len(_ATTRIBUTES_CACHE)} attributes from MS.")
+    except Exception as e:
+        print(f"❌ Error fetching attributes: {e}")
+    return _ATTRIBUTES_CACHE
+
+def ensure_attribute(name, attr_type="string"):
+    """Ensure an attribute exists in MoySklad. Create if missing."""
+    attributes = get_all_attributes()
+    
+    if name in attributes:
+        return attributes[name]['meta']
+    
+    print(f"✨ Creating new attribute in MS: '{name}'...")
+    payload = {
+        "name": name,
+        "type": attr_type,
+        "description": "Created by Kaspi Parser"
+    }
+    
+    try:
+        resp = requests.post(f"{BASE_URL}/entity/product/metadata/attributes", json=payload, headers=HEADERS)
+        if resp.status_code == 200:
+            new_attr = resp.json()
+            _ATTRIBUTES_CACHE[name] = new_attr
+            print(f"   ✅ Attribute '{name}' created.")
+            return new_attr['meta']
+        else:
+            print(f"   ❌ Failed to create attribute '{name}': {resp.text}")
+    except Exception as e:
+        print(f"   ❌ Error creating attribute: {e}")
+    
     return None
 
 def get_price_type(name="Розничная цена"):
@@ -122,13 +195,40 @@ def upload_image_to_ms(ms_id, image_url, name):
     except Exception as e:
         print(f"   ❌ Error in image upload process: {e}")
 
-def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes=None, update_existing=True):
+def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes=None, update_existing=True, kaspi_attributes=None):
     """Create product in MoySklad and sync to Supabase"""
     name = product['name']
     price = product['price'] # Integer from DB
     wb_id = str(product['id']) # Use as externalCode or article
     # image_url = product.get('image_url') # Handled later as list
     
+    # Prepare dynamic attributes if provided
+    dynamic_attributes = []
+    if kaspi_attributes:
+        print(f"🔍 Processing {len(kaspi_attributes)} Kaspi attributes for '{name}'...")
+        for attr_name, attr_value in kaspi_attributes.items():
+            if not attr_value: continue
+            
+            # Map complex names or truncate if needed
+            # For now, use raw name but maybe prefix? 
+            # User wants "Category attributes". 
+            # Let's clean up name a bit if needed.
+            clean_name = attr_name[:50] 
+            
+            meta = ensure_attribute(clean_name)
+            if meta:
+                dynamic_attributes.append({
+                    "meta": meta,
+                    "value": str(attr_value)
+                })
+
+    # Combine with extra_attributes
+    all_attributes = []
+    if extra_attributes:
+        all_attributes.extend(extra_attributes)
+    if dynamic_attributes:
+        all_attributes.extend(dynamic_attributes)
+
     ms_product_id = None
     ms_product_obj = None # Ensure initialized
     
@@ -192,8 +292,8 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             }
         }
         
-        if extra_attributes:
-            payload["attributes"] = extra_attributes
+        if all_attributes:
+            payload["attributes"] = all_attributes
         
         try:
             resp = requests.post(f"{BASE_URL}/entity/product", json=payload, headers=HEADERS)
@@ -232,8 +332,8 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
                     "currency": {"meta": currency_meta}
                 }
             }
-            if extra_attributes:
-                payload["attributes"] = extra_attributes
+            if all_attributes:
+                payload["attributes"] = all_attributes
                 
             try:
                 resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS)

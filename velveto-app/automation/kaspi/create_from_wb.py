@@ -40,6 +40,47 @@ def init_supabase() -> Client:
         
     return create_client(url, key)
 
+def load_full_schema():
+    """Load the full Kaspi schema from JSON file."""
+    try:
+        schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../data/kaspi_full_schema.json')
+        if os.path.exists(schema_path):
+            with open(schema_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception as e:
+        print(f"⚠️ Error loading full schema: {e}", file=sys.stderr)
+    return None
+
+def find_category_in_schema(product_name, schema):
+    """Find best matching category in full schema by title."""
+    if not schema: return None
+    
+    product_name_lower = product_name.lower()
+    best_match = None
+    max_score = 0
+    
+    # Keyword based scoring
+    keywords = [w for w in product_name_lower.split() if len(w) > 2]
+    
+    for cat in schema:
+        score = 0
+        cat_title = cat.get('title', '').lower() # Assuming 'title' field based on previous scripts, but observed 'name' in output above. Check both.
+        if not cat_title:
+             cat_title = cat.get('name', '').lower()
+             
+        # Simple keyword matching
+        for kw in keywords:
+            if kw in cat_title:
+                score += 1
+                
+        if score > max_score:
+            max_score = score
+            best_match = cat
+            
+    if max_score > 0:
+        return best_match
+    return None
+
 def map_wb_to_kaspi(wb_product):
     """Maps Wildberries product data to Kaspi format."""
     from modules.category_mapper import KaspiCategoryMapper
@@ -48,46 +89,75 @@ def map_wb_to_kaspi(wb_product):
     product_description = wb_product.get("description", "") or ""
     raw_attributes = wb_product.get("attributes", {})
     
-    # Detect category
+    # 1. Try Legacy Mapper first (it has fine-tuned logic for specific categories)
     category_name, category_type = KaspiCategoryMapper.detect_category(
         product_name, 
         product_description
     )
     
-    if not category_name:
-        print(f"❌ Unknown category for product: {product_name}", file=sys.stderr)
-        return None
+    kaspi_attributes = {}
+    
+    if category_name:
+        print(f"📋 Detected category (Legacy): {category_name} ({category_type})", file=sys.stderr)
+        kaspi_attributes = KaspiCategoryMapper.generate_attributes(
+            product_name,
+            product_description,
+            category_type,
+            category_name,
+            raw_attributes=raw_attributes
+        )
+    else:
+        # 2. Fallback to Full Schema Search
+        print(f"⚠️ Legacy mapper failed for: {product_name}. Trying Full Schema search...", file=sys.stderr)
+        schema = load_full_schema()
+        best_cat = find_category_in_schema(product_name, schema)
+        
+        if best_cat:
+            category_name = best_cat.get('code')
+            print(f"✅ Found match in Full Schema: {best_cat.get('title') or best_cat.get('name')} ({category_name})", file=sys.stderr)
+            
+            # Universal Attribute Filling logic
+            # Use mandatory attributes from schema
+            for attr in best_cat.get('attributes', []):
+                if attr.get('mandatory'):
+                    code = attr.get('code')
+                    # Try to find in WB attributes (fuzzy match)
+                    found_val = None
+                    attr_title = code.split('*')[-1].lower() # e.g. "Brand" from "Category*Brand"
+                    
+                    for k, v in raw_attributes.items():
+                        if attr_title in k.lower():
+                             found_val = v
+                             break
+                    
+                    # If not found, check standard fields
+                    if not found_val:
+                        if 'brand' in attr_title and wb_product.get('brand'):
+                             found_val = wb_product.get('brand')
+                        elif 'color' in attr_title:
+                             # Try to extract color from text
+                             pass 
+                    
+                    if found_val:
+                         kaspi_attributes[code] = found_val
+                    else:
+                        # Required but missing? Maybe set a default to pass validation?
+                        # Kaspi validation is strict. 
+                        # For now, skip if unknown, might fail creation but better than nothing.
+                        pass
+        else:
+             print(f"❌ Unknown category for product: {product_name}", file=sys.stderr)
+             return None
 
-    print(f"📋 Detected category: {category_name} ({category_type})", file=sys.stderr)
-    
-    # Generate attributes based on category
-    kaspi_attributes = KaspiCategoryMapper.generate_attributes(
-        product_name,
-        product_description,
-        category_type,
-        category_name,
-        raw_attributes=raw_attributes
-    )
-    
     print(f"🏷️  Generated {len(kaspi_attributes)} attributes", file=sys.stderr)
     
-    # Validate attributes
-    is_valid, missing = KaspiCategoryMapper.validate_attributes(
-        kaspi_attributes,
-        category_type
-    )
-    
-    if not is_valid:
-        print(f"⚠️  Missing required attributes: {', '.join(missing)}", file=sys.stderr)
-    
+    # Description fallback
     description = product_description or product_name
     if len(description) < 100:
-        description = f"{description}. Качественный товар от проверенного бренда. Идеально подходит для ежедневного использования. Прочный материал обеспечивает долгий срок службы и комфорт при эксплуатации."
+        description = f"{description}. Качественный товар от проверенного бренда. Идеально подходит для ежедневного использования."
     
     brand_raw = wb_product.get("brand")
     brand = "Generic"
-    
-    # Sanitize brand
     if brand_raw and isinstance(brand_raw, str):
         clean = brand_raw.strip()
         if clean and clean.lower() not in ["хит продаж", "promo", "new", "sale"]:

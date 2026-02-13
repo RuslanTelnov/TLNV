@@ -35,9 +35,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-# Try loading web env if not found
-if not os.getenv("MOYSKLAD_LOGIN"):
-    load_dotenv("moysklad-web/.env.local")
+
+# Robustly find .env.local
+try:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    possible_paths = [
+        os.path.join(current_dir, "../../../moysklad-web/.env.local"),
+        os.path.join(current_dir, "../../.env.local"),
+        os.path.join(os.getcwd(), "moysklad-web/.env.local"),
+        os.path.join(os.getcwd(), ".env.local")
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            print(f"✅ Loading env from: {p}")
+            load_dotenv(p)
+            break
+except: pass
 
 SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
@@ -168,9 +181,21 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             "image_url": product.get('image_url') # Pass single one as fallback
                         }
                         
+                        # Prepare attributes from specs
+                        kaspi_attrs = {}
+                        if 'specs' in product and isinstance(product['specs'], dict):
+                            kaspi_attrs = product['specs']
+
                         # Ensure create_product_in_ms returns the ID now
                         # update_existing=True to allow price/info updates (User Request)
-                        result_id, error_msg = ms_creator.create_product_in_ms(prod_data, folder_meta, price_type_meta, extra_attributes=extra_attrs, update_existing=True)
+                        result_id, error_msg = ms_creator.create_product_in_ms(
+                            prod_data, 
+                            folder_meta, 
+                            price_type_meta, 
+                            extra_attributes=extra_attrs, 
+                            update_existing=True,
+                            kaspi_attributes=kaspi_attrs
+                        )
                         
                         if result_id:
                             update_status(wb_id, {"ms_created": True})
