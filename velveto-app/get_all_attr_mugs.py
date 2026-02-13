@@ -1,0 +1,26 @@
+import os
+import sys
+import json
+from dotenv import load_dotenv
+
+# Add paths
+sys.path.append(os.path.join(os.getcwd(), 'automation/kaspi'))
+from modules.kaspi_api_client import KaspiApiClient
+import config
+
+load_dotenv('moysklad-web/.env.local')
+token = config.KASPI_API_TOKEN or os.getenv("KASPI_API_TOKEN") or os.getenv("KASPI_TOKEN")
+
+if not token:
+    print("❌ Token not found!")
+    sys.exit(1)
+
+client = KaspiApiClient(token)
+category_code = "Master - Cups and saucers sets"
+
+try:
+    attrs = client.get_attributes(category_code)
+    for attr in attrs:
+        print(f"{attr['code']}: multiValued={attr['multiValued']}, mandatory={attr['mandatory']}")
+except Exception as e:
+    print(f"Error: {e}")

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
 export default function ModerationFixModal({ isOpen, onClose, product, onFixApplied }) {
     const [loading, setLoading] = useState(false);
@@ -166,7 +167,11 @@ export default function ModerationFixModal({ isOpen, onClose, product, onFixAppl
                     {/* Rejection Details */}
                     <div style={{ marginBottom: '1.5rem', padding: '1.2rem', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '16px' }}>
                         <div style={{ fontSize: '0.8rem', color: '#EF4444', marginBottom: '0.5rem', fontWeight: 'bold' }}>ПРИЧИНА ОШИБКИ</div>
-                        <div style={{ fontSize: '1rem', lineHeight: '1.6', color: '#fca5a5' }}>{product?.kaspi_details || 'Не указана'}</div>
+                        <div style={{ fontSize: '1rem', lineHeight: '1.6', color: '#fca5a5' }}>
+                            {typeof product?.kaspi_details === 'object'
+                                ? JSON.stringify(product.kaspi_details, null, 2)
+                                : (product?.kaspi_details || 'Не указана')}
+                        </div>
                     </div>
 
                     {/* AI Analysis */}
@@ -177,9 +182,15 @@ export default function ModerationFixModal({ isOpen, onClose, product, onFixAppl
                             </div>
 
                             {aiLoading ? (
-                                <div style={{ padding: '1rem', textAlign: 'center', color: '#888' }}>
-                                    <div className="loader" style={{ marginBottom: '10px' }}></div>
-                                    Поиск решения...
+                                <div style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                        style={{ fontSize: '2rem', marginBottom: '1rem' }}
+                                    >
+                                        ✨
+                                    </motion.div>
+                                    Поиск оптимального решения...
                                 </div>
                             ) : aiSuggestion ? (
                                 <div>

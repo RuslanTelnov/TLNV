@@ -626,11 +626,45 @@ export default function WbTopPage() {
                 </div>
 
                 {/* Filters */}
-                <div className="filter-bar" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
+                <div className="filter-bar" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
                     <FilterBtn label={`Все (${products.length})`} active={filterMode === 'all'} onClick={() => setFilterMode('all')} />
                     <FilterBtn label={`Новые (${newCount})`} active={filterMode === 'new'} onClick={() => setFilterMode('new')} color="#3b82f6" />
                     <FilterBtn label={`Доступные (${availableCount})`} active={filterMode === 'available'} onClick={() => setFilterMode('available')} color="#10b981" />
                     <FilterBtn label={`Закрытые (${closedCount})`} active={filterMode === 'closed'} onClick={() => setFilterMode('closed')} color="#EF4444" />
+                </div>
+
+                {/* Moderation Summary Visual */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '2rem',
+                    marginBottom: '3rem',
+                    padding: '1.5rem',
+                    background: 'rgba(255,255,255,0.02)',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(10px)'
+                }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>НА МОДЕРАЦИИ</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#60a5fa' }}>
+                            {products.filter(p => (p.kaspi_status || p.specs?.kaspi_status) === 'moderation').length}
+                        </div>
+                    </div>
+                    <div style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}></div>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>ОДОБРЕНО</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#34d399' }}>
+                            {products.filter(p => (p.kaspi_status || p.specs?.kaspi_status) === 'approved').length}
+                        </div>
+                    </div>
+                    <div style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}></div>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--velveto-text-muted)', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>ОТКЛОНЕНО</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f87171' }}>
+                            {products.filter(p => (p.kaspi_status || p.specs?.kaspi_status) === 'rejected').length}
+                        </div>
+                    </div>
                 </div>
 
 
@@ -694,7 +728,10 @@ export default function WbTopPage() {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div style={{ fontSize: '0.7rem', textAlign: 'center', opacity: 0.8 }}>{p.kaspi_status || '—'}</div>
+                                                        <ModerationBadge
+                                                            status={p.kaspi_status || p.specs?.kaspi_status}
+                                                            details={p.kaspi_details || p.specs?.kaspi_details}
+                                                        />
                                                     </td>
                                                     <td>
                                                         <div style={{ display: 'flex', gap: '0.4rem' }}>
@@ -877,6 +914,83 @@ function FilterBtn({ label, active, onClick, color }) {
             color: active ? 'white' : 'var(--velveto-text-primary)', border: 'none', cursor: 'pointer', fontWeight: '600'
         }}>{label}</button>
     )
+}
+
+function ModerationBadge({ status, details }) {
+    if (!status) return <div style={{ color: 'var(--velveto-text-muted)', fontSize: '0.7rem', opacity: 0.5 }}>—</div>;
+
+    const styles = {
+        moderation: {
+            bg: 'rgba(59, 130, 246, 0.15)',
+            color: '#60a5fa',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            icon: '🔍',
+            label: 'МОДЕРАЦИЯ',
+            animate: false
+        },
+        approved: {
+            bg: 'rgba(16, 185, 129, 0.15)',
+            color: '#34d399',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            icon: '✅',
+            label: 'ОДОБРЕНО'
+        },
+        rejected: {
+            bg: 'rgba(239, 68, 68, 0.15)',
+            color: '#f87171',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            icon: '❌',
+            label: 'ОТКЛОНЕНО'
+        },
+        pending: {
+            bg: 'rgba(245, 158, 11, 0.15)',
+            color: '#fbbf24',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            icon: '⏳',
+            label: 'ОЖИДАНИЕ'
+        },
+        closed: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            color: '#94a3b8',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            icon: '🔒',
+            label: 'ЗАКРЫТО'
+        }
+    };
+
+    const config = styles[status] || {
+        bg: 'rgba(255, 255, 255, 0.05)',
+        color: '#fff',
+        border: '1px solid rgba(255,255,255,0.1)',
+        icon: '•',
+        label: (typeof status === 'string' ? status.toUpperCase() : 'UNKNOWN')
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{
+                background: config.bg,
+                color: config.color,
+                border: config.border,
+                padding: '4px 10px',
+                borderRadius: '8px',
+                fontSize: '0.65rem',
+                fontWeight: '700',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                letterSpacing: '0.05em',
+                cursor: details ? 'help' : 'default',
+                backdropFilter: 'blur(4px)'
+            }}
+            title={typeof details === 'object' ? JSON.stringify(details) : details}
+        >
+            <span>{config.icon}</span>
+            <span>{config.label}</span>
+        </motion.div>
+    );
 }
 
 function StatusIcon({ label, active, icon }) {

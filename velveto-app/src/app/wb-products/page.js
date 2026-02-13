@@ -21,8 +21,8 @@ export default function WbProducts() {
             const { data, error } = await supabase
                 .from('wb_search_results')
                 .select('*')
-                .order('rating', { ascending: false })
-                .limit(100)
+                .order('updated_at', { ascending: false })
+                .limit(200)
 
             if (error) throw error
             setProducts(data || [])
@@ -293,11 +293,13 @@ export default function WbProducts() {
                                             </td>
                                             <td style={{ color: 'var(--velveto-text-secondary)' }}>{product.brand}</td>
                                             <td className="ms-cell-price" style={{ textAlign: 'right', color: 'var(--velveto-accent-primary)', fontWeight: '600' }}>
-                                                {(product.sale_price_u || product.price)
-                                                    ? (product.currency === 'KZT'
-                                                        ? `${(product.sale_price_u || product.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
-                                                        : `${((product.sale_price_u || product.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
-                                                    : 'Нет цены'}
+                                                {product.price_kzt
+                                                    ? `${product.price_kzt.toLocaleString('ru-RU')} ₸`
+                                                    : (product.sale_price_u || product.price)
+                                                        ? (product.currency === 'KZT'
+                                                            ? `${(product.sale_price_u || product.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
+                                                            : `${((product.sale_price_u || product.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
+                                                        : 'Нет цены'}
                                             </td>
                                             <td style={{ textAlign: 'right', color: 'var(--velveto-text-primary)' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
@@ -371,11 +373,13 @@ export default function WbProducts() {
                                         <div style={{ fontSize: '1rem', color: 'var(--velveto-text-primary)', fontWeight: '400', marginBottom: '0.5rem', lineHeight: '1.4' }}>{product.name}</div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div style={{ color: 'var(--velveto-accent-primary)', fontWeight: '600' }}>
-                                                {(product.sale_price_u || product.price)
-                                                    ? (product.currency === 'KZT'
-                                                        ? `${(product.sale_price_u || product.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
-                                                        : `${((product.sale_price_u || product.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
-                                                    : '—'}
+                                                {product.price_kzt
+                                                    ? `${product.price_kzt.toLocaleString('ru-RU')} ₸`
+                                                    : (product.sale_price_u || product.price)
+                                                        ? (product.currency === 'KZT'
+                                                            ? `${(product.sale_price_u || product.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
+                                                            : `${((product.sale_price_u || product.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
+                                                        : '—'}
                                             </div>
                                             <div style={{ fontSize: '0.85rem' }}>
                                                 <span style={{ color: '#F59E0B' }}>★</span> {product.rating}
@@ -486,9 +490,11 @@ export default function WbProducts() {
 
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
                                         <div style={{ color: 'var(--velveto-accent-primary)', fontSize: '2rem', fontWeight: '600' }}>
-                                            {(selectedProduct.currency === 'KZT'
-                                                ? `${(selectedProduct.sale_price_u || selectedProduct.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
-                                                : `${((selectedProduct.sale_price_u || selectedProduct.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
+                                            {selectedProduct.price_kzt
+                                                ? `${selectedProduct.price_kzt.toLocaleString('ru-RU')} ₸`
+                                                : (selectedProduct.currency === 'KZT'
+                                                    ? `${(selectedProduct.sale_price_u || selectedProduct.price).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`
+                                                    : `${((selectedProduct.sale_price_u || selectedProduct.price) * 5.2).toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₸`)
                                             }
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--velveto-text-primary)' }}>
@@ -497,7 +503,7 @@ export default function WbProducts() {
                                     </div>
 
                                     <a
-                                        href={selectedProduct.url}
+                                        href={`https://www.wildberries.ru/catalog/${selectedProduct.id}/detail.aspx`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="velveto-button"
@@ -523,12 +529,34 @@ export default function WbProducts() {
                                         Характеристики
                                     </h3>
                                     <div style={{ display: 'grid', gap: '1rem' }}>
-                                        {selectedProduct.specs && Object.entries(selectedProduct.specs).map(([key, value]) => (
-                                            <div key={key} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
-                                                <span style={{ color: 'var(--velveto-text-muted)' }}>{key}</span>
-                                                <span style={{ color: 'var(--velveto-text-secondary)', textAlign: 'right', maxWidth: '60%' }}>{value}</span>
-                                            </div>
-                                        ))}
+                                        {selectedProduct.specs && Object.entries(selectedProduct.specs).map(([key, value]) => {
+                                            // Skip internal metadata or objects that shouldn't be rendered as simple strings
+                                            if (typeof value === 'object' && value !== null) {
+                                                // If it's an object with many keys, maybe it's nested attributes - we can either stringify or skip
+                                                return (
+                                                    <div key={key} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
+                                                        <div style={{ color: 'var(--velveto-text-muted)', marginBottom: '0.5rem' }}>{key}</div>
+                                                        <div style={{ paddingLeft: '1rem', display: 'grid', gap: '0.5rem' }}>
+                                                            {Object.entries(value).map(([subKey, subValue]) => (
+                                                                <div key={subKey} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                                                                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>{subKey}</span>
+                                                                    <span style={{ color: 'var(--velveto-text-secondary)', textAlign: 'right' }}>
+                                                                        {typeof subValue === 'object' ? JSON.stringify(subValue) : String(subValue)}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+
+                                            return (
+                                                <div key={key} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
+                                                    <span style={{ color: 'var(--velveto-text-muted)' }}>{key}</span>
+                                                    <span style={{ color: 'var(--velveto-text-secondary)', textAlign: 'right', maxWidth: '60%' }}>{String(value)}</span>
+                                                </div>
+                                            );
+                                        })}
                                         {(!selectedProduct.specs || Object.keys(selectedProduct.specs).length === 0) && (
                                             <div style={{ color: 'var(--velveto-text-muted)' }}>Нет характеристик</div>
                                         )}

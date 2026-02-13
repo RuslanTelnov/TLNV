@@ -432,14 +432,15 @@ class KaspiCategoryMapper:
         attributes = {
             "Cups and saucers sets*Type": "кружка",
             "Cups and saucers sets*Number of pieces": 1,
-            "Cups and saucers sets*Brand code": "нет", # Mandatory brand code, use "нет" if unknown
+            "Cups and saucers sets*Volume": 350,
+            "Cups and saucers sets*Brand code": "нет", # Mandatory string field
         }
         
         text = (product_name + " " + product_description).lower()
 
         # Generate 'Cups and saucers sets*Type' attribute
         if any(word in text for word in ['набор', 'комплект']):
-            attributes["Cups and saucers sets*Type"] = "набор чашек"
+            attributes["Cups and saucers sets*Type"] = "набор кружек"
             attributes["Cups and saucers sets*Number of pieces"] = 2 # Default to 2 for sets if not found
         
         text = (product_name + " " + product_description).lower()
@@ -458,8 +459,7 @@ class KaspiCategoryMapper:
         volume_match = re.search(r'(\d+)\s*(мл|ml)', text)
         if volume_match:
             attributes["Cups and saucers sets*Volume"] = int(volume_match.group(1))
-        else:
-            attributes["Cups and saucers sets*Volume"] = 350
+        # Default already set in initial dict
         
         # Extract color
         colors = {
@@ -535,15 +535,15 @@ class KaspiCategoryMapper:
         text = (product_name + " " + product_description).lower()
         
         attributes = {
-            "Stuffed toys*Type": "Мягкая игрушка",
+            "Stuffed toys*Type": "мягкая игрушка",
             "Stuffed toys*Height": 35, # Default int
-            "Stuffed toys*Filler": "Синтепон",
+            "Stuffed toys*Filler": "синтепон",
             "Stuffed toys*Character": "Стич", 
-            "Stuffed toys*View": "Животные",
-            "Toys*Age": "От 3 лет",
-            "Toys*Gender": "Унисекс",
-            "Toys*Color": "Синий",
-            "Toys*Material": "Текстиль"
+            "Stuffed toys*View": ["дикие животные"], # List, lowercase
+            "Toys*Age": ["3 года"], # List
+            "Toys*Gender": "универсальный", # String
+            "Toys*Color": ["синий"], # List
+            "Toys*Material": ["текстиль"] # List
         }
         
         # Detect height
@@ -579,13 +579,13 @@ class KaspiCategoryMapper:
         attrs_list = [
             {"code": "Board games*Type1", "value": ["развлекательные"]},
             {"code": "Board games*Vendor code", "value": "GAME-" + "".join(filter(str.isalnum, name[:10])).upper()},
-            {"code": "Board games*Gender", "value": "унисекс"},
+            {"code": "Board games*Gender", "value": "универсальная"}, # String, correct spelling
             {"code": "Board games*Language", "value": ["русский"]},
             {"code": "Board games*Difficulty level", "value": 1},
             {"code": "Board games*Contents", "value": "карточки, правила"},
             {"code": "Board games*Size", "value": "стандарт"},
-            {"code": "Party games*Number of participants", "value": ["3-4"]},
-            {"code": "Party games*Age", "value": "от 7 лет"}
+            {"code": "Party games*Number of participants", "value": ["3", "4"]}, # As list
+            {"code": "Party games*Age", "value": "7 лет"} # As string, no prefix
         ]
         return {attr["code"]: attr["value"] for attr in attrs_list}
 
@@ -792,7 +792,7 @@ class KaspiCategoryMapper:
         attributes = {
             "Modeling kits*Type": "пластилин",
             "Modeling kits*Number of colors": 12,
-            "Toys*Age": "От 3 лет"
+            "Toys*Age": ["3 года"]
         }
         # Extract number of colors
         color_match = re.search(r'(\d+)\s*(цветов|цв)', product_name.lower())

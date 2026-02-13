@@ -60,38 +60,47 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="201"):
     
     for code, value in scraped_attributes.items():
         # Check if attribute code contains any blacklisted keyword
-        code_lower = code.lower()
-        if any(kw in code_lower for kw in blacklist_keywords):
-            # print(f"🚫 Filtering out conflicting attribute: {code}")
-            continue
+        # BUT ONLY IF IT IS NOT A KASPI ATTRIBUTE (assuming '*' indicates Kaspi mapped attribute)
+        if "*" not in code:
+            code_lower = code.lower()
+            if any(kw in code_lower for kw in blacklist_keywords):
+                # print(f"🚫 Filtering out conflicting attribute: {code}")
+                continue
             
         attributes_list.append({
             "code": code,
             "value": value
         })
 
-    # ADD BARCODE AS ATTRIBUTE
-    # Try to find the correct 'Vendor code' or 'Barcode' attribute based on category
+    # ADD BARCODE AS ATTRIBUTE (Only for categories that support it as Vendor code)
     category_name = scraped_data.get("category_name", "")
+    
+    # Categories known to have CATEGORY*Vendor code
+    VENDOR_CODE_CATEGORIES = ["Master - Board games", "Master - Play vehicles", "Master - Ab rollers", "Master - Backpacks"]
+    # Categories known to have CATEGORY*Brand
+    BRAND_CATEGORIES = ["Master - Play vehicles", "Master - Ab rollers", "Master - Backpacks"]
     
     if category_name and category_name.startswith("Master - "):
         prefix = category_name.replace("Master - ", "")
         
-        # Add Vendor Code (The unique ID that prevents grouping)
-        barcode_attr = f"{prefix}*Vendor code"
-        attributes_list.append({
-            "code": barcode_attr,
-            "value": barcode
-        })
+        # Add Vendor Code if supported
+        if category_name in VENDOR_CODE_CATEGORIES:
+            barcode_attr = f"{prefix}*Vendor code"
+            attributes_list.append({
+                "code": barcode_attr,
+                "value": barcode
+            })
         
-        # Add Brand to attributes
-        brand_attr = f"{prefix}*Brand"
-        attributes_list.append({
-            "code": brand_attr,
-            "value": "Generic"
-        })
+        # Add Brand if supported (Mugs use Brand code instead in mapper)
+        if category_name in BRAND_CATEGORIES:
+            brand_attr = f"{prefix}*Brand"
+            attributes_list.append({
+                "code": brand_attr,
+                "value": "Generic"
+            })
     else:
-        # Fallback for non-Master categories
+        # Fallback for non-Master categories (not common in this system but good to have)
+        # Barcode is almost always safe in generic
         attributes_list.append({
             "code": "Barcode",
             "value": barcode

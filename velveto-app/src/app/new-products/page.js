@@ -36,15 +36,15 @@ export default function NewProducts() {
 
     async function fetchProducts() {
         try {
-            // Filter products created after this timestamp (clearing current list)
-            const cutoffTime = '2025-12-07T13:50:00.000Z'
+            // Fetch products created in the last 30 days
+            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
             const { data, error } = await supabase
                 .from('products')
                 .select('*')
-                .eq('stock', 0)
-                .gt('created_at', cutoffTime)
+                .gt('created_at', thirtyDaysAgo)
                 .order('created_at', { ascending: false })
+                .limit(200)
 
             if (error) throw error
             setProducts(data || [])
@@ -56,10 +56,13 @@ export default function NewProducts() {
     }
 
     const filteredProducts = products.filter(product => {
-        const query = searchQuery.toLowerCase()
+        const query = searchQuery.toLowerCase().trim()
+        if (!query) return true
+
         return (
             (product.name && product.name.toLowerCase().includes(query)) ||
-            (product.article && String(product.article).toLowerCase().includes(query))
+            (product.article && String(product.article).toLowerCase().includes(query)) ||
+            (product.code && String(product.code).toLowerCase().includes(query))
         )
     })
 
@@ -257,7 +260,7 @@ export default function NewProducts() {
                 <div className="ms-controls" style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'center' }}>
                     <input
                         type="text"
-                        placeholder="Поиск..."
+                        placeholder="Поиск по названию или артикулу..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         style={{
@@ -295,34 +298,32 @@ export default function NewProducts() {
                             </thead>
                             <tbody>
                                 {filteredProducts.map((product, index) => (
-                                    <Link key={product.id} href={`/product/${product.id}`} legacyBehavior>
-                                        <motion.tr variants={item} style={{ cursor: 'pointer' }}>
-                                            <td>
-                                                <img
-                                                    src={product.image_url || 'https://via.placeholder.com/80'}
-                                                    alt={product.name}
-                                                    className="ms-thumb"
-                                                    style={{ cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.1)' }}
-                                                    onClick={(e) => handleImageClick(e, product.image_url)}
-                                                />
-                                            </td>
-                                            <td className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</td>
-                                            <td className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</td>
-                                            <td style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
-                                                {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
-                                            </td>
-                                            <td className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
-                                                {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
-                                            </td>
-                                            <td>
-                                                {product.cost_price && (
-                                                    <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
-                                                        {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
-                                                    </span>
-                                                )}
-                                            </td>
-                                        </motion.tr>
-                                    </Link>
+                                    <tr key={product.id} onClick={() => window.location.href = `/product/${product.id}`} style={{ cursor: 'pointer' }}>
+                                        <motion.td variants={item}>
+                                            <img
+                                                src={product.image_url || 'https://via.placeholder.com/80'}
+                                                alt={product.name}
+                                                className="ms-thumb"
+                                                style={{ cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.1)' }}
+                                                onClick={(e) => handleImageClick(e, product.image_url)}
+                                            />
+                                        </motion.td>
+                                        <motion.td variants={item} className="ms-cell-name" style={{ color: 'var(--velveto-text-primary)' }}>{product.name}</motion.td>
+                                        <motion.td variants={item} className="ms-cell-article" style={{ color: 'var(--velveto-text-muted)' }}>{product.article}</motion.td>
+                                        <motion.td variants={item} style={{ fontWeight: '600', color: 'var(--velveto-status-warning)' }}>
+                                            {product.min_price ? (product.min_price / 100).toLocaleString('ru-RU') : 0} ₸
+                                        </motion.td>
+                                        <motion.td variants={item} className="ms-cell-price" style={{ color: 'var(--velveto-accent-primary)' }}>
+                                            {product.price ? (product.price / 100).toLocaleString('ru-RU') : 0} ₸
+                                        </motion.td>
+                                        <motion.td variants={item}>
+                                            {product.cost_price && (
+                                                <span className="cost-price" style={{ color: 'var(--velveto-text-secondary)' }}>
+                                                    {(Number(product.cost_price)).toLocaleString('ru-RU')} ₸
+                                                </span>
+                                            )}
+                                        </motion.td>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>

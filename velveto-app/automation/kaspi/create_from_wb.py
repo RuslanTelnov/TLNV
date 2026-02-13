@@ -375,9 +375,10 @@ def create_from_wb(article_input):
                 specs["kaspi_upload_id"] = upload_id or "unknown"
                 specs["kaspi_sku"] = sku
                 
-                # 3. Save back with only existing columns
+                # Save back with only existing columns
                 update_data = {
                     "kaspi_created": True,
+                    # "kaspi_status": "moderation", # Column doesn't exist, stored in specs
                     "specs": specs
                 }
                 

@@ -61,7 +61,7 @@ def get_or_create_group(name):
     """Get or create product folder in MoySklad"""
     url = f"{BASE_URL}/entity/productfolder?filter=name={name}"
     try:
-        resp = requests.get(url, headers=HEADERS)
+        resp = requests.get(url, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             rows = resp.json().get('rows', [])
             if rows:
@@ -70,7 +70,7 @@ def get_or_create_group(name):
         
         # Create if not found
         print(f"📂 Creating group '{name}'...")
-        resp = requests.post(f"{BASE_URL}/entity/productfolder", json={"name": name}, headers=HEADERS)
+        resp = requests.post(f"{BASE_URL}/entity/productfolder", json={"name": name}, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             return resp.json()['meta']
         else:
@@ -90,7 +90,7 @@ def get_all_attributes():
 
     url = f"{BASE_URL}/entity/product/metadata/attributes"
     try:
-        resp = requests.get(url, headers=HEADERS)
+        resp = requests.get(url, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             rows = resp.json().get('rows', [])
             for row in rows:
@@ -115,7 +115,7 @@ def ensure_attribute(name, attr_type="string"):
     }
     
     try:
-        resp = requests.post(f"{BASE_URL}/entity/product/metadata/attributes", json=payload, headers=HEADERS)
+        resp = requests.post(f"{BASE_URL}/entity/product/metadata/attributes", json=payload, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             new_attr = resp.json()
             _ATTRIBUTES_CACHE[name] = new_attr
@@ -132,7 +132,7 @@ def get_price_type(name="Розничная цена"):
     """Get price type meta"""
     url = f"{BASE_URL}/context/companysettings/pricetype"
     try:
-        resp = requests.get(url, headers=HEADERS)
+        resp = requests.get(url, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             for pt in resp.json():
                 if pt['name'] == name:
@@ -185,7 +185,7 @@ def upload_image_to_ms(ms_id, image_url, name):
                 "filename": filename,
                 "content": content
             }
-            resp = requests.post(url, json=payload, headers=HEADERS)
+            resp = requests.post(url, json=payload, headers=HEADERS, timeout=30)
             if resp.status_code == 200:
                 print(f"   ✅ Image uploaded to MoySklad")
             else:
@@ -236,7 +236,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
     # We check by article first as it's the user-facing ID
     url = f"{BASE_URL}/entity/product?filter=article={wb_id}"
     try:
-        resp = requests.get(url, headers=HEADERS)
+        resp = requests.get(url, headers=HEADERS, timeout=30)
         if resp.status_code == 200:
             rows = resp.json().get('rows', [])
             if rows:
@@ -246,7 +246,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             else:
                 # Fallback check by externalCode
                 url_code = f"{BASE_URL}/entity/product?filter=externalCode={wb_id}"
-                resp_code = requests.get(url_code, headers=HEADERS)
+                resp_code = requests.get(url_code, headers=HEADERS, timeout=30)
                 if resp_code.status_code == 200:
                    rows_code = resp_code.json().get('rows', [])
                    if rows_code:
@@ -296,7 +296,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             payload["attributes"] = all_attributes
         
         try:
-            resp = requests.post(f"{BASE_URL}/entity/product", json=payload, headers=HEADERS)
+            resp = requests.post(f"{BASE_URL}/entity/product", json=payload, headers=HEADERS, timeout=30)
             if resp.status_code == 200:
                 print(f"✅ Created '{name}' (Price: {price} -> Retail: {retail_price_val//100})")
                 ms_product_id = resp.json()['id']
@@ -336,7 +336,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
                 payload["attributes"] = all_attributes
                 
             try:
-                resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS)
+                resp = requests.put(f"{BASE_URL}/entity/product/{ms_product_id}", json=payload, headers=HEADERS, timeout=30)
                 if resp.status_code == 200:
                     print(f"🔄 Updated price and attributes for '{name}' to {retail_price_val//100}")
                 else:
@@ -370,7 +370,7 @@ def create_product_in_ms(product, folder_meta, price_type_meta, extra_attributes
             # Fetch full product to get 'code' if we just created it or it exists
             ms_code = None
             try:
-                resp_info = requests.get(f"{BASE_URL}/entity/product/{ms_product_id}", headers=HEADERS)
+                resp_info = requests.get(f"{BASE_URL}/entity/product/{ms_product_id}", headers=HEADERS, timeout=30)
                 if resp_info.status_code == 200:
                     ms_code = resp_info.json().get('code')
             except:

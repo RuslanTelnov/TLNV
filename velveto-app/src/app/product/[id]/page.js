@@ -214,6 +214,36 @@ export default function ProductPage() {
                         >
                             В XML Фид
                         </button>
+                        <a
+                            href={`https://www.wildberries.ru/catalog/${product.article}/detail.aspx`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'rgba(203, 17, 171, 0.1)',
+                                color: '#cb11ab',
+                                padding: '1rem 2rem',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(203, 17, 171, 0.2)',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                fontSize: '1.1rem',
+                                textDecoration: 'none',
+                                transition: 'all 0.3s'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.background = 'rgba(203, 17, 171, 0.2)';
+                                e.currentTarget.style.borderColor = 'rgba(203, 17, 171, 0.4)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.background = 'rgba(203, 17, 171, 0.1)';
+                                e.currentTarget.style.borderColor = 'rgba(203, 17, 171, 0.2)';
+                            }}
+                        >
+                            Открыть на WB ↗
+                        </a>
                     </div>
 
                 </div>
