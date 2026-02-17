@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { OnboardingTour } from '@/components/OnboardingTour'
 
 export default function Home() {
     const container = {
@@ -98,6 +99,17 @@ export default function Home() {
         }
     ];
 
+    const academyCards = [
+        {
+            title: "Вельвето Академия",
+            description: "Развивающие игры и тренажеры для бизнеса",
+            href: "/games",
+            color: "linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)", // Purple to Pink
+            icon: "🎓",
+            badge: "NEW"
+        }
+    ];
+
     return (
         <div className="dashboard-container" style={{ minHeight: '100vh', background: 'var(--velveto-bg-primary)' }}>
             <style jsx global>{`
@@ -186,7 +198,7 @@ export default function Home() {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <h1 className="header-logo-text" style={{
+                    <h1 id="tour-logo" className="header-logo-text" style={{
                         fontSize: '1.8rem',
                         fontWeight: '300',
                         letterSpacing: '0.18em',
@@ -241,6 +253,7 @@ export default function Home() {
                     </Link>
                     <Link href="/settings">
                         <motion.div
+                            id="tour-settings"
                             whileHover={{ rotate: 90 }}
                             style={{
                                 cursor: 'pointer',
@@ -278,7 +291,7 @@ export default function Home() {
                 </div>
 
                 {/* Kaspi Orders Section - Dedicated */}
-                <div style={{ marginBottom: '4rem' }}>
+                <div id="tour-kaspi" style={{ marginBottom: '4rem' }}>
                     <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
@@ -376,7 +389,7 @@ export default function Home() {
                     </motion.div>
                 </div>
 
-                <div style={{ marginBottom: '4rem' }}>
+                <div id="tour-tools" style={{ marginBottom: '4rem' }}>
                     <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
@@ -490,7 +503,7 @@ export default function Home() {
                     </motion.div>
                 </div>
 
-                <div>
+                <div id="tour-analytics">
                     <h3 className="section-title section-header-padding" style={{
                         fontSize: '1.5rem',
                         fontWeight: '300',
@@ -586,7 +599,121 @@ export default function Home() {
                         ))}
                     </motion.div>
                 </div>
+
+                {/* Academy Section */}
+                <div style={{ marginBottom: '4rem' }}>
+                    <h3 className="section-title section-header-padding" style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '300',
+                        color: '#d946ef',
+                        marginBottom: '2rem',
+                        borderLeft: '2px solid #d946ef',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
+                    }}>
+                        Обучение и Развитие
+                    </h3>
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className="card-grid"
+                    >
+                        {academyCards.map((card, index) => (
+                            <Link key={index} href={card.href} style={{ textDecoration: 'none' }}>
+                                <motion.div
+                                    variants={item}
+                                    whileHover={{ y: -5, scale: 1.01 }}
+                                    className="velveto-card card-padding"
+                                    style={{
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                >
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        height: '2px',
+                                        background: card.color,
+                                        zIndex: 1,
+                                        boxShadow: `0 0 20px ${card.color}`
+                                    }} />
+
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '1rem',
+                                        right: '1rem',
+                                        background: '#d946ef',
+                                        color: '#fff',
+                                        fontSize: '0.7rem',
+                                        fontWeight: 'bold',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        zIndex: 2
+                                    }}>
+                                        {card.badge}
+                                    </div>
+
+                                    <div className="card-icon" style={{
+                                        fontSize: '3rem',
+                                        marginBottom: '2rem',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'relative',
+                                        zIndex: 1,
+                                        border: '1px solid rgba(255,255,255,0.05)'
+                                    }}>
+                                        {card.icon}
+                                    </div>
+
+                                    <h3 style={{
+                                        fontSize: '1.5rem',
+                                        fontWeight: '400',
+                                        color: 'var(--velveto-text-primary)',
+                                        marginBottom: '1rem',
+                                        letterSpacing: '0.05em',
+                                        fontFamily: 'var(--velveto-font-display)',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {card.title}
+                                    </h3>
+
+                                    <p style={{ color: 'var(--velveto-text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
+                                        {card.description}
+                                    </p>
+
+                                    <div style={{
+                                        marginTop: 'auto',
+                                        paddingTop: '2rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: '#d946ef',
+                                        fontWeight: '600',
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.1em',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        Играть сейчас <span style={{ marginLeft: '0.5rem' }}>→</span>
+                                    </div>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </motion.div>
+                </div>
             </main>
+            <OnboardingTour />
         </div>
     )
 }

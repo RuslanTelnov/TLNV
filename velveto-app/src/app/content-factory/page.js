@@ -17,6 +17,8 @@ export default function ContentFactoryPage() {
     const [isGeneratingImages, setIsGeneratingImages] = useState(false)
 
     const [uploadedImage, setUploadedImage] = useState(null)
+    const [generatedVideo, setGeneratedVideo] = useState(null)
+    const [isGeneratingVideo, setIsGeneratingVideo] = useState(false)
     const fileInputRef = useRef(null)
 
     const handleImageUpload = (e) => {
@@ -60,6 +62,36 @@ export default function ContentFactoryPage() {
             alert('Ошибка при генерации текста: ' + e.message)
         } finally {
             setIsGeneratingText(false)
+        }
+    }
+
+    const handleGenerateVideo = async () => {
+        if (!uploadedImage && !product) {
+            alert('Пожалуйста, загрузите фото или выберите товар')
+            return
+        }
+        setIsGeneratingVideo(true)
+        setGeneratedVideo(null)
+        try {
+            const res = await fetch('/api/content/generate-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: uploadedImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', // Fallback to classic product shot
+                    product: product || 'Новый товар',
+                })
+            })
+
+            if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`)
+            const data = await res.json()
+            if (data.error) throw new Error(data.error)
+
+            setGeneratedVideo(data.videoUrl)
+        } catch (e) {
+            console.error(e)
+            alert('Ошибка при создании видео: ' + e.message)
+        } finally {
+            setIsGeneratingVideo(false)
         }
     }
 
@@ -212,7 +244,12 @@ export default function ContentFactoryPage() {
                                             alert('Товар не найден');
                                         } else {
                                             setProduct(data.name);
-                                            alert(`Найден товар: ${data.name}`);
+                                            if (data.imageUrl) {
+                                                setUploadedImage(data.imageUrl); // Automatically set the photo for generation
+                                            }
+                                            // Automatically switch to Video Studio if searching for video generation context
+                                            setActiveTab('video');
+                                            alert(`Найден товар: ${data.name}. Автоматически переходим в Видео Студию.`);
                                         }
                                     } catch (e) {
                                         console.error(e);
@@ -237,7 +274,7 @@ export default function ContentFactoryPage() {
 
                 {/* Tabs */}
                 <div className="tab-container" style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    {['text', 'visual'].map(tab => (
+                    {['text', 'visual', 'video'].map(tab => (
                         <div
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -253,7 +290,7 @@ export default function ContentFactoryPage() {
                                 marginBottom: '-1px'
                             }}
                         >
-                            {tab === 'text' ? 'Текстовая Студия' : 'Визуальная Студия'}
+                            {tab === 'text' ? 'Текстовая Студия' : tab === 'visual' ? 'Визуальная Студия' : 'Видео Студия'}
                         </div>
                     ))}
                 </div>
@@ -427,6 +464,52 @@ export default function ContentFactoryPage() {
                     </motion.div>
                 )
                 }
+                {activeTab === 'video' && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem' }}
+                    >
+                        <div style={{ flex: '1 1 300px', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontWeight: '400' }}>Видео Рендеринг</h2>
+
+                            <p style={{ color: 'var(--velveto-text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                                ИИ проанализирует фото товара и его название, чтобы создать динамичную видео-обложку с рекламным текстом.
+                            </p>
+
+                            <button
+                                onClick={handleGenerateVideo}
+                                disabled={isGeneratingVideo}
+                                style={{ width: '100%', padding: '1rem', background: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)', border: 'none', borderRadius: '12px', color: 'white', fontWeight: 'bold', cursor: 'pointer', opacity: isGeneratingVideo ? 0.7 : 1 }}
+                            >
+                                {isGeneratingVideo ? 'РЕНДЕРИНГ...' : 'СОЗДАТЬ ВИДЕО-ОБЛОЖКУ'}
+                            </button>
+
+                            {isGeneratingVideo && (
+                                <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.8rem', color: '#f472b6' }}>
+                                    Это может занять до 30 секунд...
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ flex: '2 1 300px', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {generatedVideo ? (
+                                <video
+                                    src={generatedVideo}
+                                    controls
+                                    autoPlay
+                                    loop
+                                    style={{ maxWidth: '100%', maxHeight: '600px', borderRadius: '12px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+                                />
+                            ) : (
+                                <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--velveto-text-muted)' }}>
+                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎬</div>
+                                    Здесь появится ваше готовое видео
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
 
             </main >
         </div >

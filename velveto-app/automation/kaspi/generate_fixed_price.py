@@ -15,7 +15,7 @@ def generate_xml():
     # 1. Load Enviroment
     # Explicitly check for .env locations
     env_paths = [
-        'moysklad-web/.env.local',
+        '.env.local',
         '.env',
         '../.env'
     ]
@@ -177,7 +177,7 @@ def generate_xml():
     tree = ET.ElementTree(fixcom_root)
     
     # Save to both root and public (to be sure)
-    output_paths = ['price.xml', 'moysklad-web/public/price.xml']
+    output_paths = ['price.xml', 'public/price.xml']
     
     for out_path in output_paths:
         try:

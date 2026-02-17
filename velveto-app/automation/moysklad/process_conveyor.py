@@ -8,12 +8,11 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 
 # Import existing modules
-sys.path.append(os.path.join(os.getcwd(), 'moysklad-automation'))
-sys.path.append(os.path.join(os.getcwd(), 'kaspi-automation'))
+# Add current directory to path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import create_wb_products_in_ms as ms_creator
 import oprihodovanie as ms_stock
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Fix import for create_from_wb (it is in ../kaspi)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 kaspi_dir = os.path.join(os.path.dirname(current_dir), 'kaspi')
@@ -40,9 +39,9 @@ load_dotenv()
 try:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     possible_paths = [
-        os.path.join(current_dir, "../../../moysklad-web/.env.local"),
+        os.path.join(current_dir, "../../../.env.local"), # Back from moysklad/automation/velveto-app
         os.path.join(current_dir, "../../.env.local"),
-        os.path.join(os.getcwd(), "moysklad-web/.env.local"),
+        os.path.join(os.getcwd(), "temp_tlnv_parser/velveto-app/.env.local"),
         os.path.join(os.getcwd(), ".env.local")
     ]
     for p in possible_paths:
