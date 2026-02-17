@@ -83,30 +83,48 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="201"):
     if category_name and category_name.startswith("Master - "):
         prefix = category_name.replace("Master - ", "")
         
-        # Add Vendor Code if supported
-        if category_name in VENDOR_CODE_CATEGORIES:
-            barcode_attr = f"{prefix}*Vendor code"
-            attributes_list.append({
-                "code": barcode_attr,
-                "value": barcode
-            })
+        # 1. Vendor Code (Артикул) - User Request: Must be MS Code (sku)
+        vendor_code_attr = f"{prefix}*Vendor code"
+        attributes_list.append({
+            "code": vendor_code_attr,
+            "value": str(sku)
+        })
         
-        # Add Brand if supported (Mugs use Brand code instead in mapper)
-        if category_name in BRAND_CATEGORIES:
-            brand_attr = f"{prefix}*Brand"
-            attributes_list.append({
-                "code": brand_attr,
-                "value": "Generic"
-            })
+        # 2. Barcode - Internal EAN-13
+        barcode_attr = f"{prefix}*Barcode"
+        attributes_list.append({
+            "code": barcode_attr,
+            "value": barcode
+        })
+        
+        # 3. Brand - Forced to Generic
+        brand_attr = f"{prefix}*Brand"
+        attributes_list.append({
+            "code": brand_attr,
+            "value": "Generic"
+        })
+        
+        # 4. Global Vendor Code fallback
+        attributes_list.append({
+            "code": "Vendor code",
+            "value": str(sku)
+        })
     else:
-        # Fallback for non-Master categories (not common in this system but good to have)
-        # Barcode is almost always safe in generic
+        # Fallback for non-Master categories
+        attributes_list.append({
+            "code": "Vendor code",
+            "value": str(sku) # MS Code
+        })
         attributes_list.append({
             "code": "Barcode",
             "value": barcode
         })
         attributes_list.append({
             "code": "Brand",
+            "value": "Generic"
+        })
+        attributes_list.append({
+            "code": "Марка",
             "value": "Generic"
         })
 

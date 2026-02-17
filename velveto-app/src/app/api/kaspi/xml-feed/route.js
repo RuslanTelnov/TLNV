@@ -102,7 +102,7 @@ export async function GET() {
             const newOffer = {
                 "@_sku": sku,
                 "model": modelName,
-                "brand": (product.brand && product.brand !== "Unknown") ? product.brand : "Generic",
+                "brand": "Generic", // FORCE GENERIC BRAND
                 "description": description,
                 "category": category,
                 "images": {

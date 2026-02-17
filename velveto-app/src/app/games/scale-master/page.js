@@ -80,6 +80,15 @@ export default function ScaleMaster() {
     const [dialogue, setDialogue] = useState('')
     const [narration, setNarration] = useState(STORY[0].text)
 
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024)
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
     const nextScene = (id) => {
         setScene(id)
         if (id === 'pitch_1') setDialogue(PITCH_QUESTIONS[0].q)
@@ -138,61 +147,66 @@ export default function ScaleMaster() {
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#02040a', color: '#e2e8f0', fontFamily: 'Outfit, sans-serif' }}>
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-                <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '50%', height: '50%', background: 'radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)', filter: 'blur(100px)' }} />
-                <div style={{ position: 'absolute', bottom: '-10%', left: '-10%', width: '50%', height: '50%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%)', filter: 'blur(100px)' }} />
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
+                <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '70%', height: '70%', background: 'radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)', filter: 'blur(100px)' }} />
+                <div style={{ position: 'absolute', bottom: '-10%', left: '-10%', width: '70%', height: '70%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%)', filter: 'blur(100px)' }} />
             </div>
 
-            <header style={{ position: 'relative', zIndex: 10, padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <BackButton href="/games" />
-                <div style={{ display: 'flex', gap: '3rem' }}>
-                    <StatItem label="РЕСУРСЫ" value={`${(budget / 1000000).toFixed(1)}M`} color="#10b981" />
-                    <StatItem label="ДОВЕРИЕ" value={`${trust}%`} color="#0ea5e9" />
-                    <StatItem label="НАПРЯЖЕНИЕ" value={`${tension}%`} color="#ef4444" />
+            <header style={{ position: 'relative', zIndex: 10, padding: isMobile ? '1.5rem' : '2rem 4rem', display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '1.5rem' : '0', justifyContent: 'space-between', alignItems: isMobile ? 'stretch' : 'center', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <BackButton href="/games" />
+                    {isMobile && <div style={{ fontSize: '0.8rem', fontWeight: 900, color: '#0ea5e9', letterSpacing: '2px' }}>SCALE MASTER</div>}
+                </div>
+                <div style={{ display: 'flex', gap: isMobile ? '1rem' : '3rem', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
+                    <StatItem label="РЕСУРСЫ" value={`${(budget / 1000000).toFixed(1)}M`} color="#10b981" isMobile={isMobile} />
+                    <StatItem label="ДОВЕРИЕ" value={`${trust}%`} color="#0ea5e9" isMobile={isMobile} />
+                    <StatItem label="НАПРЯЖЕНИЕ" value={`${tension}%`} color="#ef4444" isMobile={isMobile} />
                 </div>
             </header>
 
-            <main style={{ position: 'relative', zIndex: 10, maxWidth: '1000px', margin: '4rem auto', padding: '0 2rem' }}>
+            <main style={{ position: 'relative', zIndex: 10, maxWidth: '1000px', margin: isMobile ? '1.5rem auto' : '4rem auto', padding: '0 1.5rem' }}>
                 <AnimatePresence mode="wait">
                     {scene === 'intro' && (
-                        <SceneLayout key="intro" emoji="🌇" title="Эра Масштабирования" text={STORY[0].text}>
-                            <HeroButton onClick={() => nextScene('pitch_start')}>ЗАНЯТЬ МЕСТО В ОЧЕРЕДИ</HeroButton>
+                        <SceneLayout key="intro" emoji="🌇" title="Эра Масштабирования" text={STORY[0].text} isMobile={isMobile}>
+                            <HeroButton onClick={() => nextScene('pitch_start')} isMobile={isMobile}>ПРИНЯТЬ ВЫЗОВ</HeroButton>
                         </SceneLayout>
                     )}
 
                     {scene === 'pitch_start' && (
-                        <DialogLayout key="pitch_start" character="Дмитрий" title="G-Capital Tower" text={STORY[1].text} dialogue={dialogue}>
+                        <DialogLayout key="pitch_start" character="Дмитрий" title="G-Capital Tower" text={STORY[1].text} dialogue={dialogue} isMobile={isMobile}>
                             {STORY[1].options.map((opt, i) => (
-                                <ChoiceButton key={i} onClick={() => handleChoice(opt)}>{opt.text}</ChoiceButton>
+                                <ChoiceButton key={i} onClick={() => handleChoice(opt)} isMobile={isMobile}>{opt.text}</ChoiceButton>
                             ))}
                         </DialogLayout>
                     )}
 
                     {scene === 'pitch_1' && (
-                        <DialogLayout key="pitch_1" character="Дмитрий" title={`Битва за чек (${step + 1}/${PITCH_QUESTIONS.length})`} text={PITCH_QUESTIONS[step].q} dialogue={dialogue}>
+                        <DialogLayout key="pitch_1" character="Дмитрий" title={`Битва за чек (${step + 1}/${PITCH_QUESTIONS.length})`} text={PITCH_QUESTIONS[step].q} dialogue={dialogue} isMobile={isMobile}>
                             {PITCH_QUESTIONS[step].options.map((opt, i) => (
-                                <ChoiceButton key={i} onClick={() => handleChoice(opt)}>{opt.text}</ChoiceButton>
+                                <ChoiceButton key={i} onClick={() => handleChoice(opt)} isMobile={isMobile}>{opt.text}</ChoiceButton>
                             ))}
                         </DialogLayout>
                     )}
 
                     {scene === 'china_start' && (
-                        <SceneLayout key="china" emoji="🇨🇳" title="Шэньчжэнь: Фабрика №8" text={SHENZHEN_VIBE[0].text} dialogue={dialogue}>
-                            {SHENZHEN_VIBE[0].options.map((opt, i) => (
-                                <ChoiceButton key={i} onClick={() => handleDeal(opt)}>{opt.text}</ChoiceButton>
-                            ))}
+                        <SceneLayout key="china" emoji="🇨🇳" title="Шэньчжэнь: Фабрика №8" text={SHENZHEN_VIBE[0].text} dialogue={dialogue} isMobile={isMobile}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+                                {SHENZHEN_VIBE[0].options.map((opt, i) => (
+                                    <ChoiceButton key={i} onClick={() => handleDeal(opt)} isMobile={isMobile}>{opt.text}</ChoiceButton>
+                                ))}
+                            </div>
                         </SceneLayout>
                     )}
 
                     {scene === 'success' && (
-                        <SceneLayout key="success" emoji="💎" title="Твоя Империя Создана" text="Ты сделал невозможное. Инвестиции получены, завод работает на твоих условиях. Капитализация компании взлетела до небес.">
-                            <HeroButton onClick={() => window.location.reload()}>ЕЩЕ ОДИН КРУГ</HeroButton>
+                        <SceneLayout key="success" emoji="💎" title="Твоя Империя Создана" text="Ты сделал невозможное. Инвестиции получены, завод работает на твоих условиях. Капитализация компании взлетела до небес." isMobile={isMobile}>
+                            <HeroButton onClick={() => window.location.reload()} isMobile={isMobile}>ЕЩЕ ОДИН КРУГ</HeroButton>
                         </SceneLayout>
                     )}
 
                     {scene === 'failure' && (
-                        <SceneLayout key="failure" emoji="💀" title="Банкротство" text="Мир маркетплейсов жесток. Тебе не хватило аргументов или удачи. Ты остался с пустыми руками и полным складом долгов.">
-                            <HeroButton onClick={() => window.location.reload()}>ПОПРОБОВАТЬ СНОВА</HeroButton>
+                        <SceneLayout key="failure" emoji="💀" title="Банкротство" text="Мир маркетплейсов жесток. Тебе не хватило аргументов или удачи. Ты остался с пустыми руками и полным складом долгов." isMobile={isMobile}>
+                            <HeroButton onClick={() => window.location.reload()} isMobile={isMobile}>ПОПРОБОВАТЬ СНОВА</HeroButton>
                         </SceneLayout>
                     )}
                 </AnimatePresence>
@@ -201,62 +215,63 @@ export default function ScaleMaster() {
     )
 }
 
-function StatItem({ label, value, color }) {
+function StatItem({ label, value, color, isMobile }) {
     return (
-        <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '0.6rem', color: '#8a90a4', fontWeight: 800, letterSpacing: '2px', marginBottom: '4px' }}>{label}</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, color }}>{value}</div>
+        <div style={{ textAlign: isMobile ? 'center' : 'center', flex: 1 }}>
+            <div style={{ fontSize: isMobile ? '0.55rem' : '0.6rem', color: '#64748b', fontWeight: 800, letterSpacing: '1.5px', marginBottom: '4px' }}>{label}</div>
+            <div style={{ fontSize: isMobile ? '1.2rem' : '1.4rem', fontWeight: 900, color }}>{value}</div>
         </div>
     )
 }
 
-function SceneLayout({ title, text, emoji, children, dialogue }) {
+function SceneLayout({ title, text, emoji, children, dialogue, isMobile }) {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '5rem', marginBottom: '2rem' }}>{emoji}</div>
-            <h1 style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '2rem', background: 'linear-gradient(to right, #fff, #8a90a4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{title}</h1>
-            <p style={{ fontSize: '1.2rem', color: '#94a3b8', lineHeight: 1.8, marginBottom: '3rem', maxWidth: '700px', margin: '0 auto 3rem auto' }}>{text}</p>
-            {dialogue && <p style={{ backgroundColor: 'rgba(14, 165, 233, 0.1)', padding: '1.5rem', borderRadius: '16px', color: '#0ea5e9', fontWeight: 700, marginBottom: '2rem' }}>{dialogue}</p>}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>{children}</div>
+            <div style={{ fontSize: isMobile ? '3.5rem' : '5rem', marginBottom: '1.5rem' }}>{emoji}</div>
+            <h1 style={{ fontSize: isMobile ? '2.2rem' : '3.5rem', fontWeight: 900, marginBottom: '1.5rem', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.1 }}>{title}</h1>
+            <p style={{ fontSize: isMobile ? '1.05rem' : '1.2rem', color: '#94a3b8', lineHeight: 1.6, marginBottom: '2.5rem', maxWidth: '700px', margin: '0 auto 2.5rem auto' }}>{text}</p>
+            {dialogue && <p style={{ backgroundColor: 'rgba(14, 165, 233, 0.1)', padding: '1.2rem', borderRadius: '16px', color: '#0ea5e9', fontWeight: 700, marginBottom: '2rem', fontSize: isMobile ? '0.95rem' : '1rem', border: '1px solid rgba(14, 165, 233, 0.2)' }}>{dialogue}</p>}
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'center', gap: '1.5rem', alignItems: 'center', width: '100%' }}>{children}</div>
         </motion.div>
     )
 }
 
-function DialogLayout({ character, title, text, children, dialogue }) {
+function DialogLayout({ character, title, text, children, dialogue, isMobile }) {
     return (
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '4rem' }}>
-            <div>
-                <div style={{ fontSize: '0.8rem', color: '#0ea5e9', fontWeight: 800, letterSpacing: '3px', marginBottom: '1rem' }}>{title}</div>
-                <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>{character}</h2>
-                <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '2.5rem', borderRadius: '32px', position: 'relative' }}>
-                    <p style={{ fontSize: '1.3rem', lineHeight: 1.6, color: '#f1f5f9' }}>{text}</p>
-                    {dialogue && <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', color: '#0ea5e9', fontWeight: 600 }}>{dialogue}</div>}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '2rem' : '4rem' }}>
+            <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.7rem', color: '#0ea5e9', fontWeight: 800, letterSpacing: '2px', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{title}</div>
+                <h2 style={{ fontSize: isMobile ? '1.6rem' : '2rem', fontWeight: 800, marginBottom: '1.2rem' }}>{character}</h2>
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: isMobile ? '1.5rem' : '2.5rem', borderRadius: '32px', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}>
+                    <p style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', lineHeight: 1.6, color: '#f1f5f9' }}>{text}</p>
+                    {dialogue && <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', color: '#0ea5e9', fontWeight: 600, fontSize: isMobile ? '1rem' : '1.1rem' }}>{dialogue}</div>}
                 </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignSelf: 'center' }}>
-                <div style={{ fontSize: '0.7rem', color: '#8a90a4', marginBottom: '1rem', fontWeight: 800 }}>ТВОЙ ОТВЕТ:</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', width: isMobile ? '100%' : '350px' }}>
+                <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 800, letterSpacing: '1px' }}>ТВОЙ ОТВЕТ:</div>
                 {children}
             </div>
         </motion.div>
     )
 }
 
-const HeroButton = ({ children, onClick }) => (
+const HeroButton = ({ children, onClick, isMobile }) => (
     <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.02, backgroundColor: '#0284c7' }}
+        whileTap={{ scale: 0.98 }}
         onClick={onClick}
-        style={{ backgroundColor: '#0ea5e9', color: '#fff', border: 'none', padding: '1.5rem 4rem', borderRadius: '24px', fontSize: '1.2rem', fontWeight: 900, cursor: 'pointer', boxShadow: '0 10px 40px rgba(14, 165, 233, 0.3)' }}
+        style={{ width: isMobile ? '100%' : 'auto', backgroundColor: '#0ea5e9', color: '#fff', border: 'none', padding: isMobile ? '1.2rem 2.5rem' : '1.5rem 4rem', borderRadius: '24px', fontSize: isMobile ? '1.1rem' : '1.2rem', fontWeight: 900, cursor: 'pointer', boxShadow: '0 10px 40px rgba(14, 165, 233, 0.3)', transition: 'background-color 0.2s' }}
     >
         {children}
     </motion.button>
 )
 
-const ChoiceButton = ({ children, onClick }) => (
+const ChoiceButton = ({ children, onClick, isMobile }) => (
     <motion.button
-        whileHover={{ x: 10, backgroundColor: 'rgba(14, 165, 233, 0.15)', borderColor: '#0ea5e9' }}
+        whileHover={isMobile ? {} : { x: 5, backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)' }}
+        whileTap={{ scale: 0.98 }}
         onClick={onClick}
-        style={{ textAlign: 'left', padding: '1.2rem 1.8rem', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer', fontSize: '0.95rem', transition: 'all 0.3s' }}
+        style={{ width: '100%', textAlign: 'left', padding: isMobile ? '1.2rem 1.5rem' : '1.2rem 1.8rem', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer', fontSize: isMobile ? '1rem' : '0.95rem', transition: 'all 0.2s', lineHeight: 1.4 }}
     >
         {children}
     </motion.button>

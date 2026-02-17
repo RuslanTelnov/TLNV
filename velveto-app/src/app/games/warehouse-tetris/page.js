@@ -47,6 +47,30 @@ export default function WarehouseTetris() {
         if (saved) setHighScore(parseInt(saved))
     }, [])
 
+    const [isMobile, setIsMobile] = useState(false)
+    const [cellSize, setCellSize] = useState(CELL_SIZE)
+
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 1024
+            setIsMobile(mobile)
+            if (mobile) {
+                // Calculate cell size based on screen width, but cap it
+                const availableWidth = window.innerWidth - 48 // padding
+                const calculated = Math.floor(availableWidth / GRID_SIZE)
+                setCellSize(Math.min(calculated, 36))
+            } else {
+                setCellSize(CELL_SIZE)
+            }
+        }
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
+    const containerWidth = GRID_SIZE * cellSize
+    const containerHeight = GRID_SIZE * cellSize
+
     const generateShapes = useCallback(() => {
         const newShapes = []
         for (let i = 0; i < 3; i++) {
@@ -123,8 +147,8 @@ export default function WarehouseTetris() {
         const gridX = info.point.x - (container.left + 4)
         const gridY = info.point.y - (container.top + 4)
 
-        const dropX = Math.round((gridX - (shapeWidth * CELL_SIZE) / 2) / CELL_SIZE)
-        const dropY = Math.round((gridY - (shapeHeight * CELL_SIZE) / 2) / CELL_SIZE)
+        const dropX = Math.round((gridX - (shapeWidth * cellSize) / 2) / cellSize)
+        const dropY = Math.round((gridY - (shapeHeight * cellSize) / 2) / cellSize)
 
         if (canPlace(shape, dropX, dropY, grid)) {
             setPreview({ shape, x: dropX, y: dropY })
@@ -142,8 +166,8 @@ export default function WarehouseTetris() {
         const gridX = info.point.x - (container.left + 4)
         const gridY = info.point.y - (container.top + 4)
 
-        const dropX = Math.round((gridX - (shapeWidth * CELL_SIZE) / 2) / CELL_SIZE)
-        const dropY = Math.round((gridY - (shapeHeight * CELL_SIZE) / 2) / CELL_SIZE)
+        const dropX = Math.round((gridX - (shapeWidth * cellSize) / 2) / cellSize)
+        const dropY = Math.round((gridY - (shapeHeight * cellSize) / 2) / cellSize)
 
         if (canPlace(shape, dropX, dropY, grid)) {
             const newGrid = [...grid.map(row => [...row])]
@@ -193,11 +217,11 @@ export default function WarehouseTetris() {
             fontFamily: "'Inter', sans-serif",
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden'
+            overflow: 'auto'
         }}>
             {/* Header */}
             <header style={{
-                padding: '1.5rem 3rem',
+                padding: isMobile ? '1rem 1.5rem' : '1.5rem 3rem',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -207,23 +231,25 @@ export default function WarehouseTetris() {
                 zIndex: 10
             }}>
                 <BackButton href="/games" />
-                <div style={{ textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '1.2rem', fontWeight: 900, letterSpacing: '0.4em', color: '#10b981', margin: 0 }}>WAREHOUSE TETRIS</h1>
-                    <div style={{ fontSize: '0.6rem', color: '#8a90a4', marginTop: '4px' }}>ОПТИМИЗАЦИЯ ЛОГИСТИКИ</div>
-                </div>
-                <div style={{ display: 'flex', gap: '3rem' }}>
+                {!isMobile && (
+                    <div style={{ textAlign: 'center' }}>
+                        <h1 style={{ fontSize: '1.2rem', fontWeight: 900, letterSpacing: '0.4em', color: '#10b981', margin: 0 }}>WAREHOUSE TETRIS</h1>
+                        <div style={{ fontSize: '0.6rem', color: '#8a90a4', marginTop: '4px' }}>ОПТИМИЗАЦИЯ ЛОГИСТИКИ</div>
+                    </div>
+                )}
+                <div style={{ display: 'flex', gap: isMobile ? '1rem' : '3rem' }}>
                     <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: '0.6rem', opacity: 0.5 }}>SCORE</div>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#10b981' }}>{score}</div>
+                        <div style={{ fontSize: isMobile ? '1rem' : '1.8rem', fontWeight: 900, color: '#10b981' }}>{score}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: '0.6rem', opacity: 0.5 }}>TIME</div>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: timeLeft < 10 ? '#ef4444' : '#fff' }}>{timeLeft}s</div>
+                        <div style={{ fontSize: isMobile ? '1rem' : '1.8rem', fontWeight: 900, color: timeLeft < 10 ? '#ef4444' : '#fff' }}>{timeLeft}s</div>
                     </div>
                 </div>
             </header>
 
-            <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', gap: '4rem' }}>
+            <main style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '1rem' : '2rem', gap: isMobile ? '2rem' : '4rem', overflowY: 'auto' }}>
                 <AnimatePresence mode="wait">
                     {gameState === 'start' && (
                         <motion.div
@@ -234,7 +260,7 @@ export default function WarehouseTetris() {
                                 maxWidth: '600px',
                                 textAlign: 'center',
                                 backgroundColor: 'rgba(16, 21, 40, 0.95)',
-                                padding: '4rem',
+                                padding: isMobile ? '2rem' : '4rem',
                                 borderRadius: '40px',
                                 border: '1px solid rgba(255, 255, 255, 0.2)',
                                 backdropFilter: 'blur(30px)',
@@ -242,14 +268,14 @@ export default function WarehouseTetris() {
                                 margin: 'auto'
                             }}
                         >
-                            <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>📦</div>
-                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem', color: '#fff' }}>Логистический Тетрис</h2>
-                            <p style={{ color: '#c3c9d9', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+                            <div style={{ fontSize: isMobile ? '3rem' : '5rem', marginBottom: '1.5rem' }}>📦</div>
+                            <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: 900, marginBottom: '1rem', color: '#fff' }}>Логистический Тетрис</h2>
+                            <p style={{ color: '#c3c9d9', fontSize: isMobile ? '0.9rem' : '1.1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
                                 Упакуйте товары максимально плотно. Собирайте полные ряды и колонки, чтобы освободить место в контейнере.
                             </p>
                             <button
                                 onClick={startGame}
-                                style={{ backgroundColor: '#10b981', color: '#050814', border: 'none', padding: '1.5rem 5rem', borderRadius: '20px', fontSize: '1.2rem', fontWeight: 900, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                                style={{ backgroundColor: '#10b981', color: '#050814', border: 'none', padding: isMobile ? '1.2rem 3rem' : '1.5rem 5rem', borderRadius: '20px', fontSize: isMobile ? '1rem' : '1.2rem', fontWeight: 900, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', width: isMobile ? '100%' : 'auto' }}
                             >
                                 Начать смену
                             </button>
@@ -257,21 +283,22 @@ export default function WarehouseTetris() {
                     )}
 
                     {gameState === 'playing' && (
-                        <div style={{ display: 'flex', gap: '5rem', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '2rem' : '5rem', alignItems: 'center' }}>
                             {/* Grid/Container */}
                             <div
                                 ref={containerRef}
                                 style={{
-                                    width: CONTAINER_WIDTH,
-                                    height: CONTAINER_HEIGHT,
+                                    width: containerWidth + 8,
+                                    height: containerHeight + 8,
                                     backgroundColor: 'rgba(255,255,255,0.02)',
                                     border: '2px solid rgba(255,255,255,0.1)',
                                     display: 'grid',
-                                    gridTemplateColumns: `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
-                                    gridTemplateRows: `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
+                                    gridTemplateColumns: `repeat(${GRID_SIZE}, ${cellSize}px)`,
+                                    gridTemplateRows: `repeat(${GRID_SIZE}, ${cellSize}px)`,
                                     borderRadius: '12px',
                                     padding: '4px',
-                                    position: 'relative'
+                                    position: 'relative',
+                                    touchAction: 'none'
                                 }}
                             >
                                 {grid.map((row, y) => row.map((cell, x) => {
@@ -280,8 +307,8 @@ export default function WarehouseTetris() {
                                         <div
                                             key={`${x}-${y}`}
                                             style={{
-                                                width: CELL_SIZE - 4,
-                                                height: CELL_SIZE - 4,
+                                                width: cellSize - 4,
+                                                height: cellSize - 4,
                                                 backgroundColor: cell || (isPreview ? `${preview.shape.color}44` : 'rgba(255,255,255,0.03)'),
                                                 borderRadius: '6px',
                                                 margin: '2px',
@@ -294,8 +321,7 @@ export default function WarehouseTetris() {
                             </div>
 
                             {/* Shape Queue */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                                <div style={{ fontSize: '0.8rem', color: '#8a90a4', fontWeight: 'bold', letterSpacing: '0.2em' }}>ОЧЕРЕДЬ ОТГРУЗКИ</div>
+                            <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? '1rem' : '2rem', justifyContent: 'center', width: '100%' }}>
                                 {nextShapes.map((shape, idx) => (
                                     <motion.div
                                         key={idx}
@@ -308,10 +334,10 @@ export default function WarehouseTetris() {
                                         whileHover={{ scale: 1.05, cursor: 'grab' }}
                                         whileDrag={{ scale: 1.2, zIndex: 100, opacity: 0.8 }}
                                         style={{
-                                            width: CELL_SIZE * 3,
-                                            height: CELL_SIZE * 3,
+                                            width: cellSize * 2.5,
+                                            height: cellSize * 2.5,
                                             backgroundColor: 'rgba(255,255,255,0.03)',
-                                            borderRadius: '20px',
+                                            borderRadius: isMobile ? '12px' : '20px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -325,12 +351,12 @@ export default function WarehouseTetris() {
                                                     key={i}
                                                     style={{
                                                         position: 'absolute',
-                                                        width: CELL_SIZE - 6,
-                                                        height: CELL_SIZE - 6,
+                                                        width: (cellSize * (isMobile ? 0.7 : 0.85)) - 4,
+                                                        height: (cellSize * (isMobile ? 0.7 : 0.85)) - 4,
                                                         backgroundColor: shape.color,
-                                                        borderRadius: '6px',
-                                                        left: dx * CELL_SIZE - (Math.max(...shape.cells.map(c => c[0])) + 1) * CELL_SIZE / 2,
-                                                        top: dy * CELL_SIZE - (Math.max(...shape.cells.map(c => c[1])) + 1) * CELL_SIZE / 2,
+                                                        borderRadius: '4px',
+                                                        left: dx * (cellSize * (isMobile ? 0.7 : 0.85)) - (Math.max(...shape.cells.map(c => c[0])) + 1) * (cellSize * (isMobile ? 0.7 : 0.85)) / 2,
+                                                        top: dy * (cellSize * (isMobile ? 0.7 : 0.85)) - (Math.max(...shape.cells.map(c => c[1])) + 1) * (cellSize * (isMobile ? 0.7 : 0.85)) / 2,
                                                         boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
                                                         border: '1px solid rgba(255,255,255,0.2)'
                                                     }}
@@ -350,40 +376,42 @@ export default function WarehouseTetris() {
                             animate={{ opacity: 1, scale: 1 }}
                             style={{
                                 maxWidth: '600px',
+                                width: '100%',
                                 textAlign: 'center',
                                 backgroundColor: 'rgba(16, 21, 40, 0.8)',
-                                padding: '5rem',
-                                borderRadius: '50px',
+                                padding: isMobile ? '2.5rem 1.5rem' : '5rem',
+                                borderRadius: isMobile ? '30px' : '50px',
                                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                                backdropFilter: 'blur(30px)'
+                                backdropFilter: 'blur(30px)',
+                                margin: 'auto'
                             }}
                         >
-                            <div style={{ fontSize: '6rem', marginBottom: '2rem' }}>🚚</div>
-                            <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '1rem' }}>Смена окончена</h2>
-                            <p style={{ color: '#d1d5db', fontSize: '1.2rem', marginBottom: '3rem' }}>
+                            <div style={{ fontSize: isMobile ? '4rem' : '6rem', marginBottom: '1.5rem' }}>🚚</div>
+                            <h2 style={{ fontSize: isMobile ? '2rem' : '3.1rem', fontWeight: 900, marginBottom: '0.8rem' }}>Смена окончена</h2>
+                            <p style={{ color: '#d1d5db', fontSize: isMobile ? '0.95rem' : '1.2rem', marginBottom: isMobile ? '2rem' : '3rem', lineHeight: 1.6 }}>
                                 Контейнер заполнен или время истекло. Вы отлично поработали над оптимизацией склада!
                             </p>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '4rem' }}>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
-                                    <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.8rem' }}>SCORE</div>
-                                    <div style={{ fontSize: '4rem', fontWeight: 900, color: '#10b981' }}>{score}</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: isMobile ? '1rem' : '2rem', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: isMobile ? '1.2rem' : '2rem', borderRadius: '24px' }}>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, marginBottom: '0.4rem' }}>SCORE</div>
+                                    <div style={{ fontSize: isMobile ? '2.5rem' : '4rem', fontWeight: 900, color: '#10b981' }}>{score}</div>
                                 </div>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
-                                    <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.8rem' }}>BEST</div>
-                                    <div style={{ fontSize: '4rem', fontWeight: 900 }}>{highScore}</div>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: isMobile ? '1.2rem' : '2rem', borderRadius: '24px' }}>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, marginBottom: '0.4rem' }}>BEST</div>
+                                    <div style={{ fontSize: isMobile ? '2.5rem' : '4rem', fontWeight: 900 }}>{highScore}</div>
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1.5rem' }}>
+                            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1rem' }}>
                                 <button
                                     onClick={startGame}
-                                    style={{ flex: 2, backgroundColor: '#fff', color: '#050814', border: 'none', padding: '1.5rem', borderRadius: '20px', fontSize: '1.2rem', fontWeight: 900, cursor: 'pointer' }}
+                                    style={{ flex: 2, backgroundColor: '#fff', color: '#050814', border: 'none', padding: '1.2rem', borderRadius: '20px', fontSize: '1.1rem', fontWeight: 900, cursor: 'pointer' }}
                                 >
                                     НОВАЯ ПОСТАВКА
                                 </button>
                                 <Link href="/games" style={{ flex: 1, textDecoration: 'none' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', color: '#8a90a4', fontWeight: '900', fontSize: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: isMobile ? '3.5rem' : 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', color: '#8a90a4', fontWeight: '900', fontSize: '1rem' }}>
                                         В ХАБ
                                     </div>
                                 </Link>

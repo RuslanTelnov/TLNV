@@ -1,23 +1,23 @@
 import os
 import requests
 import time
+import json
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-# Load env variables (for Supabase connection)
-# Try to find .env.local in common locations
+# Load env variables
 env_paths = [
-    os.path.join(os.getcwd(), "moysklad-web", ".env.local"),
+    os.path.join(os.getcwd(), ".env.local"),
     os.path.join(os.path.dirname(__file__), "..", "..", ".env.local"),
-    os.path.join(os.getcwd(), ".env.local")
+    os.path.join(os.getcwd(), ".env")
 ]
 for path in env_paths:
     if os.path.exists(path):
         load_dotenv(path)
         break
 
-URL = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+URL = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "").strip('"').strip("'")
+KEY = (os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY", "")).strip('"').strip("'")
 
 if not URL or not KEY:
     print("❌ Error: Supabase credentials not found in env")
@@ -40,81 +40,142 @@ def sync_products():
         print("❌ Config not found.")
         return
 
-    api_key = config.get('airtable_api_key')
-    base_id = config.get('airtable_base_id')
-    table_name = config.get('airtable_table_name')
+    # API Token Logic
+    api_key = os.getenv("AIRTABLE_API_KEY")
+    if not api_key:
+        api_key = config.get('airtable_api_key') or config.get('rest_api_key')
+        
+    base_id = os.getenv("AIRTABLE_BASE_ID") or config.get('airtable_base_id')
+    
+    # Table names from config or defaults
+    table_main = config.get('airtable_table_name') or "Main"
+    table_fix = config.get('airtable_fix_table') or "Requires Fix"
+    table_rejected = config.get('airtable_rejected_table') or "Rejected"
 
-    if not api_key or not base_id or not table_name:
-        # print("ℹ️ Airtable not configured. Skipping sync.")
+    if not api_key or not base_id or not table_main:
+        # print(f"ℹ️ Airtable not fully configured.")
         return
 
-    print("🔄 Checking for new products to sync to Airtable...")
+    print(f"🔄 Syncing to Airtable: {table_main}, {table_fix}, {table_rejected}")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    def sync_to_table(product, table_name, id_key):
+        specs = product.get('specs') or {}
+        already_synced_id = specs.get(id_key)
+        
+        # Mapping to Russian columns per User Request
+        k_status = specs.get('kaspi_status') or ('created' if product.get('kaspi_created') else 'pending')
+        
+        # Map internal status to Russian human-readable
+        status_map = {
+            'pending': 'Ожидание',
+            'moderation': 'На модерации',
+            'created': 'Опубликован',
+            'requires_fix': 'Нужна доработка',
+            'rejected': 'Отклонен'
+        }
+        status_ru = status_map.get(k_status, k_status)
+
+        # Get MS Code for the and Airtable column
+        ms_code = specs.get('kaspi_sku')
+        if not ms_code:
+            # Try to fetch from products table if available
+            try:
+                res_ms = supabase.schema('Parser').table('products').select('code').eq('article', str(product['id'])).execute()
+                if res_ms.data:
+                    ms_code = res_ms.data[0].get('code')
+            except: pass
+
+        fields = {
+            "Название": product.get('name') or "Unknown",
+            "Категория": specs.get('kaspi_category') or product.get('query') or "Unknown",
+            "Бренд": product.get('brand') or "Generic",
+            "Цена": product.get('price_kzt') or 0,
+            "Артикул WB": str(product.get('id')),
+            "Код МС": ms_code or "",
+            "Статус": status_ru,
+            "Изображение": product.get('image_url') or ""
+        }
+
+        url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
+        
+        try:
+            # We use POST for all since user wants to see them in new tables
+            # But for MAIN we can use PATCH to update status
+            if table_name == table_main and already_synced_id:
+                resp = requests.patch(f"{url}/{already_synced_id}", headers=headers, json={"fields": fields})
+            else:
+                # For Fix/Rejected, we always create new entries to notify the user
+                # unless they are already there (checked by id_key)
+                if already_synced_id:
+                     resp = requests.patch(f"{url}/{already_synced_id}", headers=headers, json={"fields": fields})
+                else:
+                     resp = requests.post(url, headers=headers, json={"fields": fields})
+            
+            if resp.status_code in [200, 201]:
+                return resp.json().get('id')
+            else:
+                return None
+        except:
+            return None
 
     while True:
         try:
-            # Fetch unsynced products
-            # Filter: airtable_id is null
+            # Fetch products that need sync
+            # Logic: either not in Main, OR (is moderation error AND not in Fix table), OR (is rejected AND not in Rejected table)
+            # For simplicity, we fetch recent updates and check their specs.
             res = supabase.schema('Parser').table('wb_search_results')\
-                .select('id, name, brand, price_kzt, image_url, product_url, updated_at, kaspi_status')\
-                .is_('airtable_id', 'null')\
-                .limit(50)\
+                .select('*')\
+                .order('updated_at', desc=True)\
+                .limit(100)\
                 .execute()
             
             products = res.data or []
             if not products:
-                print("✅ All up to date.")
                 break
 
-            print(f"📦 Found {len(products)} products to sync.")
-
-            airtable_url = f"https://api.airtable.com/v0/{base_id}/{table_name}"
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-
-            for product in products:
-                fields = {
-                    "Name": product.get('name') or "Unknown",
-                    "Brand": product.get('brand') or "",
-                    "Price": product.get('price_kzt'),
-                    "Image URL": product.get('image_url'),
-                    "Status ": product.get('kaspi_status') or "pending", # Added space
-                    "WB ID": str(product.get('id'))
-                }
-
-                # Airtable requires 'fields' key
-                payload = {"fields": fields}
-
-                try:
-                    # 1. Create in Airtable
-                    resp = requests.post(airtable_url, headers=headers, json=payload)
-                    
-                    if resp.status_code in [200, 201]:
-                        airtable_record = resp.json()
-                        record_id = airtable_record.get('id')
-                        
-                        # 2. Update Supabase with Airtable ID
-                        supabase.schema('Parser').table('wb_search_results')\
-                            .update({'airtable_id': record_id})\
-                            .eq('id', product['id'])\
-                            .execute()
-                            
-                        print(f"✅ Synced: {product.get('name')[:30]}... -> {record_id}")
-                    else:
-                        print(f"❌ Airtable Error ({resp.status_code}): {resp.text}")
-                        # If 404 (Table not found) or 401 (Auth), abort loop to save quota/logs
-                        if resp.status_code in [401, 403, 404]:
-                            return
-
-                except Exception as e:
-                    print(f"⚠️ Sync Error for {product['id']}: {e}")
-
-            # Safety sleep to avoid Airtable rate limits (5 requests per second)
-            time.sleep(1)
+            processed_count = 0
+            for p in products:
+                specs = p.get('specs') or {}
+                k_status = specs.get('kaspi_status') or ('created' if p.get('kaspi_created') else 'pending')
+                
+                updated_specs = False
+                
+                # 1. Sync to Main Table (Always)
+                main_id = sync_to_table(p, table_main, 'airtable_id')
+                if main_id and main_id != specs.get('airtable_id'):
+                    specs['airtable_id'] = main_id
+                    updated_specs = True
+                
+                # 2. Filter-based routing
+                if k_status == 'requires_fix':
+                     fix_id = sync_to_table(p, table_fix, 'airtable_fix_id')
+                     if fix_id and fix_id != specs.get('airtable_fix_id'):
+                         specs['airtable_fix_id'] = fix_id
+                         updated_specs = True
+                         
+                elif k_status == 'rejected':
+                     rej_id = sync_to_table(p, table_rejected, 'airtable_rejected_id')
+                     if rej_id and rej_id != specs.get('airtable_rejected_id'):
+                         specs['airtable_rejected_id'] = rej_id
+                         updated_specs = True
+                
+                if updated_specs:
+                    supabase.schema('Parser').table('wb_search_results')\
+                        .update({'specs': specs})\
+                        .eq('id', p['id'])\
+                        .execute()
+                    processed_count += 1
+            
+            print(f"✅ Sync Batch Complete. Updated {processed_count} records.")
+            break # Exit loop for now (worker.py will call this periodically)
 
         except Exception as e:
-            print(f"❌ Sync Loop Error: {e}")
+            print(f"❌ sync_products loop error: {e}")
             break
 
 if __name__ == "__main__":

@@ -111,12 +111,14 @@ def generate_xml():
     for p in local_products:
         specs = p.get('specs', {})
         
-        # Consistent SKU Logic: Specs -> codeMap -> ID Fallback (No suffixes)
+        # Consistent SKU Logic: Specs -> codeMap -> SKIP if missing
         sku = specs.get('kaspi_sku')
         if not sku:
             sku = code_map.get(str(p['id']))
+            
         if not sku:
-            sku = f"{p['id']}"
+            print(f"⚠️ Skipping local product {p['id']} - MS Code (SKU) not found.")
+            continue
             
         sku = str(sku)
         
@@ -137,7 +139,11 @@ def generate_xml():
              price = int(p['price_kzt'])
              # Ensure we map it correctly if needed, but imported price is usually KZT
         
+        # 5. Add local products to XML
         # Create Offer element WITH NAMESPACE
+        # Force brand 'Generic' as requested
+        brand_name = 'Generic'
+        
         offer = ET.SubElement(offers_node, f'{NS}offer', sku=sku)
         
         model_name = p['name']
@@ -145,21 +151,14 @@ def generate_xml():
             model_name = model_name[:997] + "..."
             
         ET.SubElement(offer, f'{NS}model').text = model_name
-        ET.SubElement(offer, f'{NS}brand').text = p.get('brand') or 'Generic'
+        ET.SubElement(offer, f'{NS}brand').text = brand_name
         
-        availabilities = ET.SubElement(offer, f'{NS}availabilities')
         availabilities = ET.SubElement(offer, f'{NS}availabilities')
         if stock == 'yes':
              # For local products, we always use the "Pre-order 30 days" strategy
              ET.SubElement(availabilities, f'{NS}availability', available='yes', storeId='PP1', preorder='true')
-             # Note: Different Kaspi versions use different tags for preorder days. 
-             # Commonly it is availability=preorder or a specific attribute.
-             # Based on common XML standards for Kaspi, we use available='yes' and a separate attribute if possible,
-             # but most commonly it's handled via the 'preorder' attribute or just 'availability' value.
-             # Let's use the most reliable one: available='yes' with 'preorder' indication.
         else:
              ET.SubElement(availabilities, f'{NS}availability', available='no', storeId='PP1')
-
         
         ET.SubElement(offer, f'{NS}price').text = str(price)
         

@@ -8,23 +8,24 @@ import random
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-# Load env from local file
-load_dotenv(os.path.join(os.getcwd(), "temp_tlnv_parser", "velveto-app", ".env.local"))
+# Load env from local file robustly
+current_dir = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(current_dir, "velveto-app", ".env.local"))
 
 url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
 key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
 if not url or not key:
-    print("❌ Error: Missing Supabase keys in moysklad-web/.env.local")
+    print(f"❌ Error: Missing Supabase keys. Checked: {os.path.join(current_dir, 'velveto-app', '.env.local')}")
     exit(1)
 
 supabase: Client = create_client(url, key)
 
 # Fix paths to import modules
-automation_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'moysklad')
-kaspi_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'kaspi')
-airtable_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'velveto-app', 'automation', 'airtable')
-notifications_path = os.path.join(os.getcwd(), 'temp_tlnv_parser', 'automation', 'notifications')
+automation_path = os.path.join(current_dir, 'velveto-app', 'automation', 'moysklad')
+kaspi_path = os.path.join(current_dir, 'velveto-app', 'automation', 'kaspi')
+airtable_path = os.path.join(current_dir, 'velveto-app', 'automation', 'airtable')
+notifications_path = os.path.join(current_dir, 'automation', 'notifications')
 
 sys.path.append(automation_path) 
 sys.path.append(kaspi_path)
@@ -52,7 +53,8 @@ except ImportError as e:
     def sync_to_airtable_func():
         # Fallback to subprocess if direct import fails
         try:
-            subprocess.run(["python3", "temp_tlnv_parser/velveto-app/automation/airtable/sync_to_airtable.py"], check=False)
+            script_path = os.path.join(current_dir, "velveto-app", "automation", "airtable", "sync_to_airtable.py")
+            subprocess.run(["python3", script_path], check=False)
         except:
             pass
 
@@ -80,7 +82,8 @@ def start_background_services():
             # 1. Kaspi Status Checker
             try:
                 # print("⏱️  Running Kaspi Status Checker...")
-                subprocess.run(["python3", "temp_tlnv_parser/velveto-app/automation/kaspi/check_kaspi_status.py"], check=False)
+                script_path = os.path.join(current_dir, "velveto-app", "automation", "kaspi", "check_kaspi_status.py")
+                subprocess.run(["python3", script_path], check=False)
             except Exception as e:
                 print(f"⚠️ Kaspi Status Checker Error: {e}")
             
@@ -144,7 +147,8 @@ def run_parser(job):
     # Mark as processing
     supabase.schema('Parser').table("parser_queue").update({"status": "processing"}).eq("id", job_id).execute()
     
-    cmd = ["python3", "temp_tlnv_parser/velveto-app/automation/moysklad/parse_wb_top.py"]
+    script_path = os.path.join(current_dir, "velveto-app", "automation", "moysklad", "parse_wb_top.py")
+    cmd = ["python3", script_path]
     
     if mode == 'top':
         cmd.extend(["--mode", "top"])

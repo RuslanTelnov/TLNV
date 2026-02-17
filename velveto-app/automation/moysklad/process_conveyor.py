@@ -148,27 +148,47 @@ def run_conveyor(single_pass=False, skip_parser=False):
                     
                     # If fully done or closed, skip
                     # is_closed might be in 'specs' jsonB column now if checking new parser logic
-                    is_closed_val = product.get('is_closed', False)
-                    if not is_closed_val and 'specs' in product and isinstance(product['specs'], dict):
-                        is_closed_val = product['specs'].get('is_closed', False)
+                    specs = product.get('specs') or {}
+                    is_closed_val = product.get('is_closed', False) or specs.get('is_closed', False)
+                    k_status = specs.get('kaspi_status', 'none')
 
-                    if (ms_created and stock_added and kaspi_created) or is_closed_val:
+                    if (ms_created and stock_added and kaspi_created and k_status == 'created') or is_closed_val:
                         if conveyor_status != 'done' and not is_closed_val:
                              update_status(wb_id, {"conveyor_status": "done"})
                         continue
                     
+                    # -------------------------------------------------------------
+                    # MODERATION FEEDBACK LOOP (Requires Fix Handling)
+                    # -------------------------------------------------------------
+                    if k_status == 'requires_fix':
+                        logger.info(f"🛠️ Handling 'Requires Fix' for {name} ({wb_id})...")
+                        # 1. Attempt to fix attributes or category in Specs
+                        # In a real scenario, we might look at specs.get('kaspi_errors')
+                        # For now, we force a re-mapping which might pick up fixes or new mapper logic
+                        
+                        # Reset status to allow re-runs
+                        ms_created = False 
+                        kaspi_created = False
+                        # We don't reset stock_added as it's separate from content fixes
+                        update_status(wb_id, {
+                            "kaspi_created": False, 
+                            "ms_created": False, # Force MS nomenclature update
+                            "conveyor_status": "processing"
+                        })
+                        # Specs cleanup
+                        specs['kaspi_status'] = 'pending'
+                        supabase.schema('Parser').table('wb_search_results').update({"specs": specs}).eq("id", wb_id).execute()
+                        logger.info(f"♻️ Reset status for {wb_id} to trigger re-submission.")
+
                     active_work = True
                     update_status(wb_id, {"conveyor_status": "processing"})
                     logger.info(f"--- Processing {name} ({wb_id}) ---")
 
-                    # Step A: Create in MS (Always call valid creator which handles duplicates and now images)
+                    # Step A: Create/Update in MS
                     if not ms_created:
-                        logger.info(f"Ensuring Product in MS...")
+                        logger.info(f"Ensuring Product in MS (Update Enabled)...")
                         # Extract all images
-                        image_urls = []
-                        if 'specs' in product and isinstance(product['specs'], dict):
-                            image_urls = product['specs'].get('image_urls', [])
-                        
+                        image_urls = specs.get('image_urls', [])
                         if not image_urls and product.get('image_url'):
                             image_urls = [product.get('image_url')]
 
@@ -177,32 +197,27 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             "name": product['name'],
                             "price": int(product.get('price_kzt', 0) or 0),
                             "image_urls": image_urls,
-                            "image_url": product.get('image_url') # Pass single one as fallback
+                            "image_url": product.get('image_url')
                         }
                         
-                        # Prepare attributes from specs
-                        kaspi_attrs = {}
-                        if 'specs' in product and isinstance(product['specs'], dict):
-                            kaspi_attrs = product['specs']
-
-                        # Ensure create_product_in_ms returns the ID now
-                        # update_existing=True to allow price/info updates (User Request)
+                        # Ensure create_product_in_ms returns the ID 
+                        # This will update nomenclature (category/description/attributes)
                         result_id, error_msg = ms_creator.create_product_in_ms(
                             prod_data, 
                             folder_meta, 
                             price_type_meta, 
                             extra_attributes=extra_attrs, 
                             update_existing=True,
-                            kaspi_attributes=kaspi_attrs
+                            kaspi_attributes=specs # Use specs for attributes
                         )
                         
                         if result_id:
                             update_status(wb_id, {"ms_created": True})
                             ms_created = True
-                            ms_id_created = result_id # Store for immediate stocking
+                            ms_id_created = result_id 
                         else:
                             update_status(wb_id, {"conveyor_status": "error", "conveyor_log": f"MS Creation Failed: {error_msg}"})
-                            continue # Retry next loop
+                            continue
 
                     # Step B: Stocking
                     if ms_created and not stock_added:
@@ -279,26 +294,45 @@ def run_conveyor(single_pass=False, skip_parser=False):
                             pass
 
                     # Step C: Kaspi
-                    if stock_added and not kaspi_created:
-                        logger.info(f"Creating Kaspi Card...")
+                    if (stock_added or product.get('stock_added')) and not kaspi_created:
+                        logger.info(f"Creating Kaspi Card for Article: {wb_id}...")
                         k_success = create_from_wb(wb_id)
+                        
                         if k_success:
-                            # Direct Push to Kaspi Merchant API (Step C.1 - Faster than XML)
-                            try:
-                                from publish_offer import publish_offer
-                                logger.info(f"Publishing Offer for {wb_id} via API (Pre-order 30d)...")
-                                # Use price from product data, default to 10 stock
-                                price_val = int(product.get('price_kzt', 0) or 0)
-                                if price_val > 0:
-                                     # Convert to retail price using the same RETAIL_DIVISOR as in generator
-                                     retail_price = int(price_val / 0.3)
-                                     publish_offer(wb_id, price=retail_price, stock=10, preorder=True)
-                            except Exception as po_err:
-                                logger.warning(f"Failed to push offer directly: {po_err}")
-                            
-                            update_status(wb_id, {"kaspi_created": True, "conveyor_status": "done"})
+                             # 1. Resolve MS Code for Publishing (Must match Kaspi SKU)
+                             ms_code = None
+                             try:
+                                 # Refetch specs from DB (create_from_wb stores kaspi_sku there)
+                                 refetch = supabase.schema('Parser').table('wb_search_results').select("specs").eq("id", int(wb_id)).execute()
+                                 if refetch.data:
+                                     ms_code = refetch.data[0].get('specs', {}).get('kaspi_sku')
+                             except: pass
+                             
+                             if not ms_code:
+                                 # Fallback: check products table for code
+                                 try:
+                                     res_p = supabase.schema('Parser').table('products').select("code").eq("article", wb_id).execute()
+                                     if res_p.data:
+                                         ms_code = res_p.data[0].get('code')
+                                 except: pass
+                             
+                             if ms_code:
+                                 # 2. Direct Push to Kaspi Merchant API
+                                 try:
+                                     from publish_offer import publish_offer
+                                     logger.info(f"Publishing Offer via API. SKU: {ms_code}")
+                                     price_val = int(product.get('price_kzt', 0) or 0)
+                                     if price_val > 0:
+                                          retail_price = int(price_val / 0.3)
+                                          publish_offer(ms_code, price=retail_price, stock=10, preorder=True)
+                                 except Exception as po_err:
+                                     logger.warning(f"Failed to push offer directly: {po_err}")
+                             else:
+                                 logger.warning(f"Could not find MS Code for publishing offer {wb_id}. Card created but offer pending XML sync.")
+                             
+                             update_status(wb_id, {"kaspi_created": True, "conveyor_status": "done"})
                         else:
-                            update_status(wb_id, {"conveyor_log": "Kaspi Creation Failed (check attributes)"})
+                             update_status(wb_id, {"conveyor_log": "Kaspi Creation Failed (check attributes)"})
                     
                         if k_success:
                             # If at least one Kaspi card was created, regenerate the XML feed immediately

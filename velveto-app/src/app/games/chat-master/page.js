@@ -241,6 +241,15 @@ export default function ChatMaster() {
     const [history, setHistory] = useState([])
     const [isWin, setIsWin] = useState(false)
 
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
     useEffect(() => {
         const saved = localStorage.getItem('chat-master-highscore')
         if (saved) setHighScore(parseInt(saved))
@@ -332,10 +341,11 @@ export default function ChatMaster() {
             fontFamily: "'Inter', sans-serif",
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }}>
             <header style={{
-                padding: '1.5rem 3rem',
+                padding: isMobile ? '1rem' : '1.5rem 3rem',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -345,33 +355,35 @@ export default function ChatMaster() {
                 zIndex: 10
             }}>
                 <BackButton href="/games" />
-                <div style={{ textAlign: 'center' }}>
-                    <h1 style={{ fontSize: '1.2rem', fontWeight: 900, letterSpacing: '0.4em', color: '#ffb35a', margin: 0 }}>CHAT MASTER PRO</h1>
-                    <div style={{ fontSize: '0.6rem', color: '#8a90a4', marginTop: '4px' }}>ЦЕЛЬ: {WIN_SCORE} ОЧКОВ | ТЕКУЩИЙ СЧЕТ: {score}</div>
+                <div style={{ textAlign: isMobile ? 'right' : 'center', flex: 1, paddingRight: isMobile ? '0' : '2rem' }}>
+                    <h1 style={{ fontSize: isMobile ? '0.9rem' : '1.2rem', fontWeight: 900, letterSpacing: isMobile ? '0.2em' : '0.4em', color: '#ffb35a', margin: 0 }}>CHAT MASTER PRO</h1>
+                    <div style={{ fontSize: '0.6rem', color: '#8a90a4', marginTop: '4px' }}>СЧЕТ: {score} / {WIN_SCORE}</div>
                 </div>
-                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    <div style={{ width: '150px', height: '8px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${Math.min(100, Math.max(0, (score / WIN_SCORE) * 100))}%` }}
-                            style={{ height: '100%', backgroundColor: '#ffb35a' }}
-                        />
+                {!isMobile && (
+                    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                        <div style={{ width: '150px', height: '8px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${Math.min(100, Math.max(0, (score / WIN_SCORE) * 100))}%` }}
+                                style={{ height: '100%', backgroundColor: '#ffb35a' }}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
             </header>
 
-            <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+            <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isMobile ? '1rem' : '2rem' }}>
                 <AnimatePresence mode="wait">
                     {gameState === 'start' && (
                         <motion.div
                             key="start"
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            style={{ maxWidth: '700px', textAlign: 'center', backgroundColor: 'rgba(16, 21, 40, 0.7)', padding: '4rem', borderRadius: '40px', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(30px)' }}
+                            style={{ maxWidth: '700px', width: '100%', textAlign: 'center', backgroundColor: 'rgba(16, 21, 40, 0.7)', padding: isMobile ? '2rem' : '4rem', borderRadius: '40px', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(30px)' }}
                         >
-                            <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>👑</div>
-                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>МАСТЕР ОБРАТНОЙ СВЯЗИ PRO</h2>
-                            <p style={{ color: '#c3c9d9', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+                            <div style={{ fontSize: isMobile ? '3rem' : '5rem', marginBottom: '1.5rem' }}>👑</div>
+                            <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: 900, marginBottom: '1rem' }}>МАСТЕР ОБРАТНОЙ СВЯЗИ PRO</h2>
+                            <p style={{ color: '#c3c9d9', fontSize: isMobile ? '0.9rem' : '1.1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
                                 Станьте легендой сервиса. Наберите <b>{WIN_SCORE} очков</b>, виртуозно отвечая на отзывы.
                                 <br />Варианты стали сложнее, а клиенты — требовательнее.
                             </p>
@@ -379,7 +391,7 @@ export default function ChatMaster() {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={startGame}
-                                style={{ backgroundColor: '#ffb35a', color: '#050814', border: 'none', padding: '1.5rem 5rem', borderRadius: '20px', fontSize: '1.2rem', fontWeight: 900, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', boxShadow: '0 10px 40px rgba(255,179,90,0.2)' }}
+                                style={{ backgroundColor: '#ffb35a', color: '#050814', border: 'none', padding: isMobile ? '1.2rem 2rem' : '1.5rem 5rem', borderRadius: '20px', fontSize: isMobile ? '1rem' : '1.2rem', fontWeight: 900, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', boxShadow: '0 10px 40px rgba(255,179,90,0.2)', width: isMobile ? '100%' : 'auto' }}
                             >
                                 ЗАПУСТИТЬ ТРЕНАЖЕР
                             </motion.button>
@@ -392,37 +404,37 @@ export default function ChatMaster() {
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -50 }}
-                            style={{ width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '2rem' }}
+                            style={{ width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: isMobile ? '1rem' : '2rem' }}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, #ffb35a, #ff9f1a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', color: '#000' }}>
+                                    <div style={{ width: isMobile ? '40px' : '48px', height: isMobile ? '40px' : '48px', borderRadius: '50%', background: 'linear-gradient(45deg, #ffb35a, #ff9f1a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: isMobile ? '1rem' : '1.2rem', fontWeight: 'bold', color: '#000' }}>
                                         {currentReview.author[0]}
                                     </div>
                                     <div>
-                                        <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{currentReview.author}</div>
+                                        <div style={{ fontSize: isMobile ? '0.9rem' : '1rem', fontWeight: 'bold' }}>{currentReview.author}</div>
                                         <div style={{ fontSize: '0.7rem', color: '#10b981' }}>Проверенный покупатель ✅</div>
                                     </div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, letterSpacing: '0.1em' }}>ОСТАЛОСЬ ВРЕМЕНИ</div>
-                                    <div style={{ fontSize: '2rem', fontWeight: 900, color: timeLeft < 6 ? '#ef4444' : '#fff', fontFamily: 'monospace' }}>{timeLeft}s</div>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, letterSpacing: '0.1em' }}>ВРЕМЯ</div>
+                                    <div style={{ fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 900, color: timeLeft < 6 ? '#ef4444' : '#fff', fontFamily: 'monospace' }}>{timeLeft}s</div>
                                 </div>
                             </div>
 
                             <div style={{
                                 backgroundColor: 'rgba(255,255,255,0.03)',
-                                padding: '2.5rem',
+                                padding: isMobile ? '1.5rem' : '2.5rem',
                                 borderRadius: '32px',
                                 border: '1px solid rgba(255,255,255,0.08)',
                                 position: 'relative'
                             }}>
                                 <div style={{ display: 'flex', gap: '4px', marginBottom: '1rem' }}>
                                     {[...Array(5)].map((_, i) => (
-                                        <span key={i} style={{ color: i < currentReview.rating ? '#ffb35a' : '#27272a', fontSize: '1.4rem' }}>★</span>
+                                        <span key={i} style={{ color: i < currentReview.rating ? '#ffb35a' : '#27272a', fontSize: isMobile ? '1rem' : '1.4rem' }}>★</span>
                                     ))}
                                 </div>
-                                <div style={{ fontSize: '1.3rem', lineHeight: 1.6, color: '#f3f4f6', fontWeight: 500 }}>"{currentReview.text}"</div>
+                                <div style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', lineHeight: 1.6, color: '#f3f4f6', fontWeight: 500 }}>"{currentReview.text}"</div>
                                 <div style={{ position: 'absolute', bottom: '-10px', left: '30px', width: '20px', height: '20px', backgroundColor: 'rgba(255,255,255,0.03)', transform: 'rotate(45deg)', borderRight: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }} />
                             </div>
 
@@ -435,16 +447,16 @@ export default function ChatMaster() {
                                             animate={{ scale: 1, opacity: 1 }}
                                             style={{
                                                 backgroundColor: feedback.score > 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-                                                padding: '2.5rem',
+                                                padding: isMobile ? '1.5rem' : '2.5rem',
                                                 borderRadius: '24px',
                                                 border: `1px solid ${feedback.score > 0 ? '#10b981' : '#ef4444'}`,
                                                 textAlign: 'center'
                                             }}
                                         >
-                                            <div style={{ fontSize: '1.5rem', fontWeight: 900, color: feedback.score > 0 ? '#10b981' : '#ef4444', marginBottom: '0.8rem' }}>
+                                            <div style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', fontWeight: 900, color: feedback.score > 0 ? '#10b981' : '#ef4444', marginBottom: '0.8rem' }}>
                                                 {feedback.score > 0 ? `+${feedback.score} ОЧКОВ` : `${feedback.score} ОЧКОВ`}
                                             </div>
-                                            <div style={{ color: '#d1d5db', fontSize: '1.1rem', lineHeight: 1.5 }}>{feedback.feedback}</div>
+                                            <div style={{ color: '#d1d5db', fontSize: isMobile ? '0.9rem' : '1.1rem', lineHeight: 1.5 }}>{feedback.feedback}</div>
                                         </motion.div>
                                     ) : (
                                         currentReview.options.map((option, idx) => (
@@ -456,19 +468,19 @@ export default function ChatMaster() {
                                                 style={{
                                                     backgroundColor: 'rgba(255,255,255,0.02)',
                                                     border: '1px solid rgba(255,255,255,0.1)',
-                                                    padding: '1.4rem 2rem',
+                                                    padding: isMobile ? '1rem 1.2rem' : '1.4rem 2rem',
                                                     borderRadius: '20px',
                                                     color: '#e5e7eb',
-                                                    fontSize: '1rem',
+                                                    fontSize: isMobile ? '0.85rem' : '1rem',
                                                     textAlign: 'left',
                                                     cursor: 'pointer',
                                                     lineHeight: 1.5,
                                                     display: 'flex',
-                                                    gap: '1.5rem',
+                                                    gap: isMobile ? '1rem' : '1.5rem',
                                                     alignItems: 'center'
                                                 }}
                                             >
-                                                <div style={{ minWidth: '32px', height: '32px', borderRadius: '10px', backgroundColor: 'rgba(255,179,90,0.1)', color: '#ffb35a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '0.9rem' }}>{idx + 1}</div>
+                                                <div style={{ minWidth: isMobile ? '24px' : '32px', height: isMobile ? '24px' : '32px', borderRadius: isMobile ? '8px' : '10px', backgroundColor: 'rgba(255,179,90,0.1)', color: '#ffb35a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: isMobile ? '0.7rem' : '0.9rem' }}>{idx + 1}</div>
                                                 {option.text}
                                             </motion.button>
                                         ))
@@ -485,45 +497,46 @@ export default function ChatMaster() {
                             animate={{ opacity: 1, scale: 1 }}
                             style={{
                                 maxWidth: '700px',
+                                width: '100%',
                                 textAlign: 'center',
                                 backgroundColor: isWin ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 21, 40, 0.8)',
-                                padding: '5rem',
-                                borderRadius: '50px',
+                                padding: isMobile ? '2.5rem 1.5rem' : '5rem',
+                                borderRadius: isMobile ? '30px' : '50px',
                                 border: `2px solid ${isWin ? '#10b981' : 'rgba(255, 255, 255, 0.1)'}`,
                                 backdropFilter: 'blur(30px)'
                             }}
                         >
-                            <div style={{ fontSize: '6rem', marginBottom: '2rem' }}>{isWin ? '👑' : '💀'}</div>
-                            <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '1rem' }}>{isWin ? 'ВИКТОРИЯ!' : 'ИГРА ОКОНЧЕНА'}</h2>
-                            <p style={{ color: '#d1d5db', fontSize: '1.2rem', marginBottom: '3rem' }}>
+                            <div style={{ fontSize: isMobile ? '4rem' : '6rem', marginBottom: '2rem' }}>{isWin ? '👑' : '💀'}</div>
+                            <h2 style={{ fontSize: isMobile ? '2rem' : '3rem', fontWeight: 900, marginBottom: '1rem' }}>{isWin ? 'ВИКТОРИЯ!' : 'ИГРА ОКОНЧЕНА'}</h2>
+                            <p style={{ color: '#d1d5db', fontSize: isMobile ? '0.9rem' : '1.2rem', marginBottom: isMobile ? '2rem' : '3rem' }}>
                                 {isWin
                                     ? 'Вы доказали, что являетесь мастером коммуникаций высшего уровня. Ваша репутация — золото!'
                                     : 'Ваш рейтинг упал слишком низко или время истекло. В бизнесе мелочей не бывает.'}
                             </p>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '4rem' }}>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
-                                    <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.8rem', letterSpacing: '0.1em' }}>ИТОГОВЫЙ СЧЕТ</div>
-                                    <div style={{ fontSize: '4rem', fontWeight: 900, color: isWin ? '#10b981' : '#ffb35a' }}>{score}</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: isMobile ? '1rem' : '2rem', marginBottom: isMobile ? '2.5rem' : '4rem' }}>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: isMobile ? '1.2rem' : '2rem', borderRadius: '24px' }}>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, marginBottom: '0.8rem', letterSpacing: '0.1em' }}>СЧЕТ</div>
+                                    <div style={{ fontSize: isMobile ? '2.5rem' : '4rem', fontWeight: 900, color: isWin ? '#10b981' : '#ffb35a' }}>{score}</div>
                                 </div>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px' }}>
-                                    <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '0.8rem', letterSpacing: '0.1em' }}>ЛУЧШИЙ РЕЗУЛЬТАТ</div>
-                                    <div style={{ fontSize: '4rem', fontWeight: 900 }}>{Math.max(score, highScore)}</div>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: isMobile ? '1.2rem' : '2rem', borderRadius: '24px' }}>
+                                    <div style={{ fontSize: '0.6rem', opacity: 0.5, marginBottom: '0.8rem', letterSpacing: '0.1em' }}>РЕКОРД</div>
+                                    <div style={{ fontSize: isMobile ? '2.5rem' : '4rem', fontWeight: 900 }}>{Math.max(score, highScore)}</div>
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1.5rem' }}>
+                            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1.5rem' }}>
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={startGame}
-                                    style={{ flex: 2, backgroundColor: '#fff', color: '#050814', border: 'none', padding: '1.5rem', borderRadius: '20px', fontSize: '1.2rem', fontWeight: 900, cursor: 'pointer' }}
+                                    style={{ flex: 2, backgroundColor: '#fff', color: '#050814', border: 'none', padding: '1.2rem', borderRadius: '20px', fontSize: '1.1rem', fontWeight: 900, cursor: 'pointer' }}
                                 >
-                                    {isWin ? 'ЕЩЕ РАЗ ДЛЯ ЗАКРЕПЛЕНИЯ' : 'ПОПРОБОВАТЬ СНОВА'}
+                                    {isWin ? 'ЕЩЕ РАЗ' : 'ПОПРОБОВАТЬ СНОВА'}
                                 </motion.button>
                                 <Link href="/games" style={{ flex: 1, textDecoration: 'none' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', color: '#8a90a4', fontWeight: '900', fontSize: '1rem' }}>
-                                        В ГЛАВНОЕ МЕНЮ
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: isMobile ? '3.5rem' : 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', color: '#8a90a4', fontWeight: '900', fontSize: '1rem' }}>
+                                        В МЕНЮ
                                     </div>
                                 </Link>
                             </div>

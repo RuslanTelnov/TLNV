@@ -26,6 +26,15 @@ export default function TrendHunter() {
     const [selectedProducts, setSelectedProducts] = useState([])
     const [revelations, setRevelations] = useState({}) // productIndex -> { revealedStats: [] }
 
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024)
+        checkMobile()
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
     const generateProducts = () => {
         const items = [
             { name: 'Массажер для шеи', cat: 'beauty', potential: 'high', baseSales: 1200, margin: 45, trend: 15 },
@@ -94,45 +103,45 @@ export default function TrendHunter() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#050814', color: '#fff', padding: '3rem', fontFamily: 'Inter, sans-serif' }}>
-            <header style={{ maxWidth: '1200px', margin: '0 auto 3rem auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#050814', color: '#fff', padding: isMobile ? '1.5rem' : '3rem', fontFamily: 'Inter, sans-serif' }}>
+            <header style={{ maxWidth: '1200px', margin: isMobile ? '0 auto 1.5rem auto' : '0 auto 3rem auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <BackButton href="/games" />
                 <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#8a90a4', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px' }}>AI SCANNER v4.1</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ec4899' }}>Trend Hunter</div>
+                    {!isMobile && <div style={{ color: '#8a90a4', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px' }}>AI SCANNER v4.1</div>}
+                    <div style={{ fontSize: isMobile ? '1rem' : '1.2rem', fontWeight: 700, color: '#ec4899' }}>Trend Hunter</div>
                 </div>
             </header>
 
             <main style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 <AnimatePresence mode="wait">
                     {gameState === 'start' && (
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', padding: '5rem 0' }}>
-                            <div style={{ fontSize: '6rem', marginBottom: '2rem' }}>🛰️</div>
-                            <h1 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '1.5rem' }}>Охотник за Трендами</h1>
-                            <p style={{ color: '#8a90a4', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', padding: isMobile ? '2rem 0' : '5rem 0' }}>
+                            <div style={{ fontSize: isMobile ? '3.5rem' : '6rem', marginBottom: '1.5rem' }}>🛰️</div>
+                            <h1 style={{ fontSize: isMobile ? '1.8rem' : '3rem', fontWeight: 900, marginBottom: '1rem' }}>Охотник за Трендами</h1>
+                            <p style={{ color: '#8a90a4', fontSize: isMobile ? '1rem' : '1.2rem', maxWidth: '600px', margin: '0 auto 2.5rem auto', lineHeight: 1.6 }}>
                                 Ваша задача — найти 3 «Золотых» товара. У вас ограниченные лимиты на сканирование данных. Думайте как аналитик.
                             </p>
-                            <button onClick={startGame} style={{ backgroundColor: '#ec4899', color: '#fff', border: 'none', padding: '1.5rem 4rem', borderRadius: '20px', fontSize: '1.2rem', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 30px rgba(236, 72, 153, 0.3)' }}>
+                            <button onClick={startGame} style={{ backgroundColor: '#ec4899', color: '#fff', border: 'none', padding: isMobile ? '1.2rem 2rem' : '1.5rem 4rem', borderRadius: '20px', fontSize: isMobile ? '1.1rem' : '1.2rem', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 30px rgba(236, 72, 153, 0.3)', width: isMobile ? '100%' : 'auto' }}>
                                 ЗАПУСТИТЬ СКАНЕР
                             </button>
                         </motion.div>
                     )}
 
                     {gameState === 'scouting' && (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '3rem' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 320px', gap: isMobile ? '1.5rem' : '3rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '1rem' : '2rem' }}>
                                 {products.map((p, idx) => {
                                     const isSelected = selectedProducts.find(sp => sp.name === p.name)
                                     const rev = revelations[idx]?.revealed || []
                                     return (
                                         <motion.div
                                             key={idx}
-                                            whileHover={{ y: -5 }}
+                                            whileHover={isMobile ? {} : { y: -5 }}
                                             style={{
                                                 backgroundColor: 'rgba(255,255,255,0.02)',
                                                 border: `2px solid ${isSelected ? '#ec4899' : 'rgba(255,255,255,0.05)'}`,
                                                 borderRadius: '32px',
-                                                padding: '2rem',
+                                                padding: isMobile ? '1.5rem' : '2rem',
                                                 position: 'relative',
                                                 cursor: 'pointer',
                                                 transition: 'all 0.3s ease'
@@ -140,7 +149,7 @@ export default function TrendHunter() {
                                             onClick={() => selectProduct(p)}
                                         >
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                                                <span style={{ fontSize: '2rem' }}>{CATEGORIES.find(c => c.id === p.cat).icon}</span>
+                                                <span style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>{CATEGORIES.find(c => c.id === p.cat).icon}</span>
                                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                                     {TOOLS.map(t => (
                                                         <button
@@ -148,9 +157,9 @@ export default function TrendHunter() {
                                                             onClick={(e) => { e.stopPropagation(); useTool(idx, t.id); }}
                                                             disabled={rev.includes(t.id)}
                                                             style={{
-                                                                width: '32px', height: '32px', borderRadius: '8px',
+                                                                width: isMobile ? '36px' : '32px', height: isMobile ? '36px' : '32px', borderRadius: '8px',
                                                                 border: 'none', backgroundColor: rev.includes(t.id) ? '#3b82f6' : 'rgba(255,255,255,0.1)',
-                                                                cursor: 'pointer', fontSize: '0.7rem'
+                                                                cursor: 'pointer', fontSize: isMobile ? '0.8rem' : '0.7rem'
                                                             }}
                                                             title={t.name}
                                                         >
@@ -159,35 +168,36 @@ export default function TrendHunter() {
                                                     ))}
                                                 </div>
                                             </div>
-                                            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1rem' }}>{p.name}</h3>
+                                            <h3 style={{ fontSize: isMobile ? '1.2rem' : '1.4rem', fontWeight: 800, marginBottom: '0.8rem' }}>{p.name}</h3>
 
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                                <StatRow label="Продажи" value={rev.includes('spy') ? `${p.baseSales} шт` : '??'} />
-                                                <StatRow label="Тренд" value={rev.includes('radar') ? `${p.trend > 0 ? '+' : ''}${p.trend}%` : '??'} color={p.trend > 0 ? '#10b981' : '#ef4444'} />
-                                                <StatRow label="Маржа" value={rev.includes('calc') ? `${p.margin}%` : '??'} />
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                                <StatRow label="Продажи" value={rev.includes('spy') ? `${p.baseSales} шт` : '??'} isMobile={isMobile} />
+                                                <StatRow label="Тренд" value={rev.includes('radar') ? `${p.trend > 0 ? '+' : ''}${p.trend}%` : '??'} color={p.trend > 0 ? '#10b981' : '#ef4444'} isMobile={isMobile} />
+                                                <StatRow label="Маржа" value={rev.includes('calc') ? `${p.margin}%` : '??'} isMobile={isMobile} />
                                             </div>
 
                                             {isSelected && (
-                                                <div style={{ position: 'absolute', top: '1rem', right: '1rem', color: '#ec4899' }}>✅</div>
+                                                <div style={{ position: 'absolute', top: '1rem', right: '1rem', color: '#ec4899', fontSize: '1.2rem' }}>✅</div>
                                             )}
                                         </motion.div>
                                     )
                                 })}
                             </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                                <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <div style={{ fontSize: '0.7rem', color: '#8a90a4', marginBottom: '0.5rem', letterSpacing: '1px' }}>ЛИМИТЫ СКАНЕРА</div>
-                                    <div style={{ fontSize: '3rem', fontWeight: 900, color: credits > 2 ? '#fff' : '#ef4444' }}>{credits}</div>
-                                    <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#8a90a4' }}>Используйте инструменты на карточках, чтобы узнать потенциал.</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '1.5rem' : '2rem' }}>
+                                <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: isMobile ? '1.5rem' : '2rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div style={{ fontSize: '0.6rem', color: '#8a90a4', marginBottom: '0.5rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Лимиты сканера</div>
+                                    <div style={{ fontSize: isMobile ? '2rem' : '3rem', fontWeight: 900, color: credits > 2 ? '#fff' : '#ef4444' }}>{credits}</div>
+                                    <div style={{ marginTop: '0.8rem', fontSize: '0.75rem', color: '#8a90a4', lineHeight: 1.4 }}>Активируйте инструменты на карточках выше.</div>
                                 </div>
 
-                                <div style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.01)', padding: '2rem', borderRadius: '32px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-                                    <h4 style={{ fontSize: '0.8rem', marginBottom: '1.5rem', opacity: 0.5 }}>ВЫБРАНО ({selectedProducts.length}/3):</h4>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.01)', padding: isMobile ? '1.5rem' : '2rem', borderRadius: '32px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                                    <h4 style={{ fontSize: '0.7rem', marginBottom: '1rem', opacity: 0.5 }}>ВЫБРАНО ({selectedProducts.length}/3)</h4>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                         {selectedProducts.map((p, i) => (
-                                            <div key={i} style={{ fontSize: '0.9rem', fontWeight: 600 }}>{p.name}</div>
+                                            <div key={i} style={{ fontSize: '0.85rem', fontWeight: 600, color: '#ec4899' }}>⚡ {p.name}</div>
                                         ))}
+                                        {selectedProducts.length === 0 && <div style={{ fontSize: '0.8rem', opacity: 0.3 }}>Товары не выбраны</div>}
                                     </div>
                                 </div>
 
@@ -196,8 +206,8 @@ export default function TrendHunter() {
                                     style={{
                                         backgroundColor: selectedProducts.length === 3 ? '#ec4899' : 'rgba(255,255,255,0.05)',
                                         color: selectedProducts.length === 3 ? '#fff' : '#444',
-                                        border: 'none', padding: '1.8rem', borderRadius: '24px', fontSize: '1rem', fontWeight: 900,
-                                        cursor: selectedProducts.length === 3 ? 'pointer' : 'not-allowed'
+                                        border: 'none', padding: isMobile ? '1.2rem' : '1.8rem', borderRadius: '24px', fontSize: '1rem', fontWeight: 900,
+                                        cursor: selectedProducts.length === 3 ? 'pointer' : 'not-allowed', width: '100%'
                                     }}
                                 >
                                     ЗАПУСТИТЬ ПРОДАЖИ
@@ -207,21 +217,21 @@ export default function TrendHunter() {
                     )}
 
                     {gameState === 'result' && (
-                        <div style={{ textAlign: 'center', padding: '3rem' }}>
-                            <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '2rem' }}>Результаты Запуска</h2>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginBottom: '4rem' }}>
+                        <div style={{ textAlign: 'center', padding: isMobile ? '1rem' : '3rem' }}>
+                            <h2 style={{ fontSize: isMobile ? '2rem' : '3rem', fontWeight: 900, marginBottom: '2rem' }}>Анализ рынка</h2>
+                            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '1rem' : '2rem', marginBottom: '3rem' }}>
                                 {selectedProducts.map((p, i) => (
-                                    <div key={i} style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{p.potential === 'unicorn' ? '🦄' : p.potential === 'high' ? '🔥' : p.potential === 'medium' ? '📈' : '💩'}</div>
-                                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>{p.name}</h3>
-                                        <div style={{ fontSize: '0.7rem', color: '#8a90a4', marginBottom: '0.5rem' }}>ИТОГ:</div>
-                                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: p.potential.includes('unicorn') || p.potential === 'high' ? '#10b981' : '#ef4444' }}>
-                                            {p.potential === 'unicorn' ? 'Единорог!' : p.potential === 'high' ? 'Хит Продаж' : p.potential === 'medium' ? 'Средне' : 'Провал'}
+                                    <div key={i} style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: isMobile ? '1.5rem' : '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <div style={{ fontSize: isMobile ? '2.5rem' : '3rem', marginBottom: '1rem' }}>{p.potential === 'unicorn' ? '🦄' : p.potential === 'high' ? '🔥' : p.potential === 'medium' ? '📈' : '💩'}</div>
+                                        <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.2rem', marginBottom: '1rem' }}>{p.name}</h3>
+                                        <div style={{ fontSize: '0.65rem', color: '#8a90a4', marginBottom: '0.4rem', textTransform: 'uppercase' }}>Итог запуска</div>
+                                        <div style={{ fontSize: isMobile ? '1.3rem' : '1.5rem', fontWeight: 800, color: p.potential.includes('unicorn') || p.potential === 'high' ? '#10b981' : '#ef4444' }}>
+                                            {p.potential === 'unicorn' ? 'Единорог!' : p.potential === 'high' ? 'Хит' : p.potential === 'medium' ? 'Средне' : 'Провал'}
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                            <button onClick={startGame} style={{ backgroundColor: '#fff', color: '#050814', border: 'none', padding: '1.5rem 4rem', borderRadius: '18px', fontSize: '1.1rem', fontWeight: 800, cursor: 'pointer' }}>ЕЩЕ РАЗ</button>
+                            <button onClick={startGame} style={{ backgroundColor: '#fff', color: '#050814', border: 'none', padding: isMobile ? '1.2rem 3rem' : '1.5rem 4rem', borderRadius: '18px', fontSize: '1.1rem', fontWeight: 800, cursor: 'pointer', width: isMobile ? '100%' : 'auto' }}>ЕЩЕ РАЗ</button>
                         </div>
                     )}
                 </AnimatePresence>
@@ -230,9 +240,9 @@ export default function TrendHunter() {
     )
 }
 
-function StatRow({ label, value, color }) {
+function StatRow({ label, value, color, isMobile }) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: isMobile ? '0.8rem' : '0.9rem' }}>
             <span style={{ color: '#8a90a4' }}>{label}</span>
             <span style={{ fontWeight: 700, color: color || '#fff' }}>{value}</span>
         </div>
