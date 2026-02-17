@@ -90,6 +90,15 @@ def sync_products():
                     ms_code = res_ms.data[0].get('code')
             except: pass
 
+        # Get Moderation Comments
+        comment = specs.get('moderation_comment') or ""
+        if not comment and specs.get('kaspi_errors'):
+            errors = specs.get('kaspi_errors')
+            if isinstance(errors, list):
+                comment = "; ".join([str(e) for e in errors])
+            else:
+                comment = str(errors)
+
         fields = {
             "Название": product.get('name') or "Unknown",
             "Категория": specs.get('kaspi_category') or product.get('query') or "Unknown",
@@ -98,6 +107,7 @@ def sync_products():
             "Артикул WB": str(product.get('id')),
             "Код МС": ms_code or "",
             "Статус": status_ru,
+            "Комментарий": comment,
             "Изображение": product.get('image_url') or ""
         }
 

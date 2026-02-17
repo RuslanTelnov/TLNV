@@ -61,8 +61,26 @@ class WBEnricher:
                     # Ensure images are available
                     pics_count = products[0].get('pics', 0)
                     image_urls = []
-                    # Try to use host found earlier or fallback
-                    active_host = host or "basket-01.wbbasket.ru"
+                    
+                    # Verify Host for Images if not found via card.json
+                    active_host = host
+                    if not active_host and pics_count > 0:
+                        print(f"⚠️ Host not found via card.json, searching for image host for {nm_id}...", file=sys.stderr)
+                        # Try finding image host
+                        for i in range(1, 50): # Check broader range of baskets
+                            h = f"basket-{i:02d}.wbbasket.ru"
+                            test_url = f"https://{h}/vol{vol}/part{part}/{nm_id}/images/big/1.webp"
+                            try:
+                                r = requests.head(test_url, timeout=1)
+                                if r.status_code == 200:
+                                    active_host = h
+                                    print(f"✅ Found image host: {active_host}", file=sys.stderr)
+                                    break
+                            except: pass
+                            
+                    if not active_host:
+                         active_host = "basket-01.wbbasket.ru" # Fallback
+
                     for i_img in range(1, min(max(pics_count, 1), 6)):
                         image_urls.append(f"https://{active_host}/vol{vol}/part{part}/{nm_id}/images/big/{i_img}.webp")
                     details['image_urls'] = image_urls
