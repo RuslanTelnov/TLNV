@@ -19,6 +19,7 @@ kaspi_dir = os.path.join(os.path.dirname(current_dir), 'kaspi')
 sys.path.append(kaspi_dir)
 
 from create_from_wb import create_from_wb
+import check_kaspi_status
 import generate_fixed_price # Import the XML generator
 
 # Setup Logging
@@ -119,6 +120,33 @@ def run_conveyor(single_pass=False, skip_parser=False):
 
     while True:
         try:
+            # -------------------------------------------------------------
+            # 0. BATCH CONTROL: Limit moderation queue to 100
+            # -------------------------------------------------------------
+            try:
+                # Count products currently in moderation
+                # Note: kaspi_status is stored inside the 'specs' JSONB column
+                mod_resp = supabase.schema('Parser').table('wb_search_results') \
+                    .select("id", count="exact") \
+                    .eq("kaspi_created", True) \
+                    .contains("specs", {"kaspi_status": "moderation"}) \
+                    .execute()
+                
+                mod_count = mod_resp.count if hasattr(mod_resp, 'count') else 0
+                
+                if mod_count >= 500:
+                    logger.info(f"⏳ Moderation Queue Full ({mod_count}/500). Triggering status check & waiting...")
+                    try:
+                        check_kaspi_status.main()
+                    except Exception as e:
+                        logger.error(f"Failed to run status check: {e}")
+                    
+                    time.sleep(60) # Wait a minute
+                    continue
+                elif mod_count > 0:
+                    logger.info(f"📊 Moderation Queue: {mod_count}/500. Proceeding with caution.")
+            except Exception as e:
+                logger.warning(f"Failed to check moderation queue size: {e}")
 
             # -------------------------------------------------------------
             # 1. PROCESS CANDIDATES (Conveyor) - PRIORITY
@@ -158,26 +186,34 @@ def run_conveyor(single_pass=False, skip_parser=False):
                         continue
                     
                     # -------------------------------------------------------------
+                    # DATA INTEGRITY / MANUAL REVIEW BLOCK
+                    # -------------------------------------------------------------
+                    if specs.get('needs_manual_review'):
+                        logger.warning(f"⚠️ Skipping {name} ({wb_id}) - Needs Manual Review: {specs.get('integrity_error')}")
+                        update_status(wb_id, {"conveyor_status": "manual_review", "conveyor_log": f"Integrity Error: {specs.get('integrity_error')}"})
+                        continue
+
+                    # -------------------------------------------------------------
                     # MODERATION FEEDBACK LOOP (Requires Fix Handling)
                     # -------------------------------------------------------------
-                    if k_status == 'requires_fix':
-                        logger.info(f"🛠️ Handling 'Requires Fix' for {name} ({wb_id})...")
-                        # 1. Attempt to fix attributes or category in Specs
-                        # In a real scenario, we might look at specs.get('kaspi_errors')
-                        # For now, we force a re-mapping which might pick up fixes or new mapper logic
-                        
-                        # Reset status to allow re-runs
+                    if k_status == 'requires_fix' or k_status == 'rejected':
+                        logger.info(f"🛠️ Handling 'Requires Fix/Rejected' for {name} ({wb_id})...")
+                        # Reset status to allow re-runs with fresh mapping
                         ms_created = False 
                         kaspi_created = False
-                        # We don't reset stock_added as it's separate from content fixes
+                        
+                        # Cleanup specs for fresh start
+                        specs['kaspi_status'] = 'pending'
+                        specs.pop('kaspi_attributes', None)
+                        specs.pop('kaspi_category', None)
+                        specs.pop('kaspi_upload_id', None)
+                        
                         update_status(wb_id, {
                             "kaspi_created": False, 
-                            "ms_created": False, # Force MS nomenclature update
-                            "conveyor_status": "processing"
+                            "ms_created": False, 
+                            "conveyor_status": "processing",
+                            "specs": specs
                         })
-                        # Specs cleanup
-                        specs['kaspi_status'] = 'pending'
-                        supabase.schema('Parser').table('wb_search_results').update({"specs": specs}).eq("id", wb_id).execute()
                         logger.info(f"♻️ Reset status for {wb_id} to trigger re-submission.")
 
                     active_work = True
@@ -351,13 +387,6 @@ def run_conveyor(single_pass=False, skip_parser=False):
             if parse_and_save:
                 try:
                     # Check for queued jobs first
-                    job_response = supabase.schema('Parser').table('parser_queue') \
-                        .select("*") \
-                        .eq("status", "pending") \
-                        .order("created_at", desc=False) \
-                        .limit(1) \
-                        .execute()
-                    
                     job = job_response.data[0] if job_response.data else None
                     
                     if job:

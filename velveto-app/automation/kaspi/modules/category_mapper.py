@@ -177,6 +177,17 @@ class KaspiCategoryMapper:
         'свитшот': ('Master - Women hoodies', 'hoodies'),
         'джемпер': ('Master - Women jumpers', 'hoodies'),
         'свитер': ('Master - Women jumpers', 'hoodies'),
+
+        # NEW CATEGORIES: Hair Dryers, Underwear, Household, Cosmetics
+        'фен': ('Master - Hair dryers', 'hair_dryers'),
+        'стайлер': ('Master - Hair dryers', 'hair_dryers'),
+        'выпрямитель': ('Master - Hair dryers', 'hair_dryers'),
+        'трусы': ('Master - Women panties', 'underwear'),
+        'бюстгальтер': ('Master - Women panties', 'underwear'),
+        'нижн': ('Master - Women panties', 'underwear'),
+        'органайзер': ('Master - Baskets and boxes', 'household'),
+        'контейнер': ('Master - Baskets and boxes', 'household'),
+        'косметичк': ('Master - Cosmetic bags', 'cosmetics'),
     }
     
     @classmethod
@@ -288,7 +299,12 @@ class KaspiCategoryMapper:
         # Note: The logic above returns immediately if found. 
         # I need to wrap the return points to check for warning keywords.
         
-        print(f"❌ No category detected for '{name}' after all checks.", file=sys.stderr)
+        print(f"❌ No category detected for '{name}' after all checks. Using high-level fallback.", file=sys.stderr)
+        # Instead of None, use a generic safe category if it's not restricted
+        if not any(kw in text for kw in cls.RESTRICTED_KEYWORDS):
+             print(f"⚠️ Falling back to generic 'Household items'", file=sys.stderr)
+             return 'Master - Household items', 'household'
+             
         return None, None
 
     @classmethod
@@ -627,6 +643,14 @@ class KaspiCategoryMapper:
             return cls.generate_attributes_for_modeling(product_name, product_description)
         elif category_type == 'hoodies':
             return cls.generate_attributes_for_hoodies(product_name, product_description, raw_attributes)
+        elif category_type == 'hair_dryers':
+            return cls.generate_attributes_for_hair_dryers(product_name, product_description)
+        elif category_type == 'underwear':
+            return cls.generate_attributes_for_underwear(product_name, product_description)
+        elif category_type == 'household':
+            return cls.generate_attributes_for_household(product_name, product_description)
+        elif category_type == 'cosmetics':
+            return cls.generate_attributes_for_cosmetics(product_name, product_description)
         
         # Universal AI filling for other categories
         if category_code:
@@ -857,6 +881,52 @@ class KaspiCategoryMapper:
         else:
              attributes[f"{prefix}*Composition"] = "хлопок"
 
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_hair_dryers(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Hair dryers."""
+        # text = (product_name + " " + product_description).lower()
+        attributes = {
+            "Hair dryers*Type": "фен",
+            "Hair dryers*Power": 2000,
+            "Hair dryers*Number of modes": 3,
+            "Hair dryers*Color": "черный"
+        }
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_underwear(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Underwear."""
+        text = (product_name + " " + product_description).lower()
+        attributes = {
+            "Women's underwear*Type": "трусы",
+            "Women's underwear*Size": "42",
+            "Women's underwear*Color": "черный",
+            "Women's underwear*Fabric": ["хлопок"]
+        }
+        if "бюст" in text or "лиф" in text:
+            attributes["Women's underwear*Type"] = "бюстгальтер"
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_household(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Household/Baskets."""
+        attributes = {
+            "Baskets and boxes*Type": "коробка",
+            "Baskets and boxes*Material": ["пластик"],
+            "Baskets and boxes*Color": "белый"
+        }
+        return attributes
+
+    @staticmethod
+    def generate_attributes_for_cosmetics(product_name: str, product_description: str = "") -> Dict[str, str]:
+        """Generate Kaspi attributes for Cosmetic bags."""
+        attributes = {
+            "Cosmetic bags*Type": "косметичка",
+            "Cosmetic bags*Material": ["текстиль"],
+            "Cosmetic bags*Color": "черный"
+        }
         return attributes
 
     @staticmethod

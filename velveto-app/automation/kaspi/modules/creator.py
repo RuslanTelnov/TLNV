@@ -82,51 +82,31 @@ def prepare_card_payload(scraped_data, sku, custom_barcode_prefix="201"):
     
     if category_name and category_name.startswith("Master - "):
         prefix = category_name.replace("Master - ", "")
+        # Clean prefix of characters that violate Kaspi regex (like single quotes)
+        # Regex for segment: [a-zA-Zа-яА-Я_\\s\\d&.\\-#%\\/,()]
+        prefix = prefix.replace("'", "") # Remove single quotes as they are not allowed in first segment
         
         # 1. Vendor Code (Артикул) - User Request: Must be MS Code (sku)
-        vendor_code_attr = f"{prefix}*Vendor code"
         attributes_list.append({
-            "code": vendor_code_attr,
+            "code": f"{prefix}*Vendor code",
             "value": str(sku)
         })
         
         # 2. Barcode - Internal EAN-13
-        barcode_attr = f"{prefix}*Barcode"
         attributes_list.append({
-            "code": barcode_attr,
+            "code": f"{prefix}*Barcode",
             "value": barcode
         })
         
         # 3. Brand - Forced to Generic
-        brand_attr = f"{prefix}*Brand"
         attributes_list.append({
-            "code": brand_attr,
+            "code": f"{prefix}*Brand",
             "value": "Generic"
-        })
-        
-        # 4. Global Vendor Code fallback
-        attributes_list.append({
-            "code": "Vendor code",
-            "value": str(sku)
         })
     else:
-        # Fallback for non-Master categories
-        attributes_list.append({
-            "code": "Vendor code",
-            "value": str(sku) # MS Code
-        })
-        attributes_list.append({
-            "code": "Barcode",
-            "value": barcode
-        })
-        attributes_list.append({
-            "code": "Brand",
-            "value": "Generic"
-        })
-        attributes_list.append({
-            "code": "Марка",
-            "value": "Generic"
-        })
+        # Fallback for non-Master categories (though not expected in current flow)
+        # If no category, we can't reliably send attributes that match the regex
+        pass
 
     # TITLE SHOULD REMAIN ORIGINAL AS PER USER REQUEST
     original_title = scraped_data.get("title", "")

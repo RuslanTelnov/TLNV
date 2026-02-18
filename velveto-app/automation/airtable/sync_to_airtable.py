@@ -76,9 +76,13 @@ def sync_products():
             'moderation': 'На модерации',
             'created': 'Опубликован',
             'requires_fix': 'Нужна доработка',
-            'rejected': 'Отклонен'
+            'rejected': 'Отклонен',
+            'manual_review': 'Ручная проверка'
         }
         status_ru = status_map.get(k_status, k_status)
+        
+        if specs.get('needs_manual_review'):
+             status_ru = "Проверка данных (WB)"
 
         # Get MS Code for the and Airtable column
         ms_code = specs.get('kaspi_sku')
@@ -98,6 +102,12 @@ def sync_products():
                 comment = "; ".join([str(e) for e in errors])
             else:
                 comment = str(errors)
+        
+        # Add Integrity Error to comment if present
+        integrity_error = specs.get('integrity_error')
+        if integrity_error:
+             if comment: comment += f" | ОШИБКА: {integrity_error}"
+             else: comment = f"ОШИБКА: {integrity_error}"
 
         fields = {
             "Название": product.get('name') or "Unknown",
@@ -116,32 +126,44 @@ def sync_products():
         try:
             # We use POST for all since user wants to see them in new tables
             # But for MAIN we can use PATCH to update status
+            resp = None
             if table_name == table_main and already_synced_id:
+                print(f"📝 Updating Main: [{product.get('id')}] {product.get('name')} (Record {already_synced_id})...")
                 resp = requests.patch(f"{url}/{already_synced_id}", headers=headers, json={"fields": fields})
             else:
-                # For Fix/Rejected, we always create new entries to notify the user
-                # unless they are already there (checked by id_key)
+                # For Fix/Rejected, we always want to ensure it exists
                 if already_synced_id:
+                     print(f"🔄 Updating [{product.get('id')}] {product.get('name')} in {table_name}...")
                      resp = requests.patch(f"{url}/{already_synced_id}", headers=headers, json={"fields": fields})
+                     
+                     # 🚨 KEY FIX: If record was deleted in Airtable (404), create it again!
+                     if resp.status_code == 404:
+                         print(f"⚠️ Record {already_synced_id} not found in Airtable (deleted?). Re-creating...")
+                         resp = requests.post(url, headers=headers, json={"fields": fields})
                 else:
+                     print(f"➕ Creating [{product.get('id')}] {product.get('name')} in {table_name}...")
                      resp = requests.post(url, headers=headers, json={"fields": fields})
+            
+            # Rate limiting
+            time.sleep(0.22)
             
             if resp.status_code in [200, 201]:
                 return resp.json().get('id')
             else:
+                print(f"❌ Airtable Error ({table_name}): {resp.status_code} - {resp.text}")
                 return None
-        except:
+        except Exception as e:
+            print(f"❌ Airtable Request Exception: {e}")
             return None
 
     while True:
         try:
             # Fetch products that need sync
-            # Logic: either not in Main, OR (is moderation error AND not in Fix table), OR (is rejected AND not in Rejected table)
-            # For simplicity, we fetch recent updates and check their specs.
+            # Increase limit to 2000 to catch everything
             res = supabase.schema('Parser').table('wb_search_results')\
                 .select('*')\
                 .order('updated_at', desc=True)\
-                .limit(100)\
+                .limit(2000)\
                 .execute()
             
             products = res.data or []
@@ -162,7 +184,8 @@ def sync_products():
                     updated_specs = True
                 
                 # 2. Filter-based routing
-                if k_status == 'requires_fix':
+                if k_status == 'requires_fix' or specs.get('needs_manual_review'):
+                     # Both internal 'requires_fix' and our new 'manual_review' go to the fix table
                      fix_id = sync_to_table(p, table_fix, 'airtable_fix_id')
                      if fix_id and fix_id != specs.get('airtable_fix_id'):
                          specs['airtable_fix_id'] = fix_id
@@ -182,7 +205,8 @@ def sync_products():
                     processed_count += 1
             
             print(f"✅ Sync Batch Complete. Updated {processed_count} records.")
-            break # Exit loop for now (worker.py will call this periodically)
+            # Break after one large batch or remove if you want infinite loop (worker handles it anyway)
+            break 
 
         except Exception as e:
             print(f"❌ sync_products loop error: {e}")
