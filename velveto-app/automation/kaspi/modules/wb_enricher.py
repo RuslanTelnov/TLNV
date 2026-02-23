@@ -9,6 +9,7 @@ import requests
 import json
 import sys
 import os
+import re
 from typing import Dict, Optional, List
 
 
@@ -143,7 +144,23 @@ class WBEnricher:
         enriched['wb_full_data'] = wb_data  # Keep full data for reference
         
         if 'imt_name' in wb_data:
-             enriched['name'] = wb_data['imt_name']
+             new_name = wb_data['imt_name']
+             old_name = basic_product.get('name', '')
+             
+             # Name Consistency Check: if name changes radically, flag it
+             # e.g., if one contains 'underpants' but other doesn't, and they are both long enough
+             if old_name and len(old_name) > 5 and len(new_name) > 5:
+                  # Simple word-based heuristic: if no common words (>=4 chars), flag
+                  old_words = set(re.findall(r'\w{4,}', old_name.lower()))
+                  new_words = set(re.findall(r'\w{4,}', new_name.lower()))
+                  if old_words and new_words and not (old_words & new_words):
+                       print(f"⚠️  Data Integrity Alert: Name mismatch! '{old_name}' -> '{new_name}'", file=sys.stderr)
+                       if 'specs' not in enriched or not isinstance(enriched['specs'], dict):
+                            enriched['specs'] = {}
+                       enriched['specs']['needs_manual_review'] = True
+                       enriched['specs']['integrity_error'] = f"Name mismatch: {old_name} vs {new_name}"
+
+             enriched['name'] = new_name
              
         if 'image_urls' in wb_data and wb_data['image_urls']:
              enriched['image_url'] = wb_data['image_urls'][0]

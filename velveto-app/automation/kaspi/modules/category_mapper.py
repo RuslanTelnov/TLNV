@@ -117,6 +117,19 @@ class KaspiCategoryMapper:
         'molecule': ('Master - Perfumes', 'perfumes'),
         'byredo': ('Master - Perfumes', 'perfumes'),
         'jo malone': ('Master - Perfumes', 'perfumes'),
+        'lattafa': ('Master - Perfumes', 'perfumes'),
+        'ameerat': ('Master - Perfumes', 'perfumes'),
+        'asad': ('Master - Perfumes', 'perfumes'),
+        'parfums de marly': ('Master - Perfumes', 'perfumes'),
+        'marly': ('Master - Perfumes', 'perfumes'),
+        'tiziana terenzi': ('Master - Perfumes', 'perfumes'),
+        'xerjoff': ('Master - Perfumes', 'perfumes'),
+        'le labo': ('Master - Perfumes', 'perfumes'),
+        'maison francis': ('Master - Perfumes', 'perfumes'),
+        'kurkdjian': ('Master - Perfumes', 'perfumes'),
+        'creed': ('Master - Perfumes', 'perfumes'),
+        'amouage': ('Master - Perfumes', 'perfumes'),
+        'arabian': ('Master - Perfumes', 'perfumes'),
         
         # Creative / Hobbies
         'набор для творчеств': ('Master - Drawing and coloring kits', 'drawing_kits'),
@@ -188,6 +201,9 @@ class KaspiCategoryMapper:
         'органайзер': ('Master - Baskets and boxes', 'household'),
         'контейнер': ('Master - Baskets and boxes', 'household'),
         'косметичк': ('Master - Cosmetic bags', 'cosmetics'),
+        'полотенц': ('Master - Towels', 'textiles'),
+        'простын': ('Master - Bedding sets', 'textiles'),
+        'наволочк': ('Master - Bedding sets', 'textiles'),
     }
     
     @classmethod
