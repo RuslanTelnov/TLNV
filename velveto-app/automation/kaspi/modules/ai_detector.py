@@ -12,11 +12,13 @@ load_dotenv(env_path)
 
 def detect_category_ai(product_name, product_description, categories_list):
     """
-    Uses Gemini API via HTTP to classify a product into one of the Kaspi categories.
+    Uses AI (Gemini or OpenAI) to classify a product into one of the Kaspi categories.
     """
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        print("⚠️ GOOGLE_API_KEY not found in environment", file=sys.stderr)
+    google_key = os.getenv("GOOGLE_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+    
+    if not google_key and not openai_key:
+        print("⚠️ No AI API keys (Google or OpenAI) found in environment", file=sys.stderr)
         return None, None
     
     # Prepare categories text
@@ -40,38 +42,64 @@ def detect_category_ai(product_name, product_description, categories_list):
 
 Ответ:"""
 
-    # Try Gemini first
-    if api_key:
-        # Using gemini-flash-latest as discovered in list-models
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+    # Try Gemini first if key exists
+    if google_key:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={google_key}"
         headers = {'Content-Type': 'application/json'}
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}]
-        }
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
         try:
             response = requests.post(url, headers=headers, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                if 'candidates' in data and len(data['candidates']) > 0:
+                if 'candidates' in data and data['candidates']:
                     result = data['candidates'][0]['content']['parts'][0]['text'].strip()
-                    # Check if result is a valid code
-                    valid_codes = [c['code'] for c in categories_list]
-                    if result in valid_codes:
-                        for c in categories_list:
-                            if c['code'] == result:
-                                return result, c['title']
-                    # Partial match
-                    for code in valid_codes:
-                        if code in result:
-                            for c in categories_list:
-                                if c['code'] == code:
-                                    return code, c['title']
+                    return _validate_category_result(result, categories_list)
             else:
                 print(f"⚠️ Gemini Error {response.status_code}: {response.text}", file=sys.stderr)
         except Exception as e:
             print(f"❌ Gemini Exception: {e}", file=sys.stderr)
 
+    # Fallback to OpenAI
+    if openai_key:
+        print("🤖 Using OpenAI fallback for classification...", file=sys.stderr)
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {openai_key}"
+        }
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0
+        }
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                result = data['choices'][0]['message']['content'].strip()
+                return _validate_category_result(result, categories_list)
+            else:
+                print(f"⚠️ OpenAI Error {response.status_code}: {response.text}", file=sys.stderr)
+        except Exception as e:
+            print(f"❌ OpenAI Exception: {e}", file=sys.stderr)
+
+    return None, None
+
+def _validate_category_result(result, categories_list):
+    """Helper to validate AI output against categories list."""
+    valid_codes = [c['code'] for c in categories_list]
+    if result in valid_codes:
+        for c in categories_list:
+            if c['code'] == result:
+                return result, c['title']
+    
+    # Partial match
+    for code in valid_codes:
+        if code in result:
+            for c in categories_list:
+                if c['code'] == code:
+                    return code, c['title']
     return None, None
 
 def fill_attributes_ai(name: str, description: str, attributes: List[Dict], raw_attributes: Dict = None) -> Dict[str, any]:
@@ -103,21 +131,18 @@ Attributes to fill:
 
 JSON Result:
 """
-    api_key = os.environ.get("GOOGLE_API_KEY")
+    google_key = os.environ.get("GOOGLE_API_KEY")
+    openai_key = os.environ.get("OPENAI_API_KEY")
     result_data = {}
     
-    # 2. Call AI (if key exists)
-    if api_key:
-        # Using gemini-flash-latest as discovered in list-models
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+    # 2. Call AI (Try Gemini first, then OpenAI)
+    if google_key:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={google_key}"
         headers = {'Content-Type': 'application/json'}
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "response_mime_type": "application/json"
-            }
+            "generationConfig": {"response_mime_type": "application/json"}
         }
-
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=30)
             if response.status_code == 200:
@@ -125,8 +150,32 @@ JSON Result:
                 if 'candidates' in data and data['candidates']:
                     text = data['candidates'][0]['content']['parts'][0]['text']
                     result_data = json.loads(text)
+            else:
+                print(f"⚠️ Gemini Error in attribute filling: {response.status_code}", file=sys.stderr)
         except Exception as e:
-            print(f"Error in AI attribute filling: {e}", file=sys.stderr)
+            print(f"Error in Gemini attribute filling: {e}", file=sys.stderr)
+            
+    if not result_data and openai_key:
+        print("🤖 Using OpenAI fallback for attribute filling...", file=sys.stderr)
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {openai_key}"
+        }
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [{"role": "user", "content": prompt}],
+            "response_format": {"type": "json_object"},
+            "temperature": 0
+        }
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=30)
+            if response.status_code == 200:
+                data = response.json()
+                text = data['choices'][0]['message']['content']
+                result_data = json.loads(text)
+        except Exception as e:
+            print(f"Error in OpenAI attribute filling: {e}", file=sys.stderr)
     
     # 3. Fallback / Validation ensures we NEVER return empty for mandatory fields
     final_attributes = {}

@@ -81,15 +81,17 @@ def find_category_in_schema(product_name, schema):
         return best_match
     return None
 
-def map_wb_to_kaspi(wb_product):
+def map_wb_to_kaspi(wb_product, name_hint=None):
     """Maps Wildberries product data to Kaspi format."""
     from modules.category_mapper import KaspiCategoryMapper
     
-    product_name = wb_product.get("name", "")
+    product_name = name_hint or wb_product.get("name", "")
+    wb_name = wb_product.get("name", "")
     product_description = wb_product.get("description", "") or ""
     raw_attributes = wb_product.get("attributes", {})
     
     # 1. Try Legacy Mapper first (it has fine-tuned logic for specific categories)
+    # Use name_hint if provided to ensure it matches our manual cache
     category_name, category_type = KaspiCategoryMapper.detect_category(
         product_name, 
         product_description

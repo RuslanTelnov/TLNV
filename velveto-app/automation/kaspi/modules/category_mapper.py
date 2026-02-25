@@ -8,6 +8,25 @@ from typing import Dict, List, Optional, Tuple
 class KaspiCategoryMapper:
     """Maps products to Kaspi categories and generates required attributes."""
     
+    _cache = {}
+    _cache_loaded = False
+
+    @classmethod
+    def _load_cache(cls):
+        if cls._cache_loaded:
+            return
+        try:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            cache_path = os.path.join(current_dir, '..', 'data', 'category_cache_v2.json')
+            if os.path.exists(cache_path):
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    cls._cache = json.load(f)
+                print(f"📦 Loaded {len(cls._cache)} entries from category_cache_v2.json", file=sys.stderr)
+            cls._cache_loaded = True
+        except Exception as e:
+            print(f"⚠️ Error loading category cache: {e}", file=sys.stderr)
+            cls._cache_loaded = True
+    
     # Restricted categories for Kaspi (Always blocked)
     RESTRICTED_KEYWORDS = [
         "алкоголь", "водка", "вино", "пиво", "сигареты", "табак", 
@@ -211,6 +230,19 @@ class KaspiCategoryMapper:
         """Detects category based on name and description keywords."""
         text = f"{name} {description}".lower()
         
+        # -1. Check AI Classification Cache (Assistant-driven)
+        cls._load_cache()
+        if name in cls._cache:
+            cat_name = cls._cache[name]
+            print(f"✅ Found cache match for '{name}': {cat_name}", file=sys.stderr)
+            # Find category type from map if possible, else generic
+            cat_type = "universal"
+            for kw, (cn, ct) in cls.CATEGORY_MAP.items():
+                if cn == cat_name:
+                    cat_type = ct
+                    break
+            return cls.apply_policy(cat_name, cat_type, text)
+
         # 0. Check for restricted categories first using word boundaries
         print(f"DEBUG: Detecting category for '{name}'...", file=sys.stderr)
         for restricted_kw in cls.RESTRICTED_KEYWORDS:
