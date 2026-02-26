@@ -58,6 +58,7 @@ _backup_fresh_install/
 .vercel
 *.log
 *.json
+!velveto-app/data/s_parfum_full_catalog.json
 !moysklad-web/automation/kaspi/data/kaspi_categories.json
 check_*.py
 debug_*.py

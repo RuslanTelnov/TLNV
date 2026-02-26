@@ -224,8 +224,20 @@ export default function SParfumPricesPage() {
                                 {processedData.prices.map((item, idx) => (
                                     <tr key={idx} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', transition: 'transform 0.2s', cursor: 'default' }}>
                                         <td style={{ padding: '1.5rem 2rem', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px', borderLeft: `3px solid ${item.tier === 'Luxury' ? '#ef4444' : item.tier === 'Exclusive' ? '#8b5cf6' : item.tier === 'Selective' ? '#3b82f6' : '#c9a05a'}` }}>
-                                            <div style={{ fontWeight: '600', fontSize: '1.1rem', marginBottom: '0.3rem' }}>{item.name}</div>
-                                            <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>{item.tier}</div>
+                                            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                                                {item.image ? (
+                                                    <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover', background: 'rgba(255,255,255,0.05)' }} />
+                                                ) : (
+                                                    <div style={{ width: '60px', height: '60px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>✨</div>
+                                                )}
+                                                <div>
+                                                    <div style={{ fontWeight: '600', fontSize: '1.1rem', marginBottom: '0.2rem' }}>{item.name}</div>
+                                                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                                        <span style={{ fontSize: '0.65rem', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>{item.tier}</span>
+                                                        {item.sku && <span style={{ fontSize: '0.65rem', background: 'rgba(201, 160, 90, 0.1)', color: '#c9a05a', padding: '2px 6px', borderRadius: '4px' }}>{item.sku}</span>}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                         {['3 мл', '15 мл', '30 мл', '50 мл', '100 мл'].map(vol => (
                                             <td key={vol} style={{ padding: '1rem', textAlign: 'center' }}>
@@ -272,8 +284,14 @@ export default function SParfumPricesPage() {
                     <h2 style={{ fontSize: '1.2rem', fontWeight: '300', marginBottom: '2rem', borderLeft: '3px solid #3b82f6', paddingLeft: '1.5rem' }}>ДРУГИЕ ТОВАРЫ</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                         {processedData.others.map((item, idx) => (
-                            <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '1rem' }}>{item.name}</div>
+                            <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {item.image && (
+                                    <img src={item.image} alt={item.name} style={{ width: '100%', height: '200px', borderRadius: '12px', objectFit: 'cover', background: 'rgba(255,255,255,0.03)' }} />
+                                )}
+                                <div>
+                                    <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '0.3rem' }}>{item.name}</div>
+                                    {item.sku && <div style={{ fontSize: '0.7rem', color: '#c9a05a', marginBottom: '0.5rem' }}>{item.sku}</div>}
+                                </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem', fontSize: '0.85rem' }}>
                                     <span style={{ color: '#c9a05a', fontWeight: 'bold' }}>Цена: {item.price.toLocaleString()} ₸</span>
                                     <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>Себ: {item.costPrice.toLocaleString()} ₸</span>
