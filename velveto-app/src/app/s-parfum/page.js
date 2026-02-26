@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import BackButton from '../../components/BackButton';
+import * as XLSX from 'xlsx';
 
 export default function SParfumPricesPage() {
     const [rawData, setRawData] = useState(null);
@@ -138,6 +139,68 @@ export default function SParfumPricesPage() {
 
     const totalPages = Math.ceil((processedData?.prices.length || 0) / itemsPerPage);
 
+    const handleExportExcel = () => {
+        if (!processedData) return;
+
+        const exportData = [];
+
+        // Main Perfumes
+        processedData.prices.forEach(item => {
+            Object.entries(item.volumes).forEach(([vol, data]) => {
+                exportData.push({
+                    'Аромат': item.name,
+                    'Серия': item.tier,
+                    'Артикул': item.sku || '',
+                    'Объем': vol,
+                    'Цена продажи': data.price,
+                    'Себестоимость': data.costPrice,
+                    'Логистика': data.logistics,
+                    'Комиссия': data.commission,
+                    'Налог': data.tax,
+                    'Всего сборов': data.totalFees,
+                    'К выплате': data.netRemainder,
+                    'Чистая прибыль': data.netProfit,
+                    '% прибыли': data.netProfitPct + '%',
+                    '% к выплате': data.margin + '%'
+                });
+            });
+        });
+
+        // Others
+        processedData.others.forEach(item => {
+            exportData.push({
+                'Аромат': item.name,
+                'Серия': 'Другое',
+                'Артикул': item.sku || '',
+                'Объем': 'Стандарт',
+                'Цена продажи': item.price,
+                'Себестоимость': item.costPrice,
+                'Логистика': item.logistics,
+                'Комиссия': item.commission,
+                'Налог': item.tax,
+                'Всего сборов': item.totalFees,
+                'К выплате': item.netRemainder,
+                'Чистая прибыль': item.netProfit,
+                '% прибыли': item.netProfitPct + '%',
+                '% к выплате': item.margin + '%'
+            });
+        });
+
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "S-Parfum Analysis");
+
+        // Auto-size columns
+        const wscols = [
+            { wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 15 },
+            { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 15 },
+            { wch: 12 }, { wch: 12 }
+        ];
+        ws['!cols'] = wscols;
+
+        XLSX.writeFile(wb, `S-Parfum_Analysis_${new Date().toISOString().split('T')[0]}.xlsx`);
+    };
+
     if (loading) return (
         <div style={{ minHeight: '100vh', background: '#050814', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ fontSize: '1.2rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Подготовка детального каталога...</div>
@@ -256,6 +319,27 @@ export default function SParfumPricesPage() {
                                 }}
                             />
                         </div>
+                        <button
+                            onClick={handleExportExcel}
+                            style={{
+                                background: 'rgba(201, 160, 90, 0.1)',
+                                border: '1px solid #c9a05a',
+                                color: '#c9a05a',
+                                padding: '12px 24px',
+                                borderRadius: '12px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                whiteSpace: 'nowrap',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(201, 160, 90, 0.2)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(201, 160, 90, 0.1)'; }}
+                        >
+                            <span style={{ fontSize: '1.2rem' }}>📊</span> ЭКСПОРТ В EXCEL
+                        </button>
                     </div>
 
                     {/* Quick Online Calculator */}
