@@ -13,6 +13,14 @@ export default function SParfumPricesPage() {
     const [taxPct, setTaxPct] = useState(3);
     const [markupPct, setMarkupPct] = useState(40);
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 25;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
     useEffect(() => {
         fetch('/api/s-parfum/prices')
             .then(res => res.json())
@@ -80,6 +88,14 @@ export default function SParfumPricesPage() {
 
         return { prices: filteredPrices, others: filteredOthers };
     }, [rawData, commissionPct, taxPct, markupPct, searchQuery]);
+
+    const paginatedPrices = useMemo(() => {
+        if (!processedData) return [];
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return processedData.prices.slice(startIndex, startIndex + itemsPerPage);
+    }, [processedData, currentPage]);
+
+    const totalPages = Math.ceil((processedData?.prices.length || 0) / itemsPerPage);
 
     if (loading) return (
         <div style={{ minHeight: '100vh', background: '#050814', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -210,6 +226,55 @@ export default function SParfumPricesPage() {
                 </header>
 
                 <section style={{ marginBottom: '5rem' }}>
+                    {/* Pagination Controls Top */}
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+                            <button
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.3 : 1 }}
+                            >
+                                Назад
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => {
+                                const p = i + 1;
+                                // Only show current, first, last and 2 neighbors
+                                if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) {
+                                    return (
+                                        <button
+                                            key={p}
+                                            onClick={() => setCurrentPage(p)}
+                                            style={{
+                                                width: '40px',
+                                                height: '40px',
+                                                borderRadius: '8px',
+                                                border: '1px solid',
+                                                borderColor: currentPage === p ? '#c9a05a' : 'rgba(255,255,255,0.1)',
+                                                background: currentPage === p ? '#c9a05a' : 'rgba(255,255,255,0.05)',
+                                                color: currentPage === p ? '#050814' : '#fff',
+                                                fontWeight: 'bold',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            {p}
+                                        </button>
+                                    );
+                                }
+                                if (p === 2 || p === totalPages - 1) {
+                                    return <span key={p} style={{ color: 'rgba(255,255,255,0.3)', alignSelf: 'center' }}>...</span>;
+                                }
+                                return null;
+                            })}
+                            <button
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', opacity: currentPage === totalPages ? 0.3 : 1 }}
+                            >
+                                Вперед
+                            </button>
+                        </div>
+                    )}
+
                     <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px', minWidth: '800px' }}>
                             <thead>
@@ -221,7 +286,7 @@ export default function SParfumPricesPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {processedData.prices.map((item, idx) => (
+                                {paginatedPrices.map((item, idx) => (
                                     <tr key={idx} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', transition: 'transform 0.2s', cursor: 'default' }}>
                                         <td style={{ padding: '1.5rem 2rem', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px', borderLeft: `3px solid ${item.tier === 'Luxury' ? '#ef4444' : item.tier === 'Exclusive' ? '#8b5cf6' : item.tier === 'Selective' ? '#3b82f6' : '#c9a05a'}` }}>
                                             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -282,6 +347,28 @@ export default function SParfumPricesPage() {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination Controls Bottom */}
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '3rem', flexWrap: 'wrap' }}>
+                            <button
+                                onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                disabled={currentPage === 1}
+                                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.3 : 1 }}
+                            >
+                                Назад
+                            </button>
+                            <span style={{ alignSelf: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', margin: '0 1rem' }}>
+                                Страница {currentPage} из {totalPages} ({processedData.prices.length} товаров)
+                            </span>
+                            <button
+                                onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                disabled={currentPage === totalPages}
+                                style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', opacity: currentPage === totalPages ? 0.3 : 1 }}
+                            >
+                                Вперед
+                            </button>
+                        </div>
+                    )}
                 </section>
 
                 <section>
