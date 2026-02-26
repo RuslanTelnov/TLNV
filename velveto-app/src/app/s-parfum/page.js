@@ -56,7 +56,10 @@ export default function SParfumPricesPage() {
                         costPrice: Math.round(costPrice),
                         netProfit: Math.round(netProfit),
                         netProfitPct: Math.round(netProfitPct),
-                        margin: Math.round((netRemainder / base.price) * 100)
+                        margin: Math.round((netRemainder / base.price) * 100),
+                        costPricePct: Math.round((costPrice / base.price) * 100),
+                        logisticsPct: Math.round((base.logistics / base.price) * 100),
+                        feesPct: Math.round(((commission + tax) / base.price) * 100)
                     };
                 });
                 return { ...item, volumes: volumeData };
@@ -82,7 +85,10 @@ export default function SParfumPricesPage() {
                     costPrice: Math.round(costPrice),
                     netProfit: Math.round(netProfit),
                     netProfitPct: Math.round(netProfitPct),
-                    margin: Math.round((netRemainder / item.price) * 100)
+                    margin: Math.round((netRemainder / item.price) * 100),
+                    costPricePct: Math.round((costPrice / item.price) * 100),
+                    logisticsPct: Math.round((item.logistics / item.price) * 100),
+                    feesPct: Math.round(((commission + tax) / item.price) * 100)
                 };
             });
 
@@ -314,13 +320,13 @@ export default function SParfumPricesPage() {
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                                                         <div style={{ fontSize: '1rem', fontWeight: '500', color: '#c9a05a' }}>{item.volumes[vol].price.toLocaleString()} ₸</div>
                                                         <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 'bold', letterSpacing: '0.05em' }}>
-                                                            Себ: {item.volumes[vol].costPrice.toLocaleString()} ₸
+                                                            Себ: {item.volumes[vol].costPrice.toLocaleString()} ₸ ({item.volumes[vol].costPricePct}%)
                                                         </div>
                                                         <div style={{ fontSize: '0.65rem', color: '#3b82f6', marginTop: '4px' }}>
-                                                            Лог: -{item.volumes[vol].logistics} ₸
+                                                            Лог: -{item.volumes[vol].logistics} ₸ ({item.volumes[vol].logisticsPct}%)
                                                         </div>
                                                         <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>
-                                                            Сборы: -{(item.volumes[vol].commission + item.volumes[vol].tax).toLocaleString()} ₸
+                                                            Сборы: -{(item.volumes[vol].commission + item.volumes[vol].tax).toLocaleString()} ₸ ({item.volumes[vol].feesPct}%)
                                                         </div>
                                                         <div style={{
                                                             fontSize: '0.85rem',
@@ -387,13 +393,13 @@ export default function SParfumPricesPage() {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem', fontSize: '0.85rem' }}>
                                     <span style={{ color: '#c9a05a', fontWeight: 'bold' }}>Цена: {item.price.toLocaleString()} ₸</span>
-                                    <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>Себ: {item.costPrice.toLocaleString()} ₸</span>
+                                    <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>Себ: {item.costPrice.toLocaleString()} ₸ ({item.costPricePct}%)</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem' }}>
-                                    <span style={{ color: '#3b82f6' }}>Лог: -{item.logistics} ₸</span>
+                                    <span style={{ color: '#3b82f6' }}>Лог: -{item.logistics} ₸ ({item.logisticsPct}%)</span>
                                 </div>
                                 <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '1rem' }}>
-                                    Сборы: -{(item.commission + item.tax).toLocaleString()} ₸
+                                    Сборы: -{(item.commission + item.tax).toLocaleString()} ₸ ({item.feesPct}%)
                                 </div>
                                 <div style={{ textAlign: 'right', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
