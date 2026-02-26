@@ -9,6 +9,15 @@ export default function PriceWarrior() {
     const [gameState, setGameState] = useState('start')
     const [myPrice, setMyPrice] = useState(8500)
     const [isMobile, setIsMobile] = useState(false)
+    const [sales, setSales] = useState(0)
+    const [profit, setProfit] = useState(0)
+    const [timeLeft, setTimeLeft] = useState(60)
+    const [hasBuyBox, setHasBuyBox] = useState(true)
+    const [competitors, setCompetitors] = useState([
+        { id: 1, name: 'Market King', price: 8700, strategy: 'aggressive' },
+        { id: 2, name: 'Dumping Pro', price: 8900, strategy: 'normal' },
+        { id: 3, name: 'Standard Shop', price: 9200, strategy: 'slow' }
+    ])
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 1024)
