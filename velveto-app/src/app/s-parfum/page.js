@@ -21,6 +21,41 @@ export default function SParfumPricesPage() {
         setCurrentPage(1);
     }, [searchQuery]);
 
+    // Manual Calculator State
+    const [calcPrice, setCalcPrice] = useState(15000);
+    const [calcCost, setCalcCost] = useState(8000);
+    const [calcVol, setCalcVol] = useState('30 мл');
+
+    const manualCalc = useMemo(() => {
+        const price = Number(calcPrice) || 0;
+        const cost = Number(calcCost) || 0;
+
+        // Logistic rules from crawler: 212 if < 5000, 699 if < 15000, 750 else
+        const logistics = price < 5000 ? 212 : price < 15000 ? 699 : 750;
+
+        const commission = price * (commissionPct / 100);
+        const tax = price * (taxPct / 100);
+        const totalFees = logistics + commission + tax;
+        const netRemainder = price - totalFees;
+        const netProfit = netRemainder - cost;
+        const netProfitPct = price > 0 ? (netProfit / price) * 100 : 0;
+        const margin = price > 0 ? (netRemainder / price) * 100 : 0;
+
+        return {
+            logistics,
+            commission: Math.round(commission),
+            tax: Math.round(tax),
+            totalFees: Math.round(totalFees),
+            netRemainder: Math.round(netRemainder),
+            netProfit: Math.round(netProfit),
+            netProfitPct: Math.round(netProfitPct),
+            margin: Math.round(margin),
+            costPricePct: price > 0 ? Math.round((cost / price) * 100) : 0,
+            logisticsPct: price > 0 ? Math.round((logistics / price) * 100) : 0,
+            feesPct: price > 0 ? Math.round(((commission + tax) / price) * 100) : 0
+        };
+    }, [calcPrice, calcCost, commissionPct, taxPct]);
+
     useEffect(() => {
         fetch('/api/s-parfum/prices')
             .then(res => res.json())
@@ -220,6 +255,67 @@ export default function SParfumPricesPage() {
                                     outline: 'none'
                                 }}
                             />
+                        </div>
+                    </div>
+
+                    {/* Quick Online Calculator */}
+                    <div style={{
+                        marginTop: '2rem',
+                        paddingTop: '2rem',
+                        borderTop: '1px solid rgba(255,255,255,0.05)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem'
+                    }}>
+                        <div style={{ fontSize: '0.8rem', color: '#c9a05a', fontWeight: 'bold', letterSpacing: '0.1em' }}>БЫСТРЫЙ КАЛЬКУЛЯТОР</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', alignItems: 'flex-start' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>ЦЕНА ПРОДАЖИ (₸)</label>
+                                <input
+                                    type="number"
+                                    value={calcPrice}
+                                    onChange={(e) => setCalcPrice(e.target.value)}
+                                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>СЕБЕСТОИМОСТЬ (₸)</label>
+                                <input
+                                    type="number"
+                                    value={calcCost}
+                                    onChange={(e) => setCalcCost(e.target.value)}
+                                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>ОБЪЕМ / ЛИТРАЖ</label>
+                                <select
+                                    value={calcVol}
+                                    onChange={(e) => setCalcVol(e.target.value)}
+                                    style={{ background: '#0a0f1e', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                                >
+                                    <option>3 мл</option>
+                                    <option>15 мл</option>
+                                    <option>30 мл</option>
+                                    <option>50 мл</option>
+                                    <option>100 мл</option>
+                                    <option>Другое</option>
+                                </select>
+                            </div>
+                            <div style={{ background: 'rgba(201, 160, 90, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(201, 160, 90, 0.1)', display: 'flex', gap: '1.5rem', gridColumn: 'span 2' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.3rem' }}>РЕЗУЛЬТАТ РАСЧЕТА</div>
+                                    <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem' }}>
+                                        <div style={{ color: 'rgba(255,255,255,0.6)' }}>Лог: <span style={{ color: '#3b82f6' }}>-{manualCalc.logistics} ₸ ({manualCalc.logisticsPct}%)</span></div>
+                                        <div style={{ color: 'rgba(255,255,255,0.6)' }}>Сборы: <span style={{ color: 'rgba(255,255,255,0.4)' }}>-{manualCalc.totalFees - manualCalc.logistics} ₸ ({manualCalc.feesPct}%)</span></div>
+                                        <div style={{ color: 'rgba(255,255,255,0.6)' }}>Себ: <span style={{ marginBottom: '0.2rem' }}>{Number(calcCost).toLocaleString()} ₸ ({manualCalc.costPricePct}%)</span></div>
+                                    </div>
+                                </div>
+                                <div style={{ textAlign: 'right', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1.5rem' }}>
+                                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10b981' }}>{manualCalc.netRemainder.toLocaleString()} ₸</div>
+                                    <div style={{ fontSize: '0.7rem', color: '#10b981' }}>{manualCalc.netProfitPct}% ч.п. ({manualCalc.netProfit.toLocaleString()} ₸)</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
