@@ -9,7 +9,7 @@ export default function SParfumPricesPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     // User adjustable coefficients
-    const [commissionPct, setCommissionPct] = useState(13);
+    const [commissionPct, setCommissionPct] = useState(23);
     const [taxPct, setTaxPct] = useState(3);
     const [markupPct, setMarkupPct] = useState(40);
 
