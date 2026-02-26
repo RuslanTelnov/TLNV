@@ -10,7 +10,7 @@ export default function SParfumPricesPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     // User adjustable coefficients
-    const [commissionPct, setCommissionPct] = useState(23);
+    const [commissionPct, setCommissionPct] = useState(18);
     const [taxPct, setTaxPct] = useState(3);
     const [markupPct, setMarkupPct] = useState(40);
 
@@ -31,7 +31,8 @@ export default function SParfumPricesPage() {
         const price = Number(calcPrice) || 0;
         const cost = Number(calcCost) || 0;
 
-        // Logistic rules from crawler: 212 if < 5000, 699 if < 15000, 750 else
+        // Ozon Global Unified Tariff (OMK Contract)
+        // Price < 5,000 : 212 | 5,000-15,000 : 699 | > 15,000 : 750 (base)
         const logistics = price < 5000 ? 212 : price < 15000 ? 699 : 750;
 
         const commission = price * (commissionPct / 100);
@@ -75,16 +76,21 @@ export default function SParfumPricesPage() {
             .map(item => {
                 const volumeData = {};
                 Object.entries(item.volumes).forEach(([vol, base]) => {
-                    const commission = base.price * (commissionPct / 100);
-                    const tax = base.price * (taxPct / 100);
-                    const totalFees = base.logistics + commission + tax;
-                    const netRemainder = base.price - totalFees;
-                    const costPrice = base.price * (1 - markupPct / 100);
+                    const price = base.price;
+                    // Ozon Global Unified Tariff (OMK Contract)
+                    const logistics = price < 5000 ? 212 : price < 15000 ? 699 : 750;
+
+                    const commission = price * (commissionPct / 100);
+                    const tax = price * (taxPct / 100);
+                    const totalFees = logistics + commission + tax;
+                    const netRemainder = price - totalFees;
+                    const costPrice = price * (1 - markupPct / 100);
                     const netProfit = netRemainder - costPrice;
-                    const netProfitPct = (netProfit / base.price) * 100;
+                    const netProfitPct = (netProfit / price) * 100;
 
                     volumeData[vol] = {
                         ...base,
+                        logistics,
                         commission: Math.round(commission),
                         tax: Math.round(tax),
                         totalFees: Math.round(totalFees),
@@ -92,10 +98,10 @@ export default function SParfumPricesPage() {
                         costPrice: Math.round(costPrice),
                         netProfit: Math.round(netProfit),
                         netProfitPct: Math.round(netProfitPct),
-                        margin: Math.round((netRemainder / base.price) * 100),
-                        costPricePct: Math.round((costPrice / base.price) * 100),
-                        logisticsPct: Math.round((base.logistics / base.price) * 100),
-                        feesPct: Math.round(((commission + tax) / base.price) * 100)
+                        margin: Math.round((netRemainder / price) * 100),
+                        costPricePct: Math.round((costPrice / price) * 100),
+                        logisticsPct: Math.round((logistics / price) * 100),
+                        feesPct: Math.round(((commission + tax) / price) * 100)
                     };
                 });
                 return { ...item, volumes: volumeData };
@@ -104,16 +110,20 @@ export default function SParfumPricesPage() {
         const filteredOthers = rawData.others
             .filter(o => o.name.toLowerCase().includes(searchQuery.toLowerCase()))
             .map(item => {
-                const commission = item.price * (commissionPct / 100);
-                const tax = item.price * (taxPct / 100);
-                const totalFees = item.logistics + commission + tax;
-                const netRemainder = item.price - totalFees;
-                const costPrice = item.price * (1 - markupPct / 100);
+                const price = item.price;
+                const logistics = price < 5000 ? 212 : price < 15000 ? 699 : 750;
+
+                const commission = price * (commissionPct / 100);
+                const tax = price * (taxPct / 100);
+                const totalFees = logistics + commission + tax;
+                const netRemainder = price - totalFees;
+                const costPrice = price * (1 - markupPct / 100);
                 const netProfit = netRemainder - costPrice;
-                const netProfitPct = (netProfit / item.price) * 100;
+                const netProfitPct = (netProfit / price) * 100;
 
                 return {
                     ...item,
+                    logistics,
                     commission: Math.round(commission),
                     tax: Math.round(tax),
                     totalFees: Math.round(totalFees),
@@ -121,10 +131,10 @@ export default function SParfumPricesPage() {
                     costPrice: Math.round(costPrice),
                     netProfit: Math.round(netProfit),
                     netProfitPct: Math.round(netProfitPct),
-                    margin: Math.round((netRemainder / item.price) * 100),
-                    costPricePct: Math.round((costPrice / item.price) * 100),
-                    logisticsPct: Math.round((item.logistics / item.price) * 100),
-                    feesPct: Math.round(((commission + tax) / item.price) * 100)
+                    margin: Math.round((netRemainder / price) * 100),
+                    costPricePct: Math.round((costPrice / price) * 100),
+                    logisticsPct: Math.round((logistics / price) * 100),
+                    feesPct: Math.round(((commission + tax) / price) * 100)
                 };
             });
 
@@ -408,7 +418,25 @@ export default function SParfumPricesPage() {
                     <h1 className="header-title" style={{ fontWeight: '100', letterSpacing: '0.1em', marginBottom: '1rem' }}>
                         ДЕТАЛЬНЫЙ АНАЛИЗ <span style={{ color: '#c9a05a' }}>S-PARFUM</span> ПО ПОЗИЦИЯМ
                     </h1>
-                    <p style={{ color: 'rgba(255,255,255,0.4)' }}>Индивидуальный расчет выплат для каждого аромата</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                        <p style={{ color: 'rgba(255,255,255,0.4)', margin: 0 }}>Индивидуальный расчет выплат для каждого аромата</p>
+                        <a
+                            href="/ozon/perfume-guide"
+                            style={{
+                                color: '#3b82f6',
+                                fontSize: '0.75rem',
+                                textDecoration: 'none',
+                                border: '1px solid rgba(59, 130, 246, 0.3)',
+                                padding: '4px 12px',
+                                borderRadius: '100px',
+                                background: 'rgba(59, 130, 246, 0.05)',
+                                fontWeight: 'bold',
+                                letterSpacing: '0.05em'
+                            }}
+                        >
+                            📚 ГВИД ПО OZON КЗ
+                        </a>
+                    </div>
                 </header>
 
                 <section style={{ marginBottom: '5rem' }}>
