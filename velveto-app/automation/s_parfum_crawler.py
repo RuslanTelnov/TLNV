@@ -42,15 +42,16 @@ def get_products():
     all_products = []
     others = []
     
+    # Updated pricing grids based on subagent research
     PRICING = {
         "Classic": {
-            "3 мл": 1500, "15 мл": 6500, "30 мл": 9500, "50 мл": 12500, "100 мл": 18500
+            "3 мл": 1500, "15 мл": 6500, "30 мл": 8500, "50 мл": 11500, "100 мл": 18500
         },
-        "Selective/Author (Std)": {
-            "3 мл": 2250, "15 мл": 9500, "30 мл": 12500, "50 мл": 16500, "100 мл": 26500
+        "Author": {
+            "3 мл": 2250, "15 мл": 9500, "30 мл": 12500, "50 мл": 17000, "100 мл": 26500
         },
-        "Selective/Author (Prem)": {
-            "3 мл": 2400, "15 мл": 10000, "30 мл": 13500, "50 мл": 17500
+        "Exclusive": {
+            "3 мл": 2700, "15 мл": 11500, "30 мл": 15000, "50 мл": 24000, "100 мл": 26500
         }
     }
 
@@ -81,7 +82,7 @@ def get_products():
                 
                 temp_list.append({
                     "name": name,
-                    "href": href,
+                    "link": href,
                     "starting_price": price_val
                 })
         except Exception as e:
@@ -97,37 +98,37 @@ def get_products():
         
         name = item['name']
         price_val = item['starting_price']
-        href = item['href']
-
-        # Skip non-perfume items early if possible or handle them
-        if any(word in name.lower() for word in ["свеча", "саше", "гель", "сыворотка", "соль", "мист"]):
-            sku, img = get_product_details(session, href)
-            others.append({
-                "name": name,
-                "sku": sku,
-                "image": img,
-                "price": price_val,
-                "logistics": 212
-            })
-            continue
+        href = item['link']
 
         sku, img = get_product_details(session, href)
         
-        # Tier detection
+        # Detection logic refined
         tier = "Classic"
         if price_val == 1500:
             tier = "Classic"
         elif price_val == 2250:
-            tier = "Selective/Author (Std)"
-        elif price_val == 2400:
-            tier = "Selective/Author (Prem)"
+            tier = "Author"
+        elif price_val == 2700:
+            tier = "Exclusive"
         elif price_val > 5000:
             if price_val == 6500:
                 tier = "Classic"
             elif price_val == 9500:
-                tier = "Selective/Author (Std)"
-            elif price_val == 10000:
-                tier = "Selective/Author (Prem)"
+                tier = "Author"
+            elif price_val == 11500:
+                tier = "Exclusive"
+
+        # Special handling for "other" items
+        if any(word in name.lower() for word in ["свеча", "саше", "гель", "сыворотка", "соль", "мист", "диффузор", "автопарфюм"]):
+            others.append({
+                "name": name,
+                "sku": sku,
+                "image": img,
+                "link": href,
+                "price": price_val,
+                "logistics": 212
+            })
+            continue
 
         volumes = {}
         grid = PRICING.get(tier, PRICING["Classic"])
@@ -139,6 +140,7 @@ def get_products():
             "name": name,
             "sku": sku,
             "image": img,
+            "link": href,
             "tier": tier,
             "volumes": volumes
         })
@@ -151,4 +153,4 @@ if __name__ == "__main__":
     result = {"prices": products, "others": others}
     with open('data/s_parfum_full_catalog.json', 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
-    print(f"Final: Saved {len(products)} perfumes and {len(others)} other items with SKU and images.")
+    print(f"Final: Saved {len(products)} perfumes and {len(others)} other items with links and tiers.")

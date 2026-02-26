@@ -4,7 +4,8 @@
             "name": "Парфюмерная вода \"White Chocolate\"",
             "sku": "R-011 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/r11%202.jpeg?itok=EPj5ReIT",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-white-chocolate",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -19,7 +20,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -32,6 +33,7 @@
             "name": "Парфюмерная вода \"Secret Orchid\"",
             "sku": "V-027 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/v27.jpeg?itok=tmN-PEUw",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-secret-orchid",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -43,11 +45,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -60,7 +62,8 @@
             "name": "Парфюмерная вода \"Palitra\"",
             "sku": "G-013 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/g13.jpeg?itok=kUUg9Md_",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-palitra",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -75,7 +78,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -88,6 +91,7 @@
             "name": "Парфюмерная вода \"Bony Sweet\"",
             "sku": "V-026 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-08/WhatsApp%20Image%202025-08-04%20at%2011.42.49.jpeg?itok=i7QZxtCW",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-bony-sweet",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -99,11 +103,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -116,22 +120,27 @@
             "name": "Парфюмерная вода «Sunny Frangipani»",
             "sku": "S-038 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-08/WhatsApp%20Image%202025-08-04%20at%2011.42.50.jpeg?itok=MRNveCa7",
-            "tier": "Selective/Author (Prem)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-sunny-frangipani",
+            "tier": "Classic",
             "volumes": {
                 "3 мл": {
-                    "price": 2400,
+                    "price": 1500,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 10000,
+                    "price": 6500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 13500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 17500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
                     "logistics": 750
                 }
             }
@@ -140,7 +149,8 @@
             "name": "Парфюмерная вода \"Sarafan\"",
             "sku": "S-037 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-07/s37.jpeg?itok=nW4m1wyJ",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-sarafan",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -155,7 +165,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -168,30 +178,7 @@
             "name": "Парфюмерная вода \"Tilia's Shine\"",
             "sku": "T-022 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/WhatsApp%20Image%202025-06-05%20at%2015.07.48%20%281%29.jpeg?itok=uVxP07AU",
-            "tier": "Selective/Author (Prem)",
-            "volumes": {
-                "3 мл": {
-                    "price": 2400,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 10000,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 13500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 17500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Парфюмерная вода \"Flight of Imagination\"",
-            "sku": "L-012 m",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-04/L12.jpg?itok=dQzH6LvL",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-tilias-shine",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -203,11 +190,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -217,10 +204,40 @@
             }
         },
         {
+            "name": "Парфюмерная вода \"Flight of Imagination\"",
+            "sku": "L-012 m",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-04/L12.jpg?itok=dQzH6LvL",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-flight-imagination",
+            "tier": "Exclusive",
+            "volumes": {
+                "3 мл": {
+                    "price": 2700,
+                    "logistics": 212
+                },
+                "15 мл": {
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "30 мл": {
+                    "price": 15000,
+                    "logistics": 750
+                },
+                "50 мл": {
+                    "price": 24000,
+                    "logistics": 750
+                },
+                "100 мл": {
+                    "price": 26500,
+                    "logistics": 750
+                }
+            }
+        },
+        {
             "name": "Парфюмерная вода \"Amor Delight\"",
             "sku": "A-029 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-04/%D0%B0%2029.jpg?itok=yddMUlNP",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-amor-delight",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -235,7 +252,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -248,22 +265,27 @@
             "name": "Парфюмерная вода \"Talisman\"",
             "sku": "E-007 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-04/%D0%B57%20.jpg?itok=HBmcoQKn",
-            "tier": "Selective/Author (Prem)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-talisman",
+            "tier": "Classic",
             "volumes": {
                 "3 мл": {
-                    "price": 2400,
+                    "price": 1500,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 10000,
+                    "price": 6500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 13500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 17500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
                     "logistics": 750
                 }
             }
@@ -272,7 +294,8 @@
             "name": "Парфюмерная вода \"Soul of Madurai\"",
             "sku": "M-040 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M40%281%29.jpg?itok=WmERH_yo",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-soul-madurai",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -287,7 +310,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -300,7 +323,8 @@
             "name": "Парфюмерная вода \"Black Spirit\"",
             "sku": "K-005 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/K5%281%29%202.jpg?itok=MMEUPRzT",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-black-spirit",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -315,7 +339,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -328,7 +352,8 @@
             "name": "Парфюмерная вода \"Vanilla\"",
             "sku": "Z-013 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Z13%281%29%202.jpg?itok=IKOuKbL8",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-vanilla",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -343,7 +368,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -356,7 +381,8 @@
             "name": "Парфюмерная вода \"Crimson Chaos\"",
             "sku": "B-028 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/B28%281%29.jpg?itok=famxPhZ8",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-crimson-chaos",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -371,7 +397,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -384,7 +410,8 @@
             "name": "Парфюмерная вода \"Under One Umbrella\"",
             "sku": "F-006 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/F6%281%29%202.jpg?itok=RyqyQJh6",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-under-one-umbrella",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -399,7 +426,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -412,7 +439,8 @@
             "name": "Парфюмерная вода \"Black Pepper\"",
             "sku": "Z-010 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Z10%281%29%202.jpg?itok=1fZw68Kn",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-black-pepper",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -427,7 +455,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -440,7 +468,8 @@
             "name": "Парфюмерная вода \"Imperial Forest\"",
             "sku": "E-004 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/E4%281%29.jpg?itok=NSOr88zk",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-imperial-forest",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -455,7 +484,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -468,26 +497,27 @@
             "name": "Парфюмерная вода \"Oud for Joy\"",
             "sku": "I-008 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/I8%281%29.jpg?itok=P3dQ9-Kz",
-            "tier": "Classic",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-oud-joy",
+            "tier": "Exclusive",
             "volumes": {
                 "3 мл": {
-                    "price": 1500,
+                    "price": 2700,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 6500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
+                    "price": 15000,
+                    "logistics": 750
                 },
                 "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
+                    "price": 24000,
+                    "logistics": 750
                 },
                 "100 мл": {
-                    "price": 18500,
+                    "price": 26500,
                     "logistics": 750
                 }
             }
@@ -496,7 +526,8 @@
             "name": "Парфюмерная вода \"Senuber\"",
             "sku": "S-100 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S100%281%29.jpg?itok=08Ubk4J6",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-senuber",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -511,7 +542,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -524,6 +555,7 @@
             "name": "Парфюмерная вода \"True Love\"",
             "sku": "D-019 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/D19%281%29%202.jpg?itok=Jx3P37SD",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-true-love",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -535,11 +567,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -552,7 +584,8 @@
             "name": "Парфюмерная вода \"Intrigue\"",
             "sku": "H-005 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/H5%281%29.jpg?itok=YkgnzB1s",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-intrigue",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -567,7 +600,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -580,7 +613,8 @@
             "name": "Парфюмерная вода \"Why not\"",
             "sku": "S-032 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/s32.jpg?itok=frB7vDAN",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-why-not",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -595,7 +629,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -608,6 +642,7 @@
             "name": "Парфюмерная вода «Blue Azurе»",
             "sku": "D-018 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/d18.jpeg?itok=BfjQgetD",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-blue-azure",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -619,11 +654,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -636,6 +671,7 @@
             "name": "Парфюмерная вода \"INSPIRE\"",
             "sku": "G-014 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/g14.jpeg?itok=FFqmksON",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-inspire",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -647,11 +683,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -664,7 +700,8 @@
             "name": "Парфюмерная вода \"Gardens of love\"",
             "sku": "G-016 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/g16.jpg?itok=qz9g8omp",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-gardens-love",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -679,7 +716,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -692,6 +729,7 @@
             "name": "Парфюмерная вода \"Spicy citrus\"",
             "sku": "T-020 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/%D1%8220.jpg?itok=OOJrhBhT",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-spicy-citrus",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -703,11 +741,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -720,7 +758,8 @@
             "name": "Парфюмерная вода \"Noble leather\"",
             "sku": "T-019 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/%D1%8219.jpg?itok=pXOhLmUC",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-noble-leather",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -735,7 +774,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -748,7 +787,8 @@
             "name": "Парфюмерная вода \"Amber Night\" 2",
             "sku": "S-144 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/s144.jpeg?itok=B_-Fk5A8",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-amber-night-2",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -763,7 +803,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -776,7 +816,8 @@
             "name": "Парфюмерная вода \"Elegance\"",
             "sku": "S-099 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s99.jpg?itok=_xs4GfDK",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-elegance",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -791,7 +832,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -804,7 +845,8 @@
             "name": "Парфюмерная вода \" Hot wind \"",
             "sku": "S-095 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s95.jpg?itok=ZpbGoLph",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-hot-wind",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -819,7 +861,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -832,6 +874,7 @@
             "name": "Парфюмерная вода \"Diamond Queen\"",
             "sku": "P-012 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/%D1%8012.jpg?itok=DXY-lE9G",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-diamond-queen",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -843,11 +886,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -860,7 +903,8 @@
             "name": "Парфюмерная вода \"Pistachio Ice Cream\"",
             "sku": "S-034 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S34%281%29.jpg?itok=9l2IvO0E",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-pistachio-ice-cream",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -875,7 +919,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -888,6 +932,7 @@
             "name": "Парфюмерная вода \"Golden Wings\"",
             "sku": "V-020 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/v20.png?itok=mv5UlW2g",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-golden-wings",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -899,11 +944,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -916,7 +961,8 @@
             "name": "Парфюмерная вода \"Sea Salt\"",
             "sku": "J-010 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/J10%281%29.jpg?itok=CyLNKZgX",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-sea-salt",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -931,7 +977,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -944,6 +990,7 @@
             "name": "Парфюмерная вода \"Wonderful Moment\"",
             "sku": "S-036 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S36%281%29.jpg?itok=pRmUffj-",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-wonderful-moment",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -955,11 +1002,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -972,7 +1019,8 @@
             "name": "Парфюмерная вода \"Bluebell\"",
             "sku": "J-011 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/J11%281%29.jpg?itok=6vpJS2EL",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-bluebell",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -987,7 +1035,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1000,7 +1048,8 @@
             "name": "Парфюмерная вода \"Mango Bliss\"",
             "sku": "V-028 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/V28%281%29.jpg?itok=8eUjpi57",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-mango-bliss",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1015,7 +1064,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1028,6 +1077,7 @@
             "name": "Парфюмерная вода \"Candy Bloom\"",
             "sku": "V-023 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/v23.png?itok=PP1l2Jkc",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-candy-bloom",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1039,11 +1089,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1056,7 +1106,8 @@
             "name": "Парфюмерная вода \"Rosemary, Lemon, Neroli\"",
             "sku": "Z-011 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Z11%281%29.jpg?itok=WY4k5s1M",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-rosemary-lemon-neroli",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1071,7 +1122,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1081,149 +1132,10 @@
             }
         },
         {
-            "name": "Ароматический диффузор \"Black currant\"",
-            "sku": "15 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Black%20currant.jpg?itok=U6yXvEfy",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Paris\"",
-            "sku": "10 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Paris.jpg?itok=0U72CVw_",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Bazar\"",
-            "sku": "6 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Bazar.jpg?itok=oN1GzzJY",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Orange\"",
-            "sku": "9 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Orange.jpg?itok=Re7TbNpf",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Pudra\"",
-            "sku": "11 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Pudra.jpg?itok=SVQp4IMZ",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
             "name": "Парфюмерная вода \"The Magic Voice\"",
             "sku": "V-022 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/V22.jpg?itok=RBdQZ2qj",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-magic-voice",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1235,11 +1147,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1252,6 +1164,7 @@
             "name": "Парфюмерная вода \"My favorite sea\"",
             "sku": "V-024 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/v24.jpg?itok=0esf9huE",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-my-favorite-sea",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1263,11 +1176,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1280,6 +1193,7 @@
             "name": "Парфюмерная вода \"In joy\"",
             "sku": "D-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/WhatsApp%20Image%202024-08-21%20at%2013.47.35_0.jpeg?itok=D0erwBxp",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-joy",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1291,11 +1205,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1308,6 +1222,7 @@
             "name": "Парфюмерная вода \"The Only One\"",
             "sku": "D-003 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/d3.jpg?itok=35p3pd_Q",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-only-one",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1319,11 +1234,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1336,7 +1251,8 @@
             "name": "Парфюмерная вода \"Lotus & Apple\"",
             "sku": "Z-012 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Z12%281%29_0.jpg?itok=KFbItUfD",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-lotus-apple",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1351,7 +1267,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1364,7 +1280,8 @@
             "name": "Парфюмерная вода \"White for her\"",
             "sku": "B-023 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/B23.jpg?itok=yCxAdCrI",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-white-her-0",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1379,7 +1296,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1392,6 +1309,7 @@
             "name": "Парфюмерная вода \"Ariana's cloud\"",
             "sku": "A-028 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/A28%281%29.jpg?itok=1yvoccTy",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-arianas-cloud",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1403,11 +1321,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1420,6 +1338,7 @@
             "name": "Парфюмерная вода \"Gardenia\"",
             "sku": "G-009 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/g9_0.jpg?itok=Br7TzgA-",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-gardenia",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1431,11 +1350,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1448,54 +1367,7 @@
             "name": "Парфюмерная вода \"Honey Peach\"",
             "sku": "S-088 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s88.jpg?itok=KcoU03vr",
-            "tier": "Selective/Author (Prem)",
-            "volumes": {
-                "3 мл": {
-                    "price": 2400,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 10000,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 13500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 17500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Парфюмерная вода \"Satellite\"",
-            "sku": "M-002 u",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M2%281%29.jpg?itok=SVpYugTa",
-            "tier": "Selective/Author (Prem)",
-            "volumes": {
-                "3 мл": {
-                    "price": 2400,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 10000,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 13500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 17500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Парфюмерная вода \"Green Tea\"",
-            "sku": "S-077 w",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s77.jpg?itok=tnVyoHYp",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-honey-peach",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1507,11 +1379,69 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
+                    "logistics": 750
+                }
+            }
+        },
+        {
+            "name": "Парфюмерная вода \"Satellite\"",
+            "sku": "M-002 u",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M2%281%29.jpg?itok=SVpYugTa",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-satellite",
+            "tier": "Classic",
+            "volumes": {
+                "3 мл": {
+                    "price": 1500,
+                    "logistics": 212
+                },
+                "15 мл": {
+                    "price": 6500,
+                    "logistics": 699
+                },
+                "30 мл": {
+                    "price": 8500,
+                    "logistics": 699
+                },
+                "50 мл": {
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
+                    "logistics": 750
+                }
+            }
+        },
+        {
+            "name": "Парфюмерная вода \"Green Tea\"",
+            "sku": "S-077 w",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s77.jpg?itok=tnVyoHYp",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-green-tea",
+            "tier": "Classic",
+            "volumes": {
+                "3 мл": {
+                    "price": 1500,
+                    "logistics": 212
+                },
+                "15 мл": {
+                    "price": 6500,
+                    "logistics": 699
+                },
+                "30 мл": {
+                    "price": 8500,
+                    "logistics": 699
+                },
+                "50 мл": {
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1524,7 +1454,8 @@
             "name": "Парфюмерная вода \"Peony\"",
             "sku": "J-009 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/J9.jpg?itok=sipZDTbk",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-peony-0",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1539,7 +1470,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1552,7 +1483,8 @@
             "name": "Парфюмерная вода \"VITAL\"",
             "sku": "A-026 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-07/A26.png?itok=2ojTp5Lb",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-vital",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1567,7 +1499,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1580,6 +1512,7 @@
             "name": "Парфюмерная вода \"A MODO MIO\"",
             "sku": "A-027 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/A27%281%29.jpg?itok=M4xth6ya",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-modo-mio",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1591,11 +1524,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1608,6 +1541,7 @@
             "name": "Парфюмерная вода \"THE POEM\"",
             "sku": "S-090 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-07/S90.jpg?itok=wnOEbQvy",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-poem",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1619,11 +1553,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1636,7 +1570,8 @@
             "name": "Парфюмерная вода \"SANTORINI\"",
             "sku": "S-085 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-07/S85%20%D0%B1%D1%84.png?itok=5xWCR-Rz",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-santorini",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1651,7 +1586,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1664,7 +1599,8 @@
             "name": "Парфюмерная вода \"Flute\"",
             "sku": "S-080 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s80.jpg?itok=ota4JLeG",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-flute",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1679,7 +1615,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1692,22 +1628,27 @@
             "name": "Парфюмерная вода \"Ginger Heart\"",
             "sku": "S-060 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s60.jpg?itok=FBh_j0_6",
-            "tier": "Selective/Author (Prem)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-ginger-heart",
+            "tier": "Classic",
             "volumes": {
                 "3 мл": {
-                    "price": 2400,
+                    "price": 1500,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 10000,
+                    "price": 6500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 13500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 17500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
                     "logistics": 750
                 }
             }
@@ -1716,7 +1657,8 @@
             "name": "Парфюмерная вода \"PATCHOULI\"",
             "sku": "S-035 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-07/S35.png?itok=FCqI8qXw",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-patchouli",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1731,7 +1673,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1744,7 +1686,8 @@
             "name": "Парфюмерная вода \"ADVENTURE TIME\"",
             "sku": "A-025 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-07/A25%20%D0%B1%D1%84.png?itok=L-HAWJFJ",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-adventure-time",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1759,7 +1702,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1772,6 +1715,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"CLOUD FAIRY\"",
             "sku": "S-065 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/S-065.png?itok=nDVRBE8B",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-cloud-fairy",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1783,11 +1727,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1800,7 +1744,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"NEGA\"",
             "sku": "S-070 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/S-070.png?itok=Q27WWZUK",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-nega",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1815,7 +1760,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1828,6 +1773,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"WILD\" 2",
             "sku": "D-117 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/D-017.jpg?itok=WrXZPr3X",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-wild-2",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -1839,11 +1785,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -1856,7 +1802,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"SUGAR\"",
             "sku": "F-005 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/F-005.png?itok=F9qdQthX",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-sugar",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1871,7 +1818,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1884,7 +1831,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"SUNNY ISLAND\"",
             "sku": "M-035 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/M-035.png?itok=YE-i0qvk",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-sunny-island",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1899,7 +1847,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1912,7 +1860,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"AFTER LOVE\"",
             "sku": "T-018 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/t18.jpg?itok=jIjyQ_gZ",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-after-love",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1927,7 +1876,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1940,7 +1889,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"SANTAL\"",
             "sku": "L-006 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/L-006.png?itok=ce9NKTIo",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-santal",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1955,7 +1905,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1968,7 +1918,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"AILES D'ANGE\"",
             "sku": "K-002 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/K-002.png?itok=5ahNeX0u",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-ailes-dange",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -1983,7 +1934,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -1996,7 +1947,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"RHAPSODY\"",
             "sku": "S-075 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/S-075_0.png?itok=6ZXgdh3z",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-rhapsody",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2011,7 +1963,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2021,93 +1973,10 @@
             }
         },
         {
-            "name": "Ароматический диффузор \"White flowers\"",
-            "sku": "12 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/White%20flowers.jpg?itok=qicWNwxd",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Lemongrass\"",
-            "sku": "8 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Lemongrass.jpg?itok=xGepn8QK",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Ароматический диффузор \"Hawaii\"",
-            "sku": "7 home",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Hawaii.jpg?itok=7AAUOOgN",
-            "tier": "Classic",
-            "volumes": {
-                "3 мл": {
-                    "price": 1500,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 6500,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
-                },
-                "100 мл": {
-                    "price": 18500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
             "name": "ПАРФЮМЕРНАЯ ВОДА \"MALIBU\"",
             "sku": "M-029 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/%D0%9C-029.jpg?itok=GepkociQ",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-malibu",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2119,11 +1988,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2136,6 +2005,7 @@
             "name": "Парфюмерная вода \"Night angel\"",
             "sku": "S-040 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S40%281%29.jpg?itok=vKemfQf2",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-night-angel",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2147,11 +2017,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2164,6 +2034,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"TASTE OF LIFE\"",
             "sku": "G-012 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/G-12.jpg?itok=W0j5SlnO",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-taste-life",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2175,11 +2046,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2192,6 +2063,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"VERY NEEDFUL\"",
             "sku": "A-016 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/A-016.png?itok=vQZund-V",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-very-needful",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2203,11 +2075,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2220,7 +2092,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"CREAMY AMBER\"",
             "sku": "S-025 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/s25.jpg?itok=pntLPGvM",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-creamy-amber",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2235,7 +2108,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2248,7 +2121,8 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"JAZZ IN BROOKLIN\"",
             "sku": "M-030 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/%D0%9C-030.png?itok=7kdIhmgW",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-jazz-brooklin",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2263,7 +2137,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2276,6 +2150,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"ILLUSION\"",
             "sku": "P-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/%D0%A0-001.png?itok=8i5esbFH",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-illusion",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2287,11 +2162,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2304,6 +2179,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"BRIGHT SCARLET\"",
             "sku": "N-008 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/N-008.png?itok=yaAbpq5p",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-bright-scarlet",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2315,11 +2191,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2332,6 +2208,7 @@
             "name": "ПАРФЮМЕРНАЯ ВОДА \"RAGGI DI FELICITA\"",
             "sku": "G-011 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2023-01/G-011.jpg?itok=R4d6qp_A",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-raggi-di-felicita",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2343,11 +2220,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2360,7 +2237,8 @@
             "name": "Парфюмерная вода \"Peach liqueur\"",
             "sku": "T-016 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-11/%D0%A2-016.jpg?itok=ZGtcqM2J",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-peach-liqueur",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2375,7 +2253,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2388,7 +2266,8 @@
             "name": "Парфюмерная вода \"Pelle di mare\"",
             "sku": "M-028 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M28%281%29.jpg?itok=gbKlQxeW",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-pelle-di-mare",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2403,7 +2282,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2416,26 +2295,27 @@
             "name": "Парфюмерная вода \"Divine Musk\"",
             "sku": "I-007 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-11/I-007_0.jpg?itok=c_Yo17BX",
-            "tier": "Classic",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-divine-musk",
+            "tier": "Exclusive",
             "volumes": {
                 "3 мл": {
-                    "price": 1500,
+                    "price": 2700,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 6500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
+                    "price": 15000,
+                    "logistics": 750
                 },
                 "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
+                    "price": 24000,
+                    "logistics": 750
                 },
                 "100 мл": {
-                    "price": 18500,
+                    "price": 26500,
                     "logistics": 750
                 }
             }
@@ -2444,6 +2324,7 @@
             "name": "Парфюмерная вода \"My force\"",
             "sku": "A-018 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-11/A-018.jpg?itok=i7rKHOBC",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-my-force",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2455,11 +2336,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2472,7 +2353,8 @@
             "name": "Парфюмерная вода \"Ethnos-2\"",
             "sku": "B-112 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-03/B-012.jpg?itok=fyVg3d4r",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-ethnos-2",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2487,7 +2369,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2500,26 +2382,27 @@
             "name": "Парфюмерная вода \"Sea abyss\"",
             "sku": "O-002 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/O2%281%29.jpg?itok=eJnRYNZb",
-            "tier": "Classic",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-sea-abyss",
+            "tier": "Exclusive",
             "volumes": {
                 "3 мл": {
-                    "price": 1500,
+                    "price": 2700,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 6500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
+                    "price": 15000,
+                    "logistics": 750
                 },
                 "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
+                    "price": 24000,
+                    "logistics": 750
                 },
                 "100 мл": {
-                    "price": 18500,
+                    "price": 26500,
                     "logistics": 750
                 }
             }
@@ -2528,26 +2411,27 @@
             "name": "Парфюмерная вода \"Ode to freshness\"",
             "sku": "L-008 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/L8%281%29.jpg?itok=inSPqdqg",
-            "tier": "Classic",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-ode-freshness",
+            "tier": "Exclusive",
             "volumes": {
                 "3 мл": {
-                    "price": 1500,
+                    "price": 2700,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 6500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
-                    "logistics": 699
+                    "price": 15000,
+                    "logistics": 750
                 },
                 "50 мл": {
-                    "price": 12500,
-                    "logistics": 699
+                    "price": 24000,
+                    "logistics": 750
                 },
                 "100 мл": {
-                    "price": 18500,
+                    "price": 26500,
                     "logistics": 750
                 }
             }
@@ -2556,7 +2440,8 @@
             "name": "Парфюмерная вода \"Amazing aught\"",
             "sku": "T-014 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/T-14_0.jpg?itok=CVs3HRpS",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-amazing-aught",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2571,7 +2456,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2584,6 +2469,7 @@
             "name": "Парфюмерная вода \"Simple&bright\"",
             "sku": "V-018 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/V-18_0.jpg?itok=2A3b6tgE",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-simplebright",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2595,11 +2481,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2612,6 +2498,7 @@
             "name": "Парфюмерная вода \"Distesa\"",
             "sku": "E-002 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/E-02.jpg?itok=sTdBbsnV",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-distesa",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2623,11 +2510,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2640,7 +2527,8 @@
             "name": "Парфюмерная вода \"Savage beast\"",
             "sku": "B-025 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/B25%281%29.jpg?itok=jYlH37WK",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-savage-beast",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2655,7 +2543,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2668,6 +2556,7 @@
             "name": "Парфюмерная вода \"Goddes\"",
             "sku": "L-015 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/L-15.jpg?itok=8J_iwVeU",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-goddes",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2679,11 +2568,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2696,22 +2585,27 @@
             "name": "Парфюмерная вода \"Particle 05\"",
             "sku": "M-027 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/M-027.jpg?itok=AzIHrG9U",
-            "tier": "Selective/Author (Prem)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-particle-05",
+            "tier": "Classic",
             "volumes": {
                 "3 мл": {
-                    "price": 2400,
+                    "price": 1500,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 10000,
+                    "price": 6500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 13500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 17500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
                     "logistics": 750
                 }
             }
@@ -2720,7 +2614,8 @@
             "name": "Парфюмерная вода \"Phantom\"",
             "sku": "B-024 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/B-24.jpg?itok=eV_mYepK",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-phantom",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2735,7 +2630,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2748,7 +2643,8 @@
             "name": "Парфюмерная вода \"Venera\"",
             "sku": "P-011 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2021-02/P-11.jpg?itok=InsT-5BH",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-venera",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2763,7 +2659,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2776,7 +2672,8 @@
             "name": "Парфюмерная вода \"Invisible Skin\"",
             "sku": "J-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/J7%281%29_0.jpg?itok=Z13jQWg3",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-invisible-skin",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2791,7 +2688,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2804,7 +2701,8 @@
             "name": "Парфюмерная вода \"Berryrain\"",
             "sku": "J-008 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/J8%281%29%202.jpg?itok=COfJwXQe",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-berryrain",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2819,7 +2717,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2832,7 +2730,8 @@
             "name": "Парфюмерная вода \"Desiderio 2\"",
             "sku": "T-113 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-09/T-013.jpg?itok=EEXrrVTC",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-desiderio-2",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2847,7 +2746,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2860,6 +2759,7 @@
             "name": "Парфюмерная вода \"Cleopatra\"",
             "sku": "L-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/L1%281%29.jpg?itok=i75LgA7P",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-cleopatra",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -2871,11 +2771,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -2888,22 +2788,27 @@
             "name": "Парфюмерная вода \"Arabian secrets\"",
             "sku": "A-020 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-02/A-020.jpg?itok=94REyH_-",
-            "tier": "Selective/Author (Prem)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-arabian-secrets",
+            "tier": "Classic",
             "volumes": {
                 "3 мл": {
-                    "price": 2400,
+                    "price": 1500,
                     "logistics": 212
                 },
                 "15 мл": {
-                    "price": 10000,
+                    "price": 6500,
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 13500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 17500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
                     "logistics": 750
                 }
             }
@@ -2912,7 +2817,8 @@
             "name": "Парфюмерная вода \"Milano\"",
             "sku": "S-020 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-01/S-020.jpg?itok=IIySpHS5",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-milano",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2927,7 +2833,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2940,7 +2846,8 @@
             "name": "Парфюмерная вода \"White for her\"",
             "sku": "B-023 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-01/B-023.jpg?itok=NWcJK90F",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-white-her",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2955,7 +2862,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2968,7 +2875,8 @@
             "name": "Парфюмерная вода \"Luce stellare\"",
             "sku": "T-007 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-01/T-007.jpg?itok=jOLPYx31",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-luce-stellare",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -2983,7 +2891,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -2996,6 +2904,7 @@
             "name": "Парфюмерная вода \"Parisien\"",
             "sku": "A-017 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-01/A-017.jpg?itok=GbcIdbSn",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-parisien",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3007,11 +2916,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3024,6 +2933,7 @@
             "name": "Парфюмерная вода \"Dope\"",
             "sku": "B-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/B-001.jpg?itok=Q0wYCkXQ",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-dope",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3035,11 +2945,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3052,6 +2962,7 @@
             "name": "Парфюмерная вода \"Love Is\"",
             "sku": "A-002 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-002.jpg?itok=yh_ghC-H",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-love",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3063,11 +2974,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3080,7 +2991,8 @@
             "name": "Парфюмерная вода \"S parfum\"",
             "sku": "S-055 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S55%281%29.jpg?itok=RJbox5Ca",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-s-parfum",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -3095,7 +3007,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -3108,6 +3020,7 @@
             "name": "Парфюмерная вода \"About You\"",
             "sku": "T-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/T-001%20%281%29.jpg?itok=winezPTF",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-about-you",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3119,11 +3032,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3136,6 +3049,7 @@
             "name": "Парфюмерная вода \"Madness\"",
             "sku": "V-012 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-012.jpg?itok=25wob5-S",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-madness",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3147,11 +3061,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3164,6 +3078,7 @@
             "name": "Парфюмерная вода \"Apple Star\"",
             "sku": "N-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/N-004.jpg?itok=XOcg5Mdt",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-apple-star",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3175,11 +3090,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3192,6 +3107,7 @@
             "name": "Парфюмерная вода \"Life is Wonderful\"",
             "sku": "L-014 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/L-014.jpg?itok=xDxnxg5b",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-life-wonderful",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3203,11 +3119,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3220,6 +3136,7 @@
             "name": "Парфюмерная вода \"Desire\"",
             "sku": "C-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-09/c4.jpg?itok=V3wqM57A",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-desire",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3231,11 +3148,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3248,6 +3165,7 @@
             "name": "Парфюмерная вода \"Muza\"",
             "sku": "C-009 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/C-009%20%281%29.jpg?itok=jzd09v7u",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-muza",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3259,11 +3177,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3276,6 +3194,7 @@
             "name": "Парфюмерная вода \"Cutie\"",
             "sku": "G-010 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/G-010_0.jpg?itok=SXxnlHTd",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-cutie",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3287,11 +3206,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3304,6 +3223,7 @@
             "name": "Парфюмерная вода \"Diamond Woman\"",
             "sku": "L-010 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/L-010.jpg?itok=mUk2Pkqb",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-diamond-woman",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3315,11 +3235,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3332,6 +3252,7 @@
             "name": "Парфюмерная вода \"Fiji\"",
             "sku": "L-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/L4%281%29.jpg?itok=A7PPwmJk",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-fiji",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3343,11 +3264,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3360,6 +3281,7 @@
             "name": "Парфюмерная вода \"Fun Day\"",
             "sku": "M-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-004%20%281%29.jpg?itok=xx6Tcahb",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-fun-day",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3371,11 +3293,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3388,6 +3310,7 @@
             "name": "Парфюмерная вода \"Trendy\"",
             "sku": "R-006 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/R-006.jpg?itok=G_4nC6oZ",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-trendy",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3399,11 +3322,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3416,6 +3339,7 @@
             "name": "Парфюмерная вода \"Monica Bellucci\"",
             "sku": "S-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S7%281%29.jpg?itok=PRaFHGdl",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-monica-bellucci",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3427,11 +3351,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3444,6 +3368,7 @@
             "name": "Парфюмерная вода \"Bony\"",
             "sku": "B-018 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/B18%281%29.jpg?itok=_aUKwclB",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-bony",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3455,11 +3380,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3472,7 +3397,8 @@
             "name": "Парфюмерная вода \"The Secret Rose\"",
             "sku": "M-021 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-021.jpg?itok=LpJJq49K",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-secret-rose",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -3487,7 +3413,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -3500,6 +3426,7 @@
             "name": "Парфюмерная вода \"Luxury Red\"",
             "sku": "A-014 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-014.jpg?itok=m8fYLAaz",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-luxury-red",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3511,11 +3438,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3528,6 +3455,7 @@
             "name": "Парфюмерная вода \"Jewel\"",
             "sku": "J-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-01/J-001.jpg?itok=_TA4hhZq",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-jewel",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3539,11 +3467,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3556,6 +3484,7 @@
             "name": "Парфюмерная вода \"Azure\"",
             "sku": "D-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/D-007.jpg?itok=TOQWmcxo",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-azure",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3567,11 +3496,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3584,6 +3513,7 @@
             "name": "Парфюмерная вода \"Fleur de Paradis\"",
             "sku": "G-005 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/G-005.jpg?itok=iVZtcwuQ",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-fleur-de-paradis",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3595,11 +3525,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3612,6 +3542,7 @@
             "name": "Парфюмерная вода \"Summer Breath\"",
             "sku": "I-006 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/I-006.jpg?itok=yuwIC9bW",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-summer-breath",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3623,11 +3554,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3640,6 +3571,7 @@
             "name": "Парфюмерная вода \"ZAM-ZAM\"",
             "sku": "Z-001 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Z1%281%29.jpg?itok=rJTaje38",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-zam-zam",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3651,11 +3583,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3668,6 +3600,7 @@
             "name": "Парфюмерная вода \"Sorrento\"",
             "sku": "A-004 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-004.jpg?itok=1YE1tAEH",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-sorrento",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3679,11 +3612,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3696,6 +3629,7 @@
             "name": "Парфюмерная вода \"Paulina\"",
             "sku": "K-003 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/K-003%20%281%29_0.jpg?itok=_SWhGapi",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-paulina",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3707,11 +3641,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3724,6 +3658,7 @@
             "name": "Парфюмерная вода \"Wedding Day\"",
             "sku": "M-012 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-012.jpg?itok=bNWpxbwI",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-wedding-day",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3735,11 +3670,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3752,6 +3687,7 @@
             "name": "Парфюмерная вода \"Crystal Trace\"",
             "sku": "O-005 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/O-005.jpg?itok=aoqqzLrc",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-crystal-trace",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3763,11 +3699,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3780,6 +3716,7 @@
             "name": "Парфюмерная вода \"Silence\"",
             "sku": "V-017 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-017.jpg?itok=GdiQydqt",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-silence",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3791,11 +3728,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3808,6 +3745,7 @@
             "name": "Парфюмерная вода \"Only You\"",
             "sku": "Z-003 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/Z-003.jpg?itok=WD2nPfIr",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-only-you",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3819,11 +3757,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3836,6 +3774,7 @@
             "name": "Парфюмерная вода \"Penelopa\"",
             "sku": "O-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2024-08/o7.jpg?itok=N9M2dgvb",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-penelopa",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3847,11 +3786,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3864,6 +3803,7 @@
             "name": "Парфюмерная вода \"Hype\"",
             "sku": "S-002 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2020-02/S-002.jpg?itok=2L0upLZn",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-hype",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3875,11 +3815,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -3892,7 +3832,8 @@
             "name": "Парфюмерная вода \"Margaret\"",
             "sku": "K-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/K-001.jpg?itok=-DSJP82x",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-margaret",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -3907,7 +3848,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -3920,7 +3861,8 @@
             "name": "Парфюмерная вода \"Fleur de Vanille\"",
             "sku": "M-023 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-023.jpg?itok=-xiE5V7-",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-fleur-de-vanille",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -3935,7 +3877,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -3948,7 +3890,8 @@
             "name": "Парфюмерная вода \"Savannah\"",
             "sku": "B-008 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/B-008.jpg?itok=AnTJb3oz",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-savannah",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -3963,7 +3906,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -3976,6 +3919,7 @@
             "name": "Парфюмерная вода \"Day & Night\"",
             "sku": "A-010 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/A10%281%29.jpg?itok=ifKOrzUf",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-day-night",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -3987,11 +3931,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4004,6 +3948,7 @@
             "name": "Парфюмерная вода \"Only Feeling\"",
             "sku": "V-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-007.jpg?itok=cm8yGjPf",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-only-feeling",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4015,11 +3960,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4032,6 +3977,7 @@
             "name": "Парфюмерная вода \"Charmel\"",
             "sku": "T-002 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/T-002.jpg?itok=q6YHZJiJ",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-charmel",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4043,11 +3989,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4060,6 +4006,7 @@
             "name": "Парфюмерная вода \"Absolute Desire\"",
             "sku": "V-014 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-014.jpg?itok=pPIR_kg5",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-absolute-desire",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4071,11 +4018,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4088,6 +4035,7 @@
             "name": "Парфюмерная вода \"Yes\"",
             "sku": "A-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-007.jpg?itok=DVMInTA9",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-yes",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4099,11 +4047,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4116,6 +4064,7 @@
             "name": "Парфюмерная вода \"Alba\"",
             "sku": "B-020 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/B-020%20%281%29.jpg?itok=0PaNVUmy",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-alba",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4127,11 +4076,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4144,6 +4093,7 @@
             "name": "Парфюмерная вода \"Desire Love\"",
             "sku": "C-019 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/C19%281%29.jpg?itok=zFKnFb5X",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-desire-love",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4155,11 +4105,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4172,6 +4122,7 @@
             "name": "Парфюмерная вода \"Sensation\"",
             "sku": "C-020 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/C-020.jpg?itok=0eAIypBi",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-sensation",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4183,11 +4134,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4200,7 +4151,8 @@
             "name": "Парфюмерная вода \"Chocolate Addict\"",
             "sku": "C-006 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/C6%281%29.jpg?itok=wymCNE-_",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-chocolate-addict",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -4215,7 +4167,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -4228,6 +4180,7 @@
             "name": "Парфюмерная вода \"Flower Heaven\"",
             "sku": "D-001 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/D1%281%29.jpg?itok=41Hrn0ea",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-flower-heaven",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4239,11 +4192,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4256,6 +4209,7 @@
             "name": "Парфюмерная вода \"Flower Soul\"",
             "sku": "E-010 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/E10%281%29.jpg?itok=_az80gui",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-flower-soul",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4267,11 +4221,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4284,6 +4238,7 @@
             "name": "Парфюмерная вода \"Sweet Dream\"",
             "sku": "E-015 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/E-015.jpg?itok=U0u44tqd",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-sweet-dream",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4295,11 +4250,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4312,6 +4267,7 @@
             "name": "Парфюмерная вода \"Blossoming Wood\"",
             "sku": "G-002 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/G-002%20%281%29_0.jpg?itok=fRpeeGlX",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-blossoming-wood",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4323,11 +4279,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4340,6 +4296,7 @@
             "name": "Парфюмерная вода \"Diamond Shine\"",
             "sku": "B-007 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/B-007.jpg?itok=7WW4s7Hx",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-diamond-shine",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4351,11 +4308,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4368,6 +4325,7 @@
             "name": "Парфюмерная вода \"Abilitta\"",
             "sku": "A-013 w",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-013.jpg?itok=Bq9gIPr-",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-abilitta",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4379,11 +4337,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4396,6 +4354,7 @@
             "name": "Парфюмерная вода \"Gold ingot\"",
             "sku": "O-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/O-001.jpg?itok=No8no7EQ",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-gold-ingot",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4407,11 +4366,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4424,6 +4383,7 @@
             "name": "Парфюмерная вода \"Jeu\"",
             "sku": "L-002 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/L-002.jpg?itok=3xaBzejq",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-jeu",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4435,11 +4395,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4452,6 +4412,7 @@
             "name": "Парфюмерная вода \"Greek Cupid\"",
             "sku": "V-004 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/V-004.jpg?itok=EmV-sYh2",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-greek-cupid",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4463,11 +4424,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4480,7 +4441,8 @@
             "name": "Парфюмерная вода \"Pleasure\"",
             "sku": "T-005 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/T-005.jpg?itok=CFX1Bjl5",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-pleasure",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -4495,7 +4457,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -4508,6 +4470,7 @@
             "name": "Парфюмерная вода \"Person\"",
             "sku": "C-008 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/C-008.jpg?itok=XyGRa-UK",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-person",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4519,11 +4482,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4536,6 +4499,7 @@
             "name": "Парфюмерная вода \"Invincible\"",
             "sku": "I-005 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/I-005.jpg?itok=IKZC0gie",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-invincible",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4547,11 +4511,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4564,6 +4528,7 @@
             "name": "Парфюмерная вода \"Saga\"",
             "sku": "M-006 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-006.jpg?itok=suxGcSMS",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-saga",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4575,11 +4540,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4592,6 +4557,7 @@
             "name": "Парфюмерная вода \"Breath\"",
             "sku": "V-002 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/V2%281%29.jpg?itok=othuNmzb",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-breath",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4603,11 +4569,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4620,6 +4586,7 @@
             "name": "Парфюмерная вода \"Flavor\"",
             "sku": "H-008 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/H-008.jpg?itok=qNVugebw",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-flavor",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4631,11 +4598,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4648,7 +4615,8 @@
             "name": "Парфюмерная вода \"Reed forest\"",
             "sku": "K-007 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/K-007.jpg?itok=k0xvtQVj",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-reed-forest",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -4663,7 +4631,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -4676,6 +4644,7 @@
             "name": "Парфюмерная вода \"Single\"",
             "sku": "D-013 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/D-013.jpg?itok=FEw_L2Z1",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-single",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4687,11 +4656,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4704,6 +4673,7 @@
             "name": "Парфюмерная вода \"Dives\"",
             "sku": "T-002 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/T-002..jpg?itok=NmJYVAUP",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-dives",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4715,11 +4685,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4732,6 +4702,7 @@
             "name": "Парфюмерная вода \"Instinct\"",
             "sku": "L-004 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/L4%281%29%20m.jpg?itok=x7nsmMMU",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-instinct",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4743,11 +4714,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4760,6 +4731,7 @@
             "name": "Парфюмерная вода \"Shelter\"",
             "sku": "T-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/T-001.jpg?itok=m968NNf1",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-shelter",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4771,11 +4743,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4788,6 +4760,7 @@
             "name": "Парфюмерная вода \"The perfect man\"",
             "sku": "V-003 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/V-003.jpg?itok=Er7a59SI",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-perfect-man",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4799,11 +4772,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4816,6 +4789,7 @@
             "name": "Парфюмерная вода \"Слезы пустыни\"",
             "sku": "S-001 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/S-001.jpg?itok=mCyGXhTR",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-slezy-pustyni",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4827,11 +4801,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4844,6 +4818,7 @@
             "name": "Парфюмерная вода \"New love\"",
             "sku": "G-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/G-001.jpg?itok=uGeMiYhg",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-new-love",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4855,11 +4830,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4872,7 +4847,8 @@
             "name": "Парфюмерная вода \"Flower addict\"",
             "sku": "F-004 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/F4%281%29.jpg?itok=dHV371qw",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-flower-addict",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -4887,7 +4863,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -4900,6 +4876,7 @@
             "name": "Парфюмерная вода \"Ego\"",
             "sku": "E-009 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/E-009.jpg?itok=jiMmmGhQ",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-ego",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4911,11 +4888,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4928,6 +4905,7 @@
             "name": "Парфюмерная вода \"Deception\"",
             "sku": "A-010 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/A10%281%29_0.jpg?itok=k4EvdFiL",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-deception",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4939,11 +4917,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4956,6 +4934,7 @@
             "name": "Парфюмерная вода \"Trendy sport\"",
             "sku": "A-006 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/A6%281%29.jpg?itok=Q3HdIlWI",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-trendy-sport",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4967,11 +4946,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -4984,6 +4963,7 @@
             "name": "Парфюмерная вода \"Freshness\"",
             "sku": "G-002 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/G-002.jpg?itok=73SvwxSq",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-freshness",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -4995,11 +4975,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5012,6 +4992,7 @@
             "name": "Парфюмерная вода \"Posh\"",
             "sku": "C-009 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/C-009..jpg?itok=-089ng-A",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-posh",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5023,11 +5004,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5040,6 +5021,7 @@
             "name": "Парфюмерная вода \"Liberte\"",
             "sku": "D-010 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/D-010.jpg?itok=vzZynbNE",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-liberte",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5051,11 +5033,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5068,6 +5050,7 @@
             "name": "Парфюмерная вода \"Wild\"",
             "sku": "D-017 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/D17%281%29.jpg?itok=Qk53teQr",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-wild",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5079,11 +5062,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5096,6 +5079,7 @@
             "name": "Парфюмерная вода \"Chief\"",
             "sku": "H-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/H-001.jpg?itok=hPRDUDy0",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-chief",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5107,11 +5091,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5124,6 +5108,7 @@
             "name": "Парфюмерная вода \"Marseille\"",
             "sku": "K-003 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/K-003%20%281%29.jpg?itok=kBiR5VND",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-marseille",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5135,11 +5120,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5152,7 +5137,8 @@
             "name": "Парфюмерная вода \"Moon\"",
             "sku": "K-009 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/K-009.jpg?itok=5Q03AMs6",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-moon",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5167,7 +5153,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5180,6 +5166,7 @@
             "name": "Парфюмерная вода \"Must have\"",
             "sku": "L-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/L-001%20%281%29.jpg?itok=sCDQtPwz",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-must-have",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5191,11 +5178,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5208,6 +5195,7 @@
             "name": "Парфюмерная вода \"Cote d'azur\"",
             "sku": "L-007 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/L-007%20%281%29.jpg?itok=UonMQLIk",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-cote-dazur",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5219,11 +5207,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5236,7 +5224,8 @@
             "name": "Парфюмерная вода \"Caesar\"",
             "sku": "C-004 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/%D0%A14%281%29.jpg?itok=2W3GUsVu",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-caesar",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5251,7 +5240,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5264,7 +5253,8 @@
             "name": "Парфюмерная вода \"Rude diamond\"",
             "sku": "B-022 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/B22%281%29.jpg?itok=rCxkPV-t",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-rude-diamond",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5279,7 +5269,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5292,7 +5282,8 @@
             "name": "Парфюмерная вода \"Rich\"",
             "sku": "S-005 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/S-005%20%281%29.jpg?itok=WrcLb0VP",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-rich",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5307,7 +5298,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5320,7 +5311,8 @@
             "name": "Парфюмерная вода \"Particle 01\"",
             "sku": "M-003 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/%D0%9C-003.jpg?itok=nxD6kgAY",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-particle-01",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5335,7 +5327,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5348,7 +5340,8 @@
             "name": "Парфюмерная вода \"Imagination\"",
             "sku": "M-005 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-005.jpg?itok=e4kmD2_c",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-imagination",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5363,7 +5356,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5376,7 +5369,8 @@
             "name": "Парфюмерная вода \"Particle 04\"",
             "sku": "M-024 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-024.jpg?itok=WqXvgtMa",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-particle-04",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5391,7 +5385,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5404,7 +5398,8 @@
             "name": "Парфюмерная вода \"Dark kabul\"",
             "sku": "B-010 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/B10%281%29.jpg?itok=Vid1XkPy",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-dark-kabul",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5419,7 +5414,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5432,7 +5427,8 @@
             "name": "Парфюмерная вода \"Attention\"",
             "sku": "S-006 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/S-006.jpg?itok=8U08243m",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-attention",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5447,7 +5443,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5460,6 +5456,7 @@
             "name": "Парфюмерная вода \"Breeze\"",
             "sku": "A-001 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/A-001_1.jpg?itok=yzQhGMoJ",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-breeze",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5471,11 +5468,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5488,7 +5485,8 @@
             "name": "Парфюмерная вода \"Pink Particle\"",
             "sku": "Z-009 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/Z-009.jpg?itok=wqSr8WcK",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-pink-particle",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5503,7 +5501,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5516,7 +5514,8 @@
             "name": "Парфюмерная вода \"Сode cerise\"",
             "sku": "T-004 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/T-004.jpg?itok=EKR1o93e",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-sode-cerise",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5531,7 +5530,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5544,6 +5543,7 @@
             "name": "Парфюмерная вода \"Interdict\"",
             "sku": "C-007 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/C-007.jpg?itok=bjvW0jni",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-interdict",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5555,11 +5555,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5572,6 +5572,7 @@
             "name": "Парфюмерная вода \"Impulsive for him\"",
             "sku": "C-010 m",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/C-010%20m.jpg?itok=kEPAZrSc",
+            "link": "https://s-parfum.kz/katalog/muzhskie-aromaty/parfyumernaya-voda-impulsive-him",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5583,11 +5584,11 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5600,7 +5601,8 @@
             "name": "Парфюмерная вода \"Coffee addict\"",
             "sku": "M-022 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-11/M-022.jpg?itok=D9iHNMoJ",
-            "tier": "Selective/Author (Std)",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-coffee-addict",
+            "tier": "Author",
             "volumes": {
                 "3 мл": {
                     "price": 2250,
@@ -5615,7 +5617,7 @@
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 16500,
+                    "price": 17000,
                     "logistics": 750
                 },
                 "100 мл": {
@@ -5628,54 +5630,7 @@
             "name": "Парфюмерная вода \"S Parfum Exclusive\"",
             "sku": "S-003 u",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/S3%281%29.jpg?itok=8a21g1ek",
-            "tier": "Selective/Author (Prem)",
-            "volumes": {
-                "3 мл": {
-                    "price": 2400,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 10000,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 13500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 17500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Парфюмерная вода \"Particle 02\"",
-            "sku": "M-004 u",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M4%281%29.jpg?itok=g_gXG_M6",
-            "tier": "Selective/Author (Prem)",
-            "volumes": {
-                "3 мл": {
-                    "price": 2400,
-                    "logistics": 212
-                },
-                "15 мл": {
-                    "price": 10000,
-                    "logistics": 699
-                },
-                "30 мл": {
-                    "price": 13500,
-                    "logistics": 699
-                },
-                "50 мл": {
-                    "price": 17500,
-                    "logistics": 750
-                }
-            }
-        },
-        {
-            "name": "Парфюмерная вода \"Pure Love\"",
-            "sku": "V-010 w",
-            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-010.jpg?itok=PG9r2Ain",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-s-parfum-exclusive",
             "tier": "Classic",
             "volumes": {
                 "3 мл": {
@@ -5687,11 +5642,69 @@
                     "logistics": 699
                 },
                 "30 мл": {
-                    "price": 9500,
+                    "price": 8500,
                     "logistics": 699
                 },
                 "50 мл": {
-                    "price": 12500,
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
+                    "logistics": 750
+                }
+            }
+        },
+        {
+            "name": "Парфюмерная вода \"Particle 02\"",
+            "sku": "M-004 u",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/M4%281%29.jpg?itok=g_gXG_M6",
+            "link": "https://s-parfum.kz/katalog/aromaty-dlya-dvoikh/parfyumernaya-voda-particle-02",
+            "tier": "Classic",
+            "volumes": {
+                "3 мл": {
+                    "price": 1500,
+                    "logistics": 212
+                },
+                "15 мл": {
+                    "price": 6500,
+                    "logistics": 699
+                },
+                "30 мл": {
+                    "price": 8500,
+                    "logistics": 699
+                },
+                "50 мл": {
+                    "price": 11500,
+                    "logistics": 699
+                },
+                "100 мл": {
+                    "price": 18500,
+                    "logistics": 750
+                }
+            }
+        },
+        {
+            "name": "Парфюмерная вода \"Pure Love\"",
+            "sku": "V-010 w",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2019-12/V-010.jpg?itok=PG9r2Ain",
+            "link": "https://s-parfum.kz/katalog/zhenskie-aromaty/parfyumernaya-voda-pure-love",
+            "tier": "Classic",
+            "volumes": {
+                "3 мл": {
+                    "price": 1500,
+                    "logistics": 212
+                },
+                "15 мл": {
+                    "price": 6500,
+                    "logistics": 699
+                },
+                "30 мл": {
+                    "price": 8500,
+                    "logistics": 699
+                },
+                "50 мл": {
+                    "price": 11500,
                     "logistics": 699
                 },
                 "100 мл": {
@@ -5706,6 +5719,7 @@
             "name": "Парфюмированное восковое саше «Loving Care»",
             "sku": "25 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2026-01/kaspi%20%D1%81%D0%B0%D1%88%D0%B5%20Loving%20Care%201.jpg?itok=gwzlO4-Y",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannoe-voskovoe-sashe-loving-care",
             "price": 2100,
             "logistics": 212
         },
@@ -5713,6 +5727,7 @@
             "name": "Парфюмированное восковое саше «Rich»",
             "sku": "27 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%20%28150%29.png?itok=QtVIq9br",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannoe-voskovoe-sashe-rich",
             "price": 2100,
             "logistics": 212
         },
@@ -5720,6 +5735,7 @@
             "name": "Парфюмированное восковое саше «Lemongrass»",
             "sku": "24 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/71%20%D0%A1%D0%B0%D1%88%D0%B5%20%D0%B1%D0%B5%D0%BB%D0%BE%D0%B5_0.png?itok=kxMw952f",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannoe-voskovoe-sashe-lemongrass",
             "price": 2100,
             "logistics": 212
         },
@@ -5727,6 +5743,7 @@
             "name": "Парфюмированное восковое саше «Green Tea & Bergamot»",
             "sku": "23 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2026-01/kaspi%20%D1%81%D0%B0%D1%88%D0%B5%20Green%20Tea%20%26%20Bergamot%201.jpg?itok=mmQiODy6",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannoe-voskovoe-sashe-green-tea-bergamot",
             "price": 2100,
             "logistics": 212
         },
@@ -5734,6 +5751,7 @@
             "name": "Парфюмированная свеча «Lemongrass»",
             "sku": "18 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/68%20%D0%A1%D0%B2%D0%B5%D1%87%D0%B0%20%D0%B1%D0%B5%D0%BB%D0%B0%D1%8F%20%282%29_0.png?itok=KuyZlf6M",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannaya-svecha-lemongrass",
             "price": 5700,
             "logistics": 212
         },
@@ -5741,6 +5759,7 @@
             "name": "Парфюмированная свеча «Rich»",
             "sku": "20 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/70%20%D0%A1%D0%B2%D0%B5%D1%87%D0%B0%20%D1%87%D1%91%D1%80%D0%BD%D0%B0%D1%8F%20%282%29.png?itok=VMye4QJH",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannaya-svecha-rich",
             "price": 5700,
             "logistics": 212
         },
@@ -5748,6 +5767,7 @@
             "name": "Парфюмированная свеча «Loving Care»",
             "sku": "19 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/69%20%D0%A1%D0%B2%D0%B5%D1%87%D0%B0%20%D0%BA%D1%80%D0%B0%D1%81%D0%BD%D0%B0%D1%8F%20%282%29.png?itok=wdo_NQli",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannaya-svecha-loving-care",
             "price": 5700,
             "logistics": 212
         },
@@ -5755,7 +5775,72 @@
             "name": "Парфюмированная свеча «Green Tea & Bergamot»",
             "sku": "17 home",
             "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-10/68%20%D0%A1%D0%B2%D0%B5%D1%87%D0%B0%20%D0%B1%D0%B5%D0%BB%D0%B0%D1%8F%20%282%29.png?itok=OIHC1DPR",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/parfyumirovannaya-svecha-green-tea-bergamot",
             "price": 5700,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Black currant\"",
+            "sku": "15 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Black%20currant.jpg?itok=U6yXvEfy",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-black-currant",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Paris\"",
+            "sku": "10 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Paris.jpg?itok=0U72CVw_",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-paris",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Bazar\"",
+            "sku": "6 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Bazar.jpg?itok=oN1GzzJY",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-bazar",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Orange\"",
+            "sku": "9 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Orange.jpg?itok=Re7TbNpf",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-orange",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Pudra\"",
+            "sku": "11 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Pudra.jpg?itok=SVQp4IMZ",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-pudra",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"White flowers\"",
+            "sku": "12 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/White%20flowers.jpg?itok=qicWNwxd",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-white-flowers",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Lemongrass\"",
+            "sku": "8 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Lemongrass.jpg?itok=xGepn8QK",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-lemongrass",
+            "price": 6800,
+            "logistics": 212
+        },
+        {
+            "name": "Ароматический диффузор \"Hawaii\"",
+            "sku": "7 home",
+            "image": "https://s-parfum.kz/sites/default/files/styles/full/public/2025-06/Hawaii.jpg?itok=7AAUOOgN",
+            "link": "https://s-parfum.kz/katalog/parfyumeriya-dlya-doma/aromaticheskiy-diffuzor-hawaii",
+            "price": 6800,
             "logistics": 212
         }
     ]

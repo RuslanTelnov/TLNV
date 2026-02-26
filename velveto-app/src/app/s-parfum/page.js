@@ -231,7 +231,11 @@ export default function SParfumPricesPage() {
                                                     <div style={{ width: '60px', height: '60px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>✨</div>
                                                 )}
                                                 <div>
-                                                    <div style={{ fontWeight: '600', fontSize: '1.1rem', marginBottom: '0.2rem' }}>{item.name}</div>
+                                                    <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ color: '#fff', textDecoration: 'none' }}>
+                                                        <div style={{ fontWeight: '600', fontSize: '1.1rem', marginBottom: '0.2rem', cursor: 'pointer' }}>
+                                                            {item.name} <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>↗</span>
+                                                        </div>
+                                                    </a>
                                                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                                         <span style={{ fontSize: '0.65rem', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>{item.tier}</span>
                                                         {item.sku && <span style={{ fontSize: '0.65rem', background: 'rgba(201, 160, 90, 0.1)', color: '#c9a05a', padding: '2px 6px', borderRadius: '4px' }}>{item.sku}</span>}
@@ -289,7 +293,9 @@ export default function SParfumPricesPage() {
                                     <img src={item.image} alt={item.name} style={{ width: '100%', height: '200px', borderRadius: '12px', objectFit: 'cover', background: 'rgba(255,255,255,0.03)' }} />
                                 )}
                                 <div>
-                                    <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '0.3rem' }}>{item.name}</div>
+                                    <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ color: '#fff', textDecoration: 'none' }}>
+                                        <div style={{ fontSize: '1rem', fontWeight: '500', marginBottom: '0.3rem' }}>{item.name} <span style={{ fontSize: '0.8rem', opacity: 0.3 }}>↗</span></div>
+                                    </a>
                                     {item.sku && <div style={{ fontSize: '0.7rem', color: '#c9a05a', marginBottom: '0.5rem' }}>{item.sku}</div>}
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem', fontSize: '0.85rem' }}>
